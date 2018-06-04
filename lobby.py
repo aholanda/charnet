@@ -1,4 +1,4 @@
-from igraph import *
+from networkx import *
 
 def lobby(G, log_file=None):
     """Lobby or h index
@@ -36,9 +36,9 @@ def lobby(G, log_file=None):
         for v in G.neighbors(u):
             degs.append(G.degree(v))
                             
-	degs.sort()
+        degs.sort()
         degs.reverse()
-	old_idx = idx = 0
+        old_idx = idx = 0
         for deg in degs:
             lobby = idx = idx + 1
 
