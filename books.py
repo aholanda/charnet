@@ -2,6 +2,12 @@
 import networkx as nx
 #from lobby import lobby
 
+from enum import Enum
+class BookCategory(Enum):
+        FICTION = 1
+        BIOGRAPHY = 2
+        SACRED = 3
+        
 class Book:
         def get_basedir(self):
                 '''Return the default base directory containing data for the project.'''
@@ -153,5 +159,7 @@ class Acts(Book):
         def read(self):
                 super(Acts, self).read()
 
-a = Acts()
-a.read()
+class Books(Book):
+        def read(self):
+                a = Acts()
+                a.read()
