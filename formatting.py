@@ -72,7 +72,7 @@ class Formatting:
                         (deg_avg, deg_stdev) = Graphs.degree_stat(G)
                 
                         # OUTPUT
-                        ln = book.get_book_label() + ' & '
+                        ln = book.get_label() + ' & '
                         ln += str(G.number_of_nodes()) + ' & '
                         ln += str(G.number_of_edges()) + ' & '
                         ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
