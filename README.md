@@ -32,7 +32,7 @@ of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 
 - [`Acts`](books.py): is an example of concrete `Leaf` classes, like
   `Acts` that represents the book "acts of apostles", were coded
-  inside inside the file [`books.py``](books.py).
+  inside inside the file [`books.py`](books.py).
 
 - [`Books`](books.py): is the `Composite` class, `read()` method has a
   different behavior iterating over all `Leaf`s to execute their
@@ -41,20 +41,20 @@ of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 - [`Formatting`](formatting.py): is responsible to write
   LaTeX-formatted output to append in the paper.
 
-- [Graphs](graphs.py): process graphs to obtain measures used in the
+- [`Graphs`](graphs.py): process graphs to obtain measures used in the
   analisys like average degree, betweenness, closeness and lobby.
 
-- [Graph](https://networkx.github.io/documentation/stable/reference/classes/graph.html):
+- [`Graph`](https://networkx.github.io/documentation/stable/reference/classes/graph.html):
   is an instance from `Graph` from NetworkX library.
 
 - [`Plot`](plot.py): plot the curves from data generated from
   graphs.
 
-- [Draw](draw.py): draw graphs using graphviz python library.
+- [`Draw`](draw.py): draw graphs using graphviz python library.
 
-- [Lobby](lobby.py): function to calculate the lobby index.
+- [`Lobby`](lobby.py): function to calculate the lobby index.
 
-- [Main](__main__.py): client to execute the operations.
+- [`Main`](__main__.py): client to execute the operations.
 
 ## Running
 
