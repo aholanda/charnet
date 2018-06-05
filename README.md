@@ -20,9 +20,9 @@ This project performed studies using complex networks in some books. We consider
 ## Structure
 
 The structure of the project follows, mainly, the Composite design
-pattern where `Book` is the `Component`, `Books` is the `Composite`,
-and the books like "acts of the apostles" (`Acts`) and the biography
-of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
+pattern where `Book` is the `Component`, `Books` class is the
+`Composite`, and the books like "acts of the apostles" (`Acts`) and
+the biography of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
  
 ![UML class diagram](dia.png)
 
