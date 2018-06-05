@@ -1,9 +1,9 @@
-all: charnet.py
+all: __main__.py
 	./$< -a
 
-charnet.py: book.py lobby.py
+__main__.py: books.py  draw.py  formatting.py  graphs.py  lobby.py  plot.py
 
-help: charnet.py
+help: __main__.py
 	./$< -h
 
 clean:
