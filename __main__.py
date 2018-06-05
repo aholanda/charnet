@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 
@@ -8,37 +8,60 @@ from draw import *
 from formatting import *
 
 def run_all_tasks(books):
-        for t in tasks:
-                t(books)
-        
-tasks = [None, # sys.argv[0] name of the program, no flag associated
-         Plot.do_centralities, # -c
-         Draw.do_graphs, # -g
-         Formatting.write_global_measures, # -b
-         Formatting.write_hapax_legomena_table, # -l
-         Formatting.write_stat_centralities, # -s
-         run_all_tasks] # -a
+        i = 1
+        while True:
+                print(hdrs[i])
+                tasks[i](books)
 
-def usage():
-        print('usage: ' + sys.argv[0] + ''' [options]
-        OPTIONS
-        -c, --centralities 
-        \tPlot the lobby and other centralities comparisons, generating PNG files.
-        -g, --draw-graph
-        \tDraw the graph of characters encounters for visualization generating PNG files.
-        -b, --global
-        \tWrite global measures in a table in a LaTeX file.
-        -l, --legomena
-        \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
-        -s, --stat-centralities
-        \tGenerate statistics from centralities.
-        -a, --all
-        \tExecute all options.
-        -h, --help
-        \t Print this help message.
-        '''
-        )
-        exit()
+                i += 1
+                if i == len(tasks)-1: # BUG: without this, in this form, dont stop
+                        exit()
+
+# header to tasks dictionary
+tasks = [ None, # sys.argv[0] name of the program, no flag associated
+          Plot.do_centralities, # -c
+          Draw.do_graphs, # -g
+          Formatting.write_global_measures, # -b
+          Formatting.write_hapax_legomena_table, # -l
+          Formatting.write_stat_centralities, # -s
+          run_all_tasks] # -a
+        
+# headers
+hdrs = ["__main__", 
+        "\n\t#### TASK 1 - Plot centralities ####",
+        "\n\t#### TASK 2 - Draw graph ####", 
+        "\n\t#### TASK 3 - Write global measures ####", 
+        "\n\t#### TASK 4 - Write the frequency of _hapax_ _legomena_ ####", 
+        "\n\t#### TASK 5 - Write statistics of centralities ####", 
+        "\n\t#### RUNNING ALL TASKS ####"] 
+
+class Main:
+        def __init__(self):
+                print("\n\t#### PRE-PROCESSING ####")
+                self.books = Books()
+                self.books.read()
+                
+        @staticmethod
+        def usage():
+                print('usage: ' + sys.argv[0] + ''' [options]
+                OPTIONS
+                -c, --centralities 
+                \tPlot the lobby and other centralities comparisons, generating PNG files.
+                -g, --draw-graph
+                \tDraw the graph of characters encounters for visualization generating PNG files.
+                -b, --global
+                \tWrite global measures in a table in a LaTeX file.
+                -l, --legomena
+                \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
+                -s, --stat-centralities
+                \tGenerate statistics from centralities.
+                -a, --all
+                \tExecute all options.
+                -h, --help
+                \t Print this help message.
+                '''
+                )
+                exit()
 
 if __name__ == "__main__":
         """The main subroutine declares some attributes associated with the
@@ -47,7 +70,7 @@ if __name__ == "__main__":
         marker in the plot."""
 
         # Boolean array to store state of the flags 
-        opts = [None] * len(tasks)
+        opts = [False] * len(tasks)
 
         # numer og arguments
         n = len(sys.argv)
@@ -57,32 +80,31 @@ if __name__ == "__main__":
                 for i in range(1, n):
                         opt = sys.argv[i]
                         if opt == "-c" or opt == "--centralities":
-                                opts[i] = True
+                                opts[1] = True
                         elif opt == "-g" or opt == "--draw-graph":
-                                opts[i] = True
+                                opts[2] = True
                         elif opt == "-b" or opt == "--global":
-                                opts[i] = True
+                                opts[3] = True
                         elif opt == "-l" or opt == "--legomena":
-                                opts[i] = True
+                                opts[4] = True
                         elif opt == "-s" or opt == "--stat-centralities":
-                                opts[i] = True
+                                opts[5] = True
                         elif opt == "-a" or opt == "--all-tasks":
-                                opts[i] = True
-                                for i in range(1, n-2): # to not repeat tasks
+                                opts[6] = True
+                                for i in range(1, n-1): # to not repeat tasks
                                         opts[i] = False
                         elif opt == "-h" or opt == "--help": # help make exit
-                                usage()
+                                Main.usage()
                         else:
                                 print('Unknown OPTION:', opt)
-                                usage()
+                                Main.usage()
                                 
         else:
                 usage()
 
-
-        books = Books()
-        books.read()
-        for i in range(1, n):
+        m = Main()
+        for i in range(1, len(opts)):
                 if opts[i] == True:
-                        tasks[i](books)
+                        print(hdrs[i])
+                        tasks[i](m.books)
 
