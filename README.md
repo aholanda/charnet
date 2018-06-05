@@ -32,7 +32,7 @@ of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 
 - [`Acts`](books.py): is an example of concrete `Leaf` classes, like
   `Acts` that represents the book "acts of apostles", were coded
-  inside inside the file [books.py](books.py).
+  inside inside the file [`books.py``](books.py).
 
 - [`Books`](books.py): is the `Composite` class, `read()` method has a
   different behavior iterating over all `Leaf`s to execute their
