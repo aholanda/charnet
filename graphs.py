@@ -5,9 +5,11 @@ import networkx as nx
 from lobby import *
 
 class Graphs():
+        @staticmethod
         def create_graph():
                 return nx.Graph()
-                
+
+        @staticmethod
         def get_avg_lobby(G, log_file=None):
                 '''Return the average Lobby index of the book characters'''
                 lobby(G, log_file)
@@ -18,6 +20,7 @@ class Graphs():
 
                 return float(acc) / N
 
+        @staticmethod
         def get_avg_degree(G):
                 '''Return the average degree of the book characters'''
                 acc = 0.0
@@ -28,6 +31,7 @@ class Graphs():
 
                 return float(acc) / N
 
+        @staticmethod
         def get_avg_betweenness(G):
                 '''Return the average betweenness of the book characters'''
                 acc = 0.0
@@ -38,6 +42,7 @@ class Graphs():
 
                 return acc / N
 
+        @staticmethod
         def get_avg_closeness(G):
                 '''Return the average closeness of the book characters'''
                 acc = 0.0
@@ -48,6 +53,7 @@ class Graphs():
 
                 return acc / N
         
+        @staticmethod
         def calc_normalized_centralities(G):
 		# DEGREE
                 degs = nx.degree_centrality(G)                
@@ -64,6 +70,7 @@ class Graphs():
                 for i in range(G.number_of_nodes()):
                         G.node[i]['Closeness']   = closes[i]
 
+        @staticmethod
         def degree_stat(G):
                 """Calculate the average degree and the standard deviation degree.
                 Source: http://holanda.xyz/files/mean.c
@@ -82,10 +89,11 @@ class Graphs():
 
                 return (avg_curr, stdev)
 
-
+        @staticmethod
         def calc_graph_vertex_lobby(G, log_file=None):
                 lobby(G, log_file)
-        
+
+        @staticmethod
         def pre_process_centralities(books):
                 """
                 Calculate centralities and store in associative array.
