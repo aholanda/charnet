@@ -1,65 +1,88 @@
 #!/usr/bin/python
-from optparse import OptionParser
-import matplotlib.pyplot as plt
-import networkx as nx
 
-# to calculate Pearson correlation
-from scipy.stats.stats import pearsonr
+import sys
 
 # LOCAL
 from books import *
 from draw import *
 from formatting import *
 
+def run_all_tasks(books):
+        for t in tasks:
+                t(books)
+        
+tasks = [None, # sys.argv[0] name of the program, no flag associated
+         Plot.do_centralities, # -c
+         Draw.do_graphs, # -g
+         Formatting.write_global_measures, # -b
+         Formatting.write_hapax_legomena_table, # -l
+         Formatting.write_stat_centralities, # -s
+         run_all_tasks] # -a
+
+def usage():
+        print('usage: ' + sys.argv[0] + ''' [options]
+        OPTIONS
+        -c, --centralities 
+        \tPlot the lobby and other centralities comparisons, generating PNG files.
+        -g, --draw-graph
+        \tDraw the graph of characters encounters for visualization generating PNG files.
+        -b, --global
+        \tWrite global measures in a table in a LaTeX file.
+        -l, --legomena
+        \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
+        -s, --stat-centralities
+        \tGenerate statistics from centralities.
+        -a, --all
+        \tExecute all options.
+        -h, --help
+        \t Print this help message.
+        '''
+        )
+        exit()
+
 if __name__ == "__main__":
         """The main subroutine declares some attributes associated with the
         books. Those attributes are used to label the books and to
         standardize the pictorial elements properties like color and point
         marker in the plot."""
-        books = []
-        flags = 0
-        
-        # process command line arguments
-        usage = "usage: %prog [options] arg"
-        parser = OptionParser(usage)
-        parser.add_option("-a", "--all",
-                          help="execute all tasks",
-                          action="store_true", dest="all_tasks")
-        parser.add_option("-c", "--centralities",
-                          help="plot the lobby and other centralities comparisons, generating PNG files",
-                          action="store_true", dest="centralities")
-        parser.add_option("-d", "--draw-graph",
-                          help="draw the graph of characters encounters for visualization generating PNG files",
-                          action="store_true", dest="draw_graph")
-        parser.add_option("-g", "--global",
-                          help="write global measures in a table in a LaTeX file",
-                          action="store_true", dest="global_measures")
-        parser.add_option("-l", "--legomena",
-                          help="Write the frequency of hapax legomena, characters that "
-                          +"appear only once in a table in a LaTeX file",
-                          action="store_true", dest="hapax_legomena")
-        parser.add_option("-s", "--stat-centralities",
-                          help="generate statistics from centralities",
-                          action="store_true", dest="stat")
-        
-        (options, args) = parser.parse_args()
-        
+
+        # Boolean array to store state of the flags 
+        opts = [None] * len(tasks)
+
+        # numer og arguments
+        n = len(sys.argv)
+
+        # retrieve the flags set by the user
+        if n > 1:
+                for i in range(1, n):
+                        opt = sys.argv[i]
+                        if opt == "-c" or opt == "--centralities":
+                                opts[i] = True
+                        elif opt == "-g" or opt == "--draw-graph":
+                                opts[i] = True
+                        elif opt == "-b" or opt == "--global":
+                                opts[i] = True
+                        elif opt == "-l" or opt == "--legomena":
+                                opts[i] = True
+                        elif opt == "-s" or opt == "--stat-centralities":
+                                opts[i] = True
+                        elif opt == "-a" or opt == "--all-tasks":
+                                opts[i] = True
+                                for i in range(1, n-2): # to not repeat tasks
+                                        opts[i] = False
+                        elif opt == "-h" or opt == "--help": # help make exit
+                                usage()
+                        else:
+                                print('Unknown OPTION:', opt)
+                                usage()
+                                
+        else:
+                usage()
+
+
         books = Books()
         books.read()
+        for i in range(1, n):
+                if opts[i] == True:
+                        tasks[i](books)
 
-        tasks = {options.centralities: Plot.do_centralities,
-                 options.draw_graph: Draw.do_graphs,
-                 options.global_measures: Formatting.write_global_measures,
-                 options.hapax_legomena: Formatting.write_hapax_legomena_table,
-                 options.stat: Formatting.write_stat_centralities,}
-        
-        if options.all_tasks:
-                funcs = array(tasks.values())
-                funcs[0]
-                for f in range(funcs):
-                        print(f)
-                        f(books)
-        else:
-                for opt,func in tasks.items():
-                        if opt:
-                                func(books)
