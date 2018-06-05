@@ -1,6 +1,6 @@
 # charnet - character networks
 
-This project performed studies using complex networks in 9 books. We considered
+This project performed studies using complex networks in some books. We considered
  characters as nodes and characters encounters as edges. The project
  has a [GitHub page](https://ajholanda.github.io/charnet/) and a
  [manuscript](https://arxiv.org/abs/1704.08197).
