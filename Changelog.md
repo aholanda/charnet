@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v1.1] - 2018-05-07
+### Added
+- `Project`, `Project.Charnet` and `Project.SGB` classes to handle project configuration
+  or properties. This decision allows to set values of general configuration in a single
+  point.
+
+### Changed
+- The code `books.py` was changed to accomodate the new design.
+
 ## [v1.0] - 2018-05-05
 ### Changed
 - Change `README.md`, adding UML class diagram for the project and an explanation
