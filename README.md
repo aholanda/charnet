@@ -44,15 +44,24 @@ the biography of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 - [`Graphs`](graphs.py): process graphs to obtain measures used in the
   analisys like average degree, betweenness, closeness and lobby.
 
-- [`Graph`](https://networkx.github.io/documentation/stable/reference/classes/graph.html):
-  is an instance from `Graph` from NetworkX library.
+- `Graph`: is an instance from
+  [`Graph`](https://networkx.github.io/documentation/stable/reference/classes/graph.html)
+  from NetworkX library.
 
 - [`Plot`](plot.py): plot the curves from data generated from
   graphs.
 
 - [`Draw`](draw.py): draw graphs using graphviz python library.
 
-- [`Lobby`](lobby.py): function to calculate the lobby index.
+- [`lobby()`](lobby.py): function to calculate the lobby index.
+
+- [`Charnet`](books.py): helper to handle configuration specific to
+  books gathered in this project.
+
+- [`SGB`](books.py): helper to handle configuration specific to books
+  gathered in Stanford GraphBase project.
+
+- [`Project`](books.py): template (interface) for project properties.
 
 - [`Main`](__main__.py): client to execute the operations.
 
