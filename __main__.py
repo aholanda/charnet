@@ -100,7 +100,7 @@ if __name__ == "__main__":
                                 Main.usage()
                                 
         else:
-                usage()
+                Main.usage()
 
         m = Main()
         for i in range(1, len(opts)):
