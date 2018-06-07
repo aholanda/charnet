@@ -3,21 +3,42 @@ import numpy as np
 # LOCAL
 from graphs import *
 
+class Project:
+        '''Template for specific project configurations.'''
+        @staticmethod
+        def get_datadir(self):
+                '''Return the directory containing data for the project.'''
+                pass
+
+class SGB(Project):
+        '''Handle specific configuration for books gathered by Stanford
+           GraphBase project.'''
+        @staticmethod
+        def get_datadir():
+                return 'sgb/'
+
+class Charnet(Project):
+        '''Handle specific configuration for books gathered by Charnet project.'''
+        @staticmethod
+        def get_datadir():
+                return 'data/'
+        
 from enum import Enum
 class BookCategory(Enum):
+        '''Books are classified in categories.'''
         FICTION = 1
         BIOGRAPHY = 2
-        CANONICAL = 3
+        CANONICAL = 3 # e.g., Bible
         
-class Book:
+class Book():
         def __init__(self):
                 self.G = Graphs.create_graph() # Graph to be created from the book
                 self.avg = {} # Dictionary to load average values associated with a centrality as key
-                
-        def get_basedir(self):
-                '''Return the default base directory containing data for the project.'''
-                return 'data/'
 
+        def __str__(self):
+                '''Return the name of the book.'''
+                pass
+                
         def get_category(self):
                 pass
         
@@ -35,11 +56,11 @@ class Book:
 
         def get_file_name(self):
                 '''Return the file name to be read.'''
-                return self.get_basedir() + self.__str__() + self.get_file_ext()
+                return self.get_datadir() + self.__str__() + self.get_file_ext()
 
         def get_file_name_freq(self):
                 '''Return the file name with character frequency to be read.'''
-                return self.get_basedir() + self.__str__() + self.get_file_freq_ext()
+                return self.get_datadir() + self.__str__() + self.get_file_freq_ext()
         
         def has_frequency_file(self):
                 '''Return if the book has a file containg character frequency.'''
@@ -79,10 +100,10 @@ class Book:
                                 nr_dis += 1
 
                 return nr_dis
-        
+
         def get_raw_book_label(self):
                 return self.__str__().title()
-        
+       
         def read(self):
                 """
                 Read the file containing characters encounters of a book 
@@ -190,163 +211,186 @@ class Book:
                                         self.G.add_edge(u, v, weight=1)
                                 
                 return self.G
-
-        def __str__(self):
-                '''Return the name of the book.'''
-                pass
-
         
 class Acts(Book):
         def __init__(self):
                 Book.__init__(self)
                 
-        def has_frequency_file(self):
-                return False
+        def __str__(self):
+                return 'acts'
 
         def get_category(self):
                 return BookCategory.CANONICAL
         
-        def __str__(self):
-                return 'acts'
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
 
 class Arthur(Book):
         def __init__(self):
                 Book.__init__(self)
                 
-        def has_frequency_file(self):
-                return False
+        def __str__(self):
+                return 'arthur'
 
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def __str__(self):
-                return 'arthur'
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
 
 class David(Book):
         def __init__(self):
                 Book.__init__(self)
                 
-        def has_frequency_file(self):
-                return False
-
-        def get_basedir(self):
-                '''Return the base directory containing SGB data for the project.'''
-                return 'sgb/'
+        def __str__(self):
+                return 'david'
 
         def get_category(self):
                 return BookCategory.FICTION
         
-        def __str__(self):
-                return 'david'
+        def get_datadir(self):
+                return SGB.get_datadir()
+
+        def has_frequency_file(self):
+                return False
 
 class Dick(Book):
         def __init__(self):
                 Book.__init__(self)
                 
-        def has_frequency_file(self):
-                return False
+        def __str__(self):
+                return 'dick'
 
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def __str__(self):
-                return 'dick'
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
 
 class Hawking(Book):
         def __init__(self):
                 Book.__init__(self)
-                
-        def has_frequency_file(self):
-                return True
+                               
+        def __str__(self):
+                return 'hawking'
 
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def __str__(self):
-                return 'hawking'
+        def get_datadir(self):
+                return Charnet.get_datadir()
 
-class Hobbit(Book):
+        def has_frequency_file(self):
+                return True
+
+class Hobbit(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 
-        def has_frequency_file(self):
-                return False
+        def __str__(self):
+                return 'hobbit'
 
         def get_category(self):
                 return BookCategory.FICTION
         
-        def __str__(self):
-                return 'hobbit'
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
 
 class Huck(Book):
         def __init__(self):
                 Book.__init__(self)
                 
-        def get_basedir(self):
-                '''Return the base directory containing SGB data for the project.'''
-                return 'sgb/'
+        def __str__(self):
+                return 'huck'
 
         def get_category(self):
                 return BookCategory.FICTION
         
+        def get_datadir(self):
+                return SGB.get_datadir()
+
         def has_frequency_file(self):
                 return False
-
-        def __str__(self):
-                return 'huck'
 
 class Luke(Book):
         def __init__(self):
                 Book.__init__(self)
-                
-        def has_frequency_file(self):
-                return False
+               
+        def __str__(self):
+                return 'luke'
 
         def get_category(self):
                 return BookCategory.CANONICAL
         
-        def __str__(self):
-                return 'luke'
+        def get_datadir(self):
+                return Charnet.get_datadir()
 
-class Newton(Book):
+        def has_frequency_file(self):
+                return False
+
+class Newton(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
-        def has_frequency_file(self):
-                return True
+        def __str__(self):
+                return 'newton'
 
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def __str__(self):
-                return 'newton'
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return True
 
 class Pythagoras(Book):
         def __init__(self):
                 Book.__init__(self)
-                
-        def has_frequency_file(self):
-                return True
-
-        def get_category(self):
-                return BookCategory.BIOGRAPHY
-        
+                Charnet.__init__(self)
+                 
         def __str__(self):
                 return 'pythagoras'
 
-class Tolkien(Book):
-        def __init__(self):
-                Book.__init__(self)
-                
-        def has_frequency_file(self):
-                return False
-
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return True
+
+class Tolkien(Book, Charnet):
+        def __init__(self):
+                Book.__init__(self)
+                Charnet.__init__(self)
+                                
         def __str__(self):
                 return 'tolkien'
                 
+        def get_category(self):
+                return BookCategory.BIOGRAPHY
+        
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
+
 class Books(Book):
         def __init__(self):
                 self.books = [Acts(), Arthur(), David(), Dick(), Hawking(), Hobbit(),
