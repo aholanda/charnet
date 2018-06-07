@@ -1,3 +1,6 @@
+# astah-com
+*.bak
+
 # emacs backup
 .#*
 
