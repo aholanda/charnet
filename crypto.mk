@@ -5,4 +5,9 @@ notes.org.gpg: notes.org
 	-gpg -c $< \
 	&& cp -v  $< /tmp/$(NOW)-$< \
 	&& git commit -m "notes up to $(NOW)" $@ \
-	&& git push
+	&& git push && rm -i $<
+
+notes.org:
+	gpg notes.org.pgp
+
+decript: notes.org
