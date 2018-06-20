@@ -17,21 +17,26 @@ EJ empress Julia
 EU Euthydemus, Apollonius' teacher from Phoenicia
 EX Euxenus, Apollonius' teacher of the Pythagorean system
 FS Babylon frontier satrap
+GB guide from Babylon
 GO governor of Aspendus
 GU guide of the voyage of Caucasus
 HB the head of the department of the king of Babylon
 HO hobglobin (empusa)
 HU huntsmen
+IP interpreter from indian to greek
 IN one of the Indians who was riding on a camel between the Caucasus and the river Cophen
+IT interpreter of the king in Taxila, India
 MG Magi
 KB king of Babylon
 KD kinsman of Damis
+KI Indian king
 LA Ladon
 PH Philostratus
 PR Proteus
 PS (a) priest
 RU (a) ruffian man addicted to infamous forms of passion
 SB satrap in command of great gates of Babylon
+SG satrap's guide during Indian voyage
 SW shorthand writer
 TG tax-gatherer who presided over the Bridge (Zeugma)
 
@@ -75,4 +80,14 @@ TG tax-gatherer who presided over the Bridge (Zeugma)
 2.7:AP,DM
 2.10:DM
 2.11:AP,DM
-2.19:AP,DM
+2.14:AP,DM
+2.15:AP,DM
+2.20:AP,DM,SG
+2.22:AP,DM
+2.23:AP,DM,IT
+2.25:AP,DM
+2.26:AP,DM,KI
+2.27:AP,GB,IP,KI
+2.29:AP,KI
+2.30:AP,KI
+2.31:AP,KI
