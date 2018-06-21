@@ -29,7 +29,7 @@ IT interpreter of the king in Taxila, India
 MG Magi
 KB king of Babylon
 KD kinsman of Damis
-KI Indian king
+KI Indian (Taxila) king named Phraotes
 LA Ladon
 PH Philostratus
 PR Proteus
@@ -37,6 +37,7 @@ PS (a) priest
 RU (a) ruffian man addicted to infamous forms of passion
 SB satrap in command of great gates of Babylon
 SG satrap's guide during Indian voyage
+SK a sage of the indian king
 SW shorthand writer
 TG tax-gatherer who presided over the Bridge (Zeugma)
 
@@ -91,3 +92,12 @@ TG tax-gatherer who presided over the Bridge (Zeugma)
 2.29:AP,KI
 2.30:AP,KI
 2.31:AP,KI
+2.32:KI
+2.33:AP,KI
+2.34:AP,KI
+2.35:AP,KI,SK
+2.36:AP,DM
+2.37:AP,KI
+2.39:AP,KI
+2.40:AP,DM,KI
+
