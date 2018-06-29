@@ -8,13 +8,17 @@ AF Apollonius' father
 AM Apollonius' mother
 AP Apollonius of Tyana
 AS Asclepius, the god of medicine
+AT Antisthenes of Paros
 BM blind man (3.39)
 CA calligraphist
 CQ (a) certain quibler
 DA Damis, a native of Nineveh
+DE demon (4.10) who transform in form and look of a Molossian dog
 DM Damis
+DP sons of Discorus and the Phaedimi (4.11)
 EB one of the eunuchs of the king of Babylon
 EJ empress Julia
+EP Ephesians
 EU Euthydemus, Apollonius' teacher from Phoenicia
 EX Euxenus, Apollonius' teacher of the Pythagorean system
 FS Babylon frontier satrap
@@ -26,6 +30,7 @@ HO hobglobin (empusa)
 HU huntsmen
 IA Iarchas, a sage
 IB an Indian that is very black
+IO Ionians (4.5)
 IP interpreter from indian to greek
 IN one of the Indians who was riding on a camel between the Caucasus and the river Cophen
 IT interpreter of the king in Taxila, India
@@ -42,6 +47,7 @@ PH Philostratus
 PM paralytic man (3.39)
 PR Proteus
 PS (a) priest
+PY people of Smyrna
 RU (a) ruffian man addicted to infamous forms of passion
 SA most of the sages or a lot of them
 SB satrap in command of great gates of Babylon
@@ -170,7 +176,15 @@ WH a woman by means of a live hare (3.39)
 4.2:AP
 4.3:AP
 4.4:AP
-
-
-
-
+4.5:AP,IO
+4.6:AP,PS
+4.7:AP
+4.8:AP,PS
+4.9:AP,PS
+4.10:AP,DE,EP
+4.11:AP,DP
+4.12:AP,AT
+4.13:AP
+4.14:AP
+4.15:AP,DM
+4.16:AP
