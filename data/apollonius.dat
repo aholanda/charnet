@@ -7,6 +7,7 @@ AB Apollonius' brother
 AC Alcinous the Phaeacian (4.20)
 AF Apollonius' father
 AH Athenians (4.21->)
+AL Alexandrians
 AM Apollonius' mother
 AO an actor of tragedy
 AP Apollonius of Tyana
@@ -21,10 +22,12 @@ DA Damis, a native of Nineveh
 DE demon (4.10) who transform in form and look of a Molossian dog
 DI Dioscorides the Egyptian
 DM Damis
+DN Dion
 DO that of Dodoma (4.24)
 DP sons of Discorus and the Phaedimi (4.11)
 DT Demetrius
 EB one of the eunuchs of the king of Babylon
+EH Euphrates
 EJ empress Julia
 EP Ephesians
 ER an Egyptian priest in 5.25
@@ -85,6 +88,8 @@ TI Tigellinus
 UB brother of the KU
 US son of the KU
 VA Vardan (3.58)
+VE Vespasian 'emperor'
+VG Vespasian 'emperor's guards
 WB a woman who was black from her head to her bosom, and white from her bosom down to her feet
 WD a woman whose child was possessed by a devil
 WH a woman by means of a live hare (3.39)
@@ -273,3 +278,16 @@ YN a young man who was a nouveau rich in Rhodes
 5.23:AP,YF
 5.24:MH,SP
 5.25:AP,ER
+5.26:AL,AP
+5.27:AP;DN,VE
+5.28:AP,DN,EH,VE
+5.29:AP,VE
+5.30:AP,VE
+5.31:AP,VG;AP,DM;AP,DN,EH;AP,DN,EH,VE
+5.32:AP,DN,VE
+5.33:EH
+5.34:DN
+5.35:AP
+5.36:AP,VE
+5.37:EH,VE
+5.38:AP,VE
