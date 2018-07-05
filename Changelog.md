@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.2]
+## [v1.2] - 2018-07-05
 ## Added
 - [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius fo Tyana" was added.
 
