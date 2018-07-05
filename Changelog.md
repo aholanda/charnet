@@ -1,8 +1,13 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [v1.2]
+## Added
+- [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius fo Tyana" was added.
+
+### Changed
+- [`books.py`](books.py) - add method `get_vertex_color()` to return the color to print the vertex in the graph drawing.
+- [`draw.py`](draw.py) - use the method `Book.get_vertex_color()` from `books.py`.
+- Fix syntax error of single isolated vertex in [`data/tolkien.dat`](data/tolkien.dat).
 
 ## [v1.11] - 2018-05-07
 ### Changed
