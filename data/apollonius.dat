@@ -1,5 +1,5 @@
-* File "apollonius.dat" from Characters Network project (C) 2017 University of Sao Paulo, Brazil
-* "The Life of Apollonius of Tyana" in two volumes
+* File "apollonius.dat" from Characters Network project (C) 2018 University of Sao Paulo, Brazil
+* "The Life of Apollonius of Tyana" in five volumes
 * Flavius Philostratus, with an english translation by F. C. Conybeare
 * In the edge section, in the enumeration as 1.2, the 1 indicates volume and 2 chapter
 * This file may be freely copied.
@@ -18,6 +18,7 @@ CA calligraphist
 CN Canus a flute-player
 CO a Corinthian (4.31)
 CQ (a) certain quibler
+CS the Corinthians
 DA Damis, a native of Nineveh
 DE demon (4.10) who transform in form and look of a Molossian dog
 DI Dioscorides the Egyptian
@@ -62,6 +63,7 @@ MB Menippus' bride (vampire)
 ME Menippus a Lycian
 MG Magi
 MH a man in a horseback in 5.24
+ML a man that led a tame lion about by a string
 MS a messenger approached Iarchas in book 3 chapter 23
 MU Musonius the philosopher
 MW a man whose sons die when they drink wine (3.40)
@@ -291,3 +293,9 @@ YN a young man who was a nouveau rich in Rhodes
 5.36:AP,VE
 5.37:EH,VE
 5.38:AP,VE
+5.39:AP,EH
+5.40:AP,DN
+5.41:
+5.42:AP,ML
+5.43:CS,DI,EH,ME
+* End of file "appolonius.dat"
