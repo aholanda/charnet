@@ -103,7 +103,11 @@ class Book():
 
         def get_raw_book_label(self):
                 return self.__str__().title()
-       
+
+        def get_vertex_color(self):
+                '''Return the color set to vertices in the plot of graph. Default: white.'''
+                return 'white'
+        
         def read(self):
                 """
                 Read the file containing characters encounters of a book 
@@ -143,6 +147,9 @@ class Book():
                         # eg., split "ST,MR;ST,PH,MA;MA,DO" => ["ST,MR", "ST,PH,MA", "MA,DO"]
                         edges = edges_list.rstrip("\n").split(';')
 
+                        if(edges[0] == ''): # eliminate chapters with no edges
+                                continue
+                        
                         for e in edges:
                                 # eg., split "ST,PH,MA" => ["ST", "PH", "MA"]
                                 vs = e.split(',')  # vertices
@@ -228,6 +235,9 @@ class Acts(Book):
         def has_frequency_file(self):
                 return False
 
+        def get_vertex_color(self):
+                return 'khaki'
+
 class Apollonius(Book):
         def __init__(self):
                 Book.__init__(self)
@@ -243,7 +253,10 @@ class Apollonius(Book):
 
         def has_frequency_file(self):
                 return False
-        
+
+        def get_vertex_color(self):
+                return 'gray'
+
 class Arthur(Book):
         def __init__(self):
                 Book.__init__(self)
@@ -259,6 +272,9 @@ class Arthur(Book):
 
         def has_frequency_file(self):
                 return False
+
+        def get_vertex_color(self):
+                return 'cyan'
 
 class David(Book):
         def __init__(self):
@@ -276,6 +292,9 @@ class David(Book):
         def has_frequency_file(self):
                 return False
 
+        def get_vertex_color(self):
+                return 'orange'
+
 class Dick(Book):
         def __init__(self):
                 Book.__init__(self)
@@ -291,6 +310,9 @@ class Dick(Book):
 
         def has_frequency_file(self):
                 return False
+
+        def get_vertex_color(self):
+                return 'orchid'
 
 class Hawking(Book):
         def __init__(self):
@@ -308,6 +330,9 @@ class Hawking(Book):
         def has_frequency_file(self):
                 return True
 
+        def get_vertex_color(self):
+                return 'silver'
+
 class Hobbit(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
@@ -323,6 +348,9 @@ class Hobbit(Book, Charnet):
 
         def has_frequency_file(self):
                 return False
+
+        def get_vertex_color(self):
+                return 'gold'
 
 class Huck(Book):
         def __init__(self):
@@ -340,6 +368,9 @@ class Huck(Book):
         def has_frequency_file(self):
                 return False
 
+        def get_vertex_color(self):
+                return 'salmon'
+
 class Luke(Book):
         def __init__(self):
                 Book.__init__(self)
@@ -356,6 +387,9 @@ class Luke(Book):
         def has_frequency_file(self):
                 return False
 
+        def get_vertex_color(self):
+                return 'wheat'
+
 class Newton(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
@@ -370,8 +404,9 @@ class Newton(Book, Charnet):
         def get_datadir(self):
                 return Charnet.get_datadir()
 
-        def has_frequency_file(self):
-                return True
+        
+        def get_vertex_color(self):
+                return 'tan'
 
 class Pythagoras(Book):
         def __init__(self):
@@ -390,6 +425,9 @@ class Pythagoras(Book):
         def has_frequency_file(self):
                 return True
 
+        def get_vertex_color(self):
+                return 'tomato'
+
 class Tolkien(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
@@ -406,6 +444,9 @@ class Tolkien(Book, Charnet):
 
         def has_frequency_file(self):
                 return False
+
+        def get_vertex_color(self):
+                return 'yellowgreen'
 
 class Books(Book):
         def __init__(self):
