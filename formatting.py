@@ -79,7 +79,7 @@ class Formatting:
                         ln += '{0:.3f}'.format(book.G.graph['clustering']) + ' & '
                         ln += "\\\\ \n"
                 
-                f.write(ln)
+                        f.write(ln)
                 
                 f.write("\\botrule\\end{tabular}}\n")        
                 f.close()
