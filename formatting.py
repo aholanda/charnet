@@ -56,12 +56,13 @@ class Formatting:
                 
                 f = open(fn, "w")
 
-                f.write('{\small\\begin{tabular}{@{}cccccc@{}}\\toprule\n')
+                f.write('{\small\\begin{tabular}{@{}ccccccc@{}}\\toprule\n')
                 f.write('\\bf\\hfil Book\\hfil '
                         + ' & \\hfil \\hphantom{00} $\\mathbf N$ \\hphantom{00} \\hfil '
                         + ' & \\hfil \\bf Links\hfil '
                         + ' & \\hfil \\hphantom{0} $\\mathbf K$ \\hphantom{0} \\hfil '
-                        + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil '
+                        + ' & \\hfil \\hphantom{0} $\\mathbf D$ \\hphantom{0} \\hfil ' # Density
+                        + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil ' # Cluster. Coef.
                         + ' \\\\ \\colrule\n'
                 )
                 for book in books.get_books():
@@ -76,6 +77,7 @@ class Formatting:
                         ln += str(G.number_of_nodes()) + ' & '
                         ln += str(G.number_of_edges()) + ' & '
                         ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
+                        ln += '{0:.3f}'.format(book.G.graph['density']) + ' & '
                         ln += '{0:.3f}'.format(book.G.graph['clustering']) + ' & '
                         ln += "\\\\ \n"
                 
