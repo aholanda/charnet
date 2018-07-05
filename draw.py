@@ -24,7 +24,7 @@ class Draw:
                         ax = plt.subplot(111)
                         ax.set_title('Graph - ' + book.get_name().title(), fontsize=16)
                         pos = nx.spring_layout(G)
-                        nx.draw(G, pos, node_size=1500, node_color=Plot.get_color(book), font_size=14, font_weight='bold')
+                        nx.draw(G, pos, node_size=1500, node_color=book.get_vertex_color(), font_size=14, font_weight='bold')
                         nx.draw_networkx_labels(G, pos, labels, font_size=12)
                         plt.tight_layout()
                         plt.savefig(fn, format="PNG")
