@@ -228,6 +228,22 @@ class Acts(Book):
         def has_frequency_file(self):
                 return False
 
+class Apollonius(Book):
+        def __init__(self):
+                Book.__init__(self)
+                
+        def __str__(self):
+                return 'apollonius'
+
+        def get_category(self):
+                return BookCategory.CANONICAL
+        
+        def get_datadir(self):
+                return Charnet.get_datadir()
+
+        def has_frequency_file(self):
+                return False
+        
 class Arthur(Book):
         def __init__(self):
                 Book.__init__(self)
@@ -393,8 +409,20 @@ class Tolkien(Book, Charnet):
 
 class Books(Book):
         def __init__(self):
-                self.books = [Acts(), Arthur(), David(), Dick(), Hawking(), Hobbit(),
-                              Huck(), Luke(), Newton(), Pythagoras(), Tolkien()]
+                self.books = [
+                        Acts(),
+                        Apollonius(),
+                        Arthur(),
+                        David(),
+                        Dick(),
+                        Hawking(),
+                        Hobbit(),
+                        Huck(),
+                        Luke(),
+                        Newton(),
+                        Pythagoras(),
+                        Tolkien()
+                ]
 
         def get_books(self):
                 return self.books
