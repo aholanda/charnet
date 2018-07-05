@@ -1,7 +1,7 @@
 # Changelog
 
 ## [v1.2] - 2018-07-05
-## Added
+### Added
 - [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius fo Tyana" was added.
 
 ### Changed
@@ -11,7 +11,7 @@
 
 ## [v1.11] - 2018-05-07
 ### Changed
-- Improve the sequence of commands in [`crypto.mk`](crypto.mk) to exit when an error occur.
+- Improve the sequence of commands in [`crypto.mk`](crypto.mk) to exit when an error occurs.
 
 ## [v1.1] - 2018-05-07
 ### Added
