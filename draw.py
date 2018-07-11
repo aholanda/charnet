@@ -13,19 +13,40 @@ class Draw:
 
                 print('Drawing graphs...')
                 for book in books.get_books():
+                        factor = 10 # increase factor
                         G = book.get_graph()
+                        color = book.get_vertex_color()
                         fn = "g-" + book.get_name() + ".png"
 
+                        # edge proportional to weight
+                        edgewidths=[]
+                        for (u,v,data) in G.edges(data=True):
+                                edgewidths.append(data['weight'])
+
+                        # vertices proportional to degree
+                        nodesizes = []
                         labels = {}
-                        for i in range(G.number_of_nodes()):
-                                labels[i] = G.node[i]['name'].rstrip("\r")
-                
+                        for v in G.nodes():
+                                deg = G.degree(v)
+                                nodesizes.append(deg*factor)
+                                if deg > 1:
+                                        labels[v] = G.node[v]['name'].rstrip("\r")
+                                else:
+                                        labels[v] = ''
+                                
+                        try:
+                                pos = nx.graphviz_layout(G)
+                        except:
+                                pos=nx.spring_layout(G,iterations=20)
+                                
                         fig = plt.figure(figsize=(12,12))
+                        nx.draw_networkx_edges(G, pos, alpha=0.3, width=edgewidths, edge_color=color)
                         ax = plt.subplot(111)
                         ax.set_title('Graph - ' + book.get_name().title(), fontsize=16)
-                        pos = nx.spring_layout(G)
-                        nx.draw(G, pos, node_size=1500, node_color=book.get_vertex_color(), font_size=14, font_weight='bold')
-                        nx.draw_networkx_labels(G, pos, labels, font_size=12)
+                        nx.draw(G,pos, with_labels=False, node_size=factor, node_color='black')
+                        nx.draw_networkx_nodes(G, pos, node_size=nodesizes, node_color=color, alpha=0.4)
+                        nx.draw_networkx_edges(G, pos,alpha=0.4, node_size=0, width=1, edge_color='k')
+                        nx.draw_networkx_labels(G, pos, labels, font_size=11)
                         plt.tight_layout()
                         plt.savefig(fn, format="PNG")
                         print('Wrote %s' % fn )
