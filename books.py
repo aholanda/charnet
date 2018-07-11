@@ -255,7 +255,7 @@ class Apollonius(Book):
                 return False
 
         def get_vertex_color(self):
-                return 'gray'
+                return 'red'
 
 class Arthur(Book):
         def __init__(self):
