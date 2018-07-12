@@ -7,6 +7,6 @@ help: __main__.py
 	./$< -h
 
 clean:
-	$(RM) *.csv *.dot *.log *.pdf *.png *.pyc centr.tex global.tex legomenas.tex
+	$(RM) *.csv *.dot *.log *.pdf *.pyc centr.tex global.tex legomenas.tex
 
 .PHONY: all clean help
