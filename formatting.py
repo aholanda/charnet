@@ -60,7 +60,7 @@ class Formatting:
                 f.write('\\bf\\hfil Book\\hfil '
                         + ' & \\hfil \\hphantom{00} $\\mathbf N$ \\hphantom{00} \\hfil '
                         + ' & \\hfil \\bf Links\hfil '
-                        + ' & \\hfil \\hphantom{0} $\\mathbf K$ \\hphantom{0} \\hfil '
+                        + ' & \\hfil \\hphantom{0} $\\mathbf\langle K\rangle$ \\hphantom{0} \\hfil '
                         + ' & \\hfil \\hphantom{0} $\\mathbf D$ \\hphantom{0} \\hfil ' # Density
                         + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil ' # Cluster. Coef.
                         + ' \\\\ \\colrule\n'
@@ -98,17 +98,22 @@ class Formatting:
                 fn = 'centr.tex'
                 f = open(fn, "w")
 
-                centrs = ['Degree', 'Betweenness', 'Closeness', 'Lobby']
+                centrs = ['Degree', 'Betweenness', 'Closeness', 'Assortativity', 'Lobby']
 
                 Graphs.pre_process_centralities(books)
 
-                f.write("\\begin{tabular}{@{}ccccc@{}}\\toprule\n")
-                f.write("\\bf Book &\\bf Degree &\\bf Betweenness &\\bf Closeness &\\bf Lobby \\\ \\colrule \n");
+                f.write("{\small\\begin{tabular}{@{}cccccc@{}}\\toprule\n")
+                f.write("\\bf Book &\\bf Degree &\\bf Betweenness &\\bf Closeness &\\bf Assortativity &\\bf Lobby \\\ \\colrule \n");
                 for book in books.get_books():
                         f.write(book.get_label() + ' & ')
                         G = book.G
                         for centr in centrs:
                                 vals = []
+
+                                if centr == 'Assortativity':
+                                        f.write('${0:.3f}'.format(nx.degree_assortativity_coefficient(G)) +'$ & ')
+                                        continue
+                                
                                 for i in range(G.number_of_nodes()):
                                         vals.append(G.node[i][centr])
 
@@ -122,6 +127,6 @@ class Formatting:
                                         if book.get_name() == 'tolkien' and centr == 'Lobby':
                                                 f.write(' \\botrule')
                         f.write('\n')
-                f.write('\\end{tabular} \n')
+                f.write('\\end{tabular}}\n')
                 print('Wrote', fn)
                 f.close()
