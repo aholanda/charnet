@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import numpy as np
+
 import matplotlib.pyplot as plt
 import math
 import networkx as nx
@@ -8,18 +10,24 @@ from scipy.stats import *
 # LOCAL
 from books import *
 
-def plot(basename, xs, ys):
-        fn = '/tmp/' + basename + '-cc-plt.png'
+doing = 'assortative'
+def plot(basename, xs, ys, k2knns):
+        (xxs, yys) = ([], [])
+        # calculate the avg of knns
+        for k, knns in sorted(k2knns.items()):
+                m = np.mean(np.array(knns))
+                xxs.append(k)
+                yys.append(m)
+                print(' - ', k, m)
+                
+        fn = '/tmp/' + basename + '-' + doing +'-plt.png'
         f = open(fn, "w")
         
-        marker_style = dict(linestyle=':', color='black', markersize=8)
-        plt.plot(xs, ys,
-                 label=basename,
-                 alpha=0.3, 
-                 **marker_style)
-        
-        plt.xlabel('links')
-        plt.ylabel('% giant component')
+        plt.figure()
+        plt.plot(xxs, yys, label='avg')
+        plt.plot(xs, ys, 'ro', label=basename)
+        plt.xlabel('k')
+        plt.ylabel('$k_{nn}$')
         plt.grid()
         plt.title('')
         plt.legend(fontsize=7, loc='center right')
@@ -31,35 +39,37 @@ if __name__=='__main__':
         bs.read()
 
         for b in bs.get_books():
+                k2knns = {} # map degree to average neighbor degree average
                 (xs, ys) = ([], [])
                 G = b.get_graph()
                 H = nx.Graph()
-                fn = '/tmp/' + str(G) + '-cc.csv'
+                fn = '/tmp/' + str(G) +'-'+ doing + '-.csv'
 
                 f = open(fn, 'w')
                 
-                #print(G)
-                N = len(G.edges())
-                maxgiant = max(nx.connected_component_subgraphs(G), key=len)
-                # sort edges by weight in reverse order
-                edges=sorted(G.edges(data=True), reverse=True, key=lambda t: t[2].get('weight', 1))
-                for u, v, data in edges:
-                        #print ('<- deg',  data['weight'])
+                for u in G.nodes():
+                        k = G.degree(u)
+                        knn = 0.0 # degree average of neighbors
+                        vs = G.neighbors(u)
+                        for v in vs:
+                                knn += G.degree(v)
 
-                        H.add_edge(u, v, weight=data['weight'])
-                        G.remove_edge(u, v)
+                        if len(vs) != 0:
+                                knn /= len(vs)
+                        else:
+                                continue
                         
-                        giant  = max(nx.connected_component_subgraphs(H), key=len)
-                        per_links = len(H.edges()) / float(N)
-                        per_gc = len(giant) / float(len(maxgiant))
-                        f.write(str(per_gc) + ',' + str(per_links) + '\n')
-                        xs.append(per_links)
-                        ys.append(per_gc)                        
+                        xs.append(k)
+                        ys.append(knn)
+
+                        if k not in k2knns:
+                                k2knns[k] = []
+                        k2knns[k].append(knn)
+
+                        print(' + ', k, knn)
+                        
                 f.close()
-                plot(str(G), xs, ys)
+                plot(str(G), xs, ys, k2knns)
                 print('Wrote ' + fn)
                 #break
-
-
-
-                       
+        
