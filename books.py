@@ -1,5 +1,9 @@
 import numpy as np
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # LOCAL
 from graphs import *
 
@@ -126,7 +130,6 @@ class Book():
 
                 fn = self.get_file_name()
                 f = open(fn, "r")
-                print(' o', fn)
                 for ln in f:
                         if (ln.startswith(self.get_comment_token())): # ignore comments
                                 continue
@@ -216,7 +219,8 @@ class Book():
                                         self.G[u][v]['weight'] += 1
                                 else: # add edge with weight = 1
                                         self.G.add_edge(u, v, weight=1)
-                                
+
+                logger.info("read G from book \"%s\"", self.get_name().title())
                 return self.G
         
 class Acts(Book):
