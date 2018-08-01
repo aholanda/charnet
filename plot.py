@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 
 # LOCAL
 from books import *
+from graphs import *
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Plot:
         # set of markers to be used in the plot
@@ -16,7 +21,7 @@ class Plot:
                 elif (book.get_category() == BookCategory.CANONICAL):
                         return 'black'
                 else:
-                        print('ERROR: Non categorized book ', book.get_name())
+                        logger.error('Non categorized book ', book.get_name())
                         exit()
 
         @staticmethod
@@ -51,7 +56,7 @@ class Plot:
                 plt.legend(fontsize=7, loc='center right')
                 plt.savefig(fn)
 
-                print('Wrote %s'% fn)
+                logger.info('Wrote %s', fn)
 
         @staticmethod
         def do_centralities(books):
@@ -59,12 +64,10 @@ class Plot:
                 defined in lobby.py.  Degree, betweenness and closeness centralities
                 are calculated using NetworkX. All measures are normalized.
                 """
-                print('Plotting centralities...')                
-        
                 offset_fig_nr = 1 # figure number starts after 1
-                centrs = ["Assortativity", "Betweenness", "Closeness", "Degree", "Lobby"]
+                centrs = Graphs.get_centrality_names()
 
-                fn = "Figure1.pdf"
+                fn = "figure-centralities.pdf"
         
                 fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8)) = plt.subplots(nrows=3, ncols=3)
                 axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8]
@@ -73,11 +76,9 @@ class Plot:
                 for b in books.get_books():
                         G = b.get_graph()
                         b.avg['Assortativity'] = nx.degree_assortativity_coefficient(G)
-                        b.avg['Betweenness'] = Graphs.get_avg_betweenness(G)
-                        b.avg['Closeness'] = Graphs.get_avg_closeness(G)
-                        b.avg['Degree'] = Graphs.get_avg_degree(G)
-                        b.avg['Lobby'] = Graphs.get_avg_lobby(G, lobbyf)
-
+                        for centr in centrs:
+                                b.avg[centr] = Graphs.get_avg_centrality(G, centr)
+                return
                 k = 0
                 for i in range(len(centrs)-1):
                         nms = 0 # counter for markers
@@ -143,6 +144,6 @@ class Plot:
                 fig.subplots_adjust(hspace=0)
                 plt.tight_layout()
                 plt.savefig(fn)
-                print('Wrote plot', fn)
+                logger.info('Wrote plot %s', fn)
                 lobbyf.close()
 
