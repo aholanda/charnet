@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# THIS IS A DRAFT OF WHAT I AM CURRENTLY DOING CHANGING AND PREPARED
+# TO MUTATE OR DIE
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -14,34 +17,65 @@ logger = logging.getLogger(__name__)
 # LOCAL
 from books import *
 
-def plot(ys, book_name, ylabel):
-        fn = '/tmp/' + book_name + '-' + ylabel + '-plot.png'
+def plot(xs, ys, book_name):
+        fn = '/tmp/' + book_name + '-' + 'degree' + '-plot.png'
         plt.figure()
+        plt.xscale('log')
         plt.yscale('log')
         #plt.ylim(0.0, 1.0)
-        plt.plot(ys, 'ro')
-        plt.ylabel(ylabel)
+        plt.plot(xs, ys, 'ro')
+        plt.xlabel('degree')
+        plt.ylabel('N')
         plt.title(book_name.title())
         plt.savefig(fn)
         logger.info('Wrote %s', fn)
-        
+
 if __name__=='__main__':
-        books = Books().get_books()
-        centrs = Graphs.get_centrality_names()
+        books = Books()
+        books.read()
+        
+        for b in books.get_books():
+                G = b.get_graph()
+                name = b.get_name()
+                d2n = {}
+                (xs, ys) = ([], [])
+                acc = 0.0
 
-        for c in centrs:
-                for b in books:
-                        vals = []
-                        fn = '/tmp/' + b.get_name() + '-' + c + '.csv'
-                        f = open(fn)
-                        for ln in f:
-                                (key, val) = ln.rstrip("\n").split(',')
-                                if float(val) > 0.0:
-                                        vals.append(float(val))
+                for v in G.nodes():
+                        d = G.degree(v)
 
-                        vals = sorted(vals, reverse=True)
+                        if d in d2n:
+                                d2n[d] += 1
+                        else:
+                                d2n[d] = 1
 
-                        plot(vals, b.get_name(), c)
+                d2n = dict(sorted(d2n.items(), reverse=True))
+                for d,n in d2n.items():
+                        acc = acc + n/G.number_of_nodes()
+                        print(d, acc)
+                        xs.append(d)
+                        ys.append(acc)
+
+                plot(xs, ys, name)
+        
+# # plot every centrality value        
+# if __name__=='__main__':
+#         books = Books().get_books()
+#         centrs = Graphs.get_centrality_names()
+
+#         for c in centrs:
+#                 for b in books:
+#                         vals = []
+#                         fn = '/tmp/' + b.get_name() + '-' + c + '.csv'
+#                         f = open(fn)
+#                         for ln in f:
+#                                 (key, val) = ln.rstrip("\n").split(',')
+#                                 if float(val) > 0.0:
+#                                         vals.append(float(val))
+
+#                         vals = sorted(vals, reverse=True)
+
+#                         plot(vals, b.get_name(), c)
 
 # doing = 'assortative'
 # def plot(basename, xs, ys, k2knns):
