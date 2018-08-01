@@ -4,89 +4,65 @@ import networkx as nx
 # LOCAL
 from lobby import *
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 class Graphs():
-        maxi = 0.0
+        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Lobby', 'Pagerank']
         
         @staticmethod
         def create_graph():
                 return nx.Graph()
 
         @staticmethod
-        def get_avg_lobby(G, log_file=None):
-                '''Return the average Lobby index of the book characters'''
-                lobby(G, log_file)
+        def get_centrality_names():
+                return Graphs.centrality_names
+
+        @staticmethod
+        def get_avg_centrality(G, which):
                 acc = 0.0
                 maxi = 0
+
+                if which == 'Betweenness':
+                        centr_func = nx.betweenness_centrality
+                elif which == 'Closeness':
+                        centr_func = nx.closeness_centrality
+                elif which == 'Degree':
+                        centr_func = nx.degree_centrality
+                elif which == 'Lobby':
+                        centr_func = lobby
+                elif which == 'Pagerank':
+                        centr_func = nx.pagerank
+                else:
+                        logger.error('wrong centrality id=%s', which)
+                        exit()
+
+                # store values at file in /tmp/ directory
+                fn = '/tmp/' + G.graph['name'] + '-' + which + '.csv'
+                fn_to_fit = '/tmp/' + G.graph['name'] + '-' + which + '-to-fit.txt'
+
+                f = open(fn, 'w')
+                f_to_fit = open(fn_to_fit, 'w') # used to run fitness algorithm do not include name
+                
                 N = G.number_of_nodes()
+                centrs = centr_func(G)
                 for i in range(N):
-                        acc = acc + G.node[i]['Lobby']
-
-                if G.node[i]['Lobby'] > G.node[maxi]['Lobby']:
-                                maxi = i
+                        c = centrs[i]
+                        acc = acc + c
+                        if c > 0.0:
+                                f.write(str(G.node[i]['name']) + ',' + str(c) + '\n')
+                                f_to_fit.write(str(c) + '\n')
                         
-                #print('Lobby', G.node[maxi], G.node[maxi]['Lobby'])
-
+                if c > centrs[maxi]:
+                                maxi = i
+                                
+                f.close()
+                logger.info('wrote %s', fn)
+                f_to_fit.close()
+                logger.info('wrote %s', fn_to_fit)
                 return float(acc) / N
-
-        @staticmethod
-        def get_avg_degree(G):
-                '''Return the average degree of the book characters'''
-                acc = 0.0
-                maxi = 0
-                N = G.number_of_nodes()
-                centrs = nx.degree_centrality(G)
-                for i in range(N):
-                        acc = acc + centrs[i]
-
-                if centrs[i] > centrs[maxi]:
-                                maxi = i
                         
-                #print('Degree', G.node[maxi], centrs[maxi])
-
-                        
-                return float(acc) / N
-
-        @staticmethod
-        def get_avg_betweenness(G):
-                '''Return the average betweenness of the book characters'''
-                acc = 0.0
-                maxi = 0
-                maxii = 0
-                N = G.number_of_nodes()
-                centrs = nx.betweenness_centrality(G)
-                for i in range(N):
-                        acc =  acc + centrs[i]
-
-                        if centrs[i] > centrs[maxi]:
-                                maxi = i
-
-                for i in range(N):
-                        if i == maxi:
-                                continue
-                        
-                        if centrs[i] > centrs[maxii]:
-                                        maxii = i
-                        
-                print('Bet', G.node[maxi], centrs[maxi], G.node[maxii], centrs[maxii], centrs[maxi]/centrs[maxii])
-                        
-                return acc / N
-
-        @staticmethod
-        def get_avg_closeness(G):
-                '''Return the average closeness of the book characters'''
-                acc = 0.0
-                maxi = 0
-                N = G.number_of_nodes()
-                centrs = nx.closeness_centrality(G)
-                for i in range(N):
-                        acc = acc + centrs[i]
-
-                if centrs[i] > centrs[maxi]:
-                        maxi = i
-                        
-                #print('Close', G.node[maxi], centrs[maxi])
-
-                return acc / N
         
         @staticmethod
         def calc_normalized_centralities(G):
