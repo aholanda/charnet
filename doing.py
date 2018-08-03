@@ -3,11 +3,16 @@
 # THIS IS A DRAFT OF WHAT I AM CURRENTLY DOING CHANGING AND PREPARED
 # TO MUTATE OR DIE
 
+import sys
+sys.path.append('/usr/local/lib/python2.7/dist-packages/')
+
 import numpy as np
 
 import matplotlib.pyplot as plt
 import math
 import networkx as nx
+from networkx.algorithms.community import girvan_newman
+
 from scipy.stats import *
 
 import logging
@@ -17,15 +22,15 @@ logger = logging.getLogger(__name__)
 # LOCAL
 from books import *
 
-def plot(xs, ys, book_name):
-        fn = '/tmp/' + book_name + '-' + 'degree' + '-plot.png'
+def plot(book_name, ys):
+        fn = '/tmp/' + book_name + '-' + 'avg-betweenness' + '-plot.png'
         plt.figure()
-        plt.xscale('log')
-        plt.yscale('log')
-        #plt.ylim(0.0, 1.0)
-        plt.plot(xs, ys, 'ro')
-        plt.xlabel('degree')
-        plt.ylabel('N')
+        #plt.xscale('log')
+        #plt.yscale('log')
+        plt.ylim(0.0, 1.0)
+        plt.plot(ys, 'bv')
+        plt.xlabel('index')
+        plt.ylabel('C')
         plt.title(book_name.title())
         plt.savefig(fn)
         logger.info('Wrote %s', fn)
@@ -33,30 +38,82 @@ def plot(xs, ys, book_name):
 if __name__=='__main__':
         books = Books()
         books.read()
-        
+
         for b in books.get_books():
                 G = b.get_graph()
                 name = b.get_name()
-                d2n = {}
-                (xs, ys) = ([], [])
-                acc = 0.0
 
-                for v in G.nodes():
-                        d = G.degree(v)
+                comp = girvan_newman(G)
 
-                        if d in d2n:
-                                d2n[d] += 1
-                        else:
-                                d2n[d] = 1
+                print(name)
+                print(tuple(sorted(c) for c in next(comp)))
 
-                d2n = dict(sorted(d2n.items(), reverse=True))
-                for d,n in d2n.items():
-                        acc = acc + n/G.number_of_nodes()
-                        print(d, acc)
-                        xs.append(d)
-                        ys.append(acc)
 
-                plot(xs, ys, name)
+
+# pop vertex with higher centrality value at each iteration
+# if __name__=='__main__':
+#         books = Books()
+#         books.read()
+
+#         for b in books.get_books():
+#                 G = b.get_graph()
+#                 name = b.get_name()
+#                 ys = []
+
+#                 cs = nx.degree_centrality(G)
+#                 cs = sorted(cs.items(), key=lambda x: x[1])
+#                 while (len(cs) != 0 ):
+#                         c = cs.pop()[1]
+#                         if c > 0.0:
+#                                 ys.append(c)
+
+#                 plot(name, ys)
+
+        
+                
+        
+# if __name__=='__main__':
+#         books = Books()
+        
+#         for b in books.get_books():
+#                 name = b.get_name()
+#                 (xs, ys) = ([], [])
+#                 fn = '/tmp/' + name + '-VE-growth.csv'
+#                 f = open(fn)
+
+#                 for ln in f:
+#                         (v, e) = ln.rstrip("\n").split(',')
+#                         xs.append(int(v))
+#                         ys.append(int(e))
+#                 plot(name, xs, ys)
+                        
+# if __name__=='__main__':
+#         books = Books()
+#         books.read()
+        
+#         for b in books.get_books():
+#                 G = b.get_graph()
+#                 name = b.get_name()
+#                 d2n = {}
+#                 (xs, ys) = ([], [])
+#                 acc = 0.0
+
+#                 for v in G.nodes():
+#                         d = G.degree(v)
+
+#                         if d in d2n:
+#                                 d2n[d] += 1
+#                         else:
+#                                 d2n[d] = 1
+
+#                 d2n = dict(sorted(d2n.items(), reverse=True))
+#                 for d,n in d2n.items():
+#                         acc = acc + n/G.number_of_nodes()
+#                         print(d, acc)
+#                         xs.append(d)
+#                         ys.append(acc)
+
+#                 plot(xs, ys, name)
         
 # # plot every centrality value        
 # if __name__=='__main__':
