@@ -38,7 +38,8 @@ class Book():
         def __init__(self):
                 self.G = Graphs.create_graph() # Graph to be created from the book
                 self.avg = {} # Dictionary to load average values associated with a centrality as key
-
+                self.was_read = False # if the data file was already parsed, dont do it again
+                
         def __str__(self):
                 '''Return the name of the book.'''
                 pass
@@ -127,7 +128,19 @@ class Book():
                 next_idx = 0
                 arcs = {}
                 are_edges = False
+                V = 0 # number of vertices
+                E = 0 # number of edges
 
+                # assert data file is not read several times
+                if (self.was_read == False):
+                        self.was_read = True
+                else:
+                        return self.G
+
+                # file name to store vertex and edge growth number
+                fn_VE_growth = '/tmp/' +  self.get_name() + '-VE-growth.csv'
+                f_VE_growth = open(fn_VE_growth, 'w')
+                
                 fn = self.get_file_name()
                 f = open(fn, "r")
                 for ln in f:
@@ -149,6 +162,7 @@ class Book():
 
                         # eg., split "ST,MR;ST,PH,MA;MA,DO" => ["ST,MR", "ST,PH,MA", "MA,DO"]
                         edges = edges_list.rstrip("\n").split(';')
+                        E += len(edges)
 
                         if(edges[0] == ''): # eliminate chapters with no edges
                                 continue
@@ -163,11 +177,15 @@ class Book():
                                         if (v in self.name_idxs.keys()):
                                                 self.name_freqs[v] += 1
                                         else:
-                                                self.name_idxs[v] = next_idx
-                                                next_idx += 1
+                                                self.name_idxs[v] = V
+                                                V += 1
                                                 self.name_freqs[v] = 1
 
-                                                
+
+                                # TODO: undo
+                                if (code == 'JE') or (code == 'AP') or (code == 'DM'):
+                                        continue
+
                                 # add characters encounters linked (adjacency list) in a dictionary
                                 for i in range(len(vs)):
                                         u = vs[i]
@@ -177,7 +195,13 @@ class Book():
                                         for j in range(i+1, len(vs)):
                                                 v = vs[j]
                                                 arcs[u].append(v)
+                            
+                            #logger.info(str(V) + ',' + str(E) + '\n')
+                                                
                 f.close()
+
+                f_VE_growth.close()
+                logger.info('Wrote %s', fn_VE_growth)
                 
                 self.nr_chars = next_idx
 
@@ -213,7 +237,7 @@ class Book():
                 for u_name, vs in arcs.items():
                         u = self.name_idxs[u_name]
                         for v_name in vs:
-                                v = self.name_idxs[v_name]
+                                v = self.name_idxs[v_name]  #
 
                                 if (self.G.has_edge(u, v)==True): # increase weight
                                         self.G[u][v]['weight'] += 1
