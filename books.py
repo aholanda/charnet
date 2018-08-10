@@ -181,11 +181,6 @@ class Book():
                                                 V += 1
                                                 self.name_freqs[v] = 1
 
-
-                                # TODO: undo
-                                if (code == 'JE') or (code == 'AP') or (code == 'DM'):
-                                        continue
-
                                 # add characters encounters linked (adjacency list) in a dictionary
                                 for i in range(len(vs)):
                                         u = vs[i]

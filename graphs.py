@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Graphs():
-        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Lobby', 'Pagerank']
+        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Eigenvector', 'Lobby', 'Pagerank']
         
         @staticmethod
         def create_graph():
@@ -22,8 +22,7 @@ class Graphs():
         @staticmethod
         def get_avg_centrality(G, which):
                 acc = 0.0
-                maxi = 0
-
+      
                 if which == 'Betweenness':
                         centr_func = nx.betweenness_centrality
                 elif which == 'Closeness':
@@ -32,6 +31,8 @@ class Graphs():
                         centr_func = nx.degree_centrality
                 elif which == 'Lobby':
                         centr_func = lobby
+                elif which == 'Eigenvector':
+                        centr_func = nx.eigenvector_centrality
                 elif which == 'Pagerank':
                         centr_func = nx.pagerank
                 else:
@@ -47,16 +48,19 @@ class Graphs():
                 
                 N = G.number_of_nodes()
                 centrs = centr_func(G)
+                name2centr = {} # map vertex name to its centrality value
                 for i in range(N):
                         c = centrs[i]
                         acc = acc + c
                         if c > 0.0:
-                                f.write(str(G.node[i]['name']) + ',' + str(c) + '\n')
-                                f_to_fit.write(str(c) + '\n')
-                        
-                if c > centrs[maxi]:
-                                maxi = i
-                                
+                                name2centr[G.node[i]['name']] = float(c)
+
+                # sort by descending centrality value
+                name2centr = dict(sorted(name2centr.items(), reverse=True, key=lambda x: x[1]))
+                for n, c in name2centr.items():
+                        f.write(str(n) + ',' + str(c) + '\n')
+                        f_to_fit.write(str(c) + '\n')
+                
                 f.close()
                 logger.info('wrote %s', fn)
                 f_to_fit.close()
