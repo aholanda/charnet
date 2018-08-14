@@ -2,6 +2,7 @@
 import sys
 sys.path.append('/usr/local/lib/python2.7/dist-packages/')
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 import networkx as nx
@@ -30,14 +31,14 @@ def choose_link(G):
         return l
                         
 def count_all_neighbors(G, e):
-        '''Return the number all neighbors of nodes u and v in the graph G.'''
+        '''Return the number all neighbors of vertices e[0] and e[1] in the graph G.'''
         tdeg = G.degree(e[0])
         wdeg = G.degree(e[1])
 
         return tdeg + wdeg
         
 def how_many_neighbors_intersect(G, e):
-        '''Return how many neighbors u and v have in common in the graph G.'''
+        '''Return how many neighbors vertices e[0] and e[1] have in common in the graph G.'''
         ts = G.neighbors(e[0])
         ws = G.neighbors(e[1])
 
@@ -62,8 +63,6 @@ def create_graph_of_missing_links(G, H):
         '''Return a dictionary with the existing edges in the form u-v, e.g
 1-2, as keys and a boolean as value.
         '''
-        logger.info('Creating graph of missing links')
-        
         I = nx.Graph()
         for e in G.edges():
                 if not H.has_edge(*e):
@@ -75,12 +74,14 @@ def create_graph_of_non_existing_links(G):
         '''Return a dictionary with the existing edges in the form u-v, e.g
 1-2, as keys and a boolean as value.
         '''
-        logger.info('creating non existing links')
         N = G.number_of_nodes()
         J = nx.Graph()
         
         for u in range(N):
                 for v in range(N):
+                        if u == v: # no self loops
+                                continue
+                        
                         if not G.has_edge(u, v):
                                 J.add_edge(u, v)
 
@@ -92,13 +93,14 @@ def create_missing_links(G, H, p):
         M = G.number_of_edges()
         N = H.number_of_edges()
 
-        logger.info('Creating missing links from the copy of G')
         # seed random number generator
-        seed(1)
+        r = randint(0, 1000)
+
+        seed(r)
         
         # remove links from graph H to simulate missing links in a to
         # desired percentage p
-        while ( float( H.number_of_edges() ) / float( M ) > p ):
+        while ( float( N ) / float( M ) > p ):
                 # the interval to pick a link
                 r = randint(0, N-1)
                 
@@ -109,7 +111,7 @@ def create_missing_links(G, H, p):
                              H.remove_edge(*e)
                              break
                      i += 1
-
+                     
                 N = H.number_of_edges()
 
         return H
@@ -122,9 +124,11 @@ def calc_auc(G, p):
         H = G.copy()
 
         H = create_missing_links(G, H, p)
-        
+
         ML = create_graph_of_missing_links(G, H)
         NE = create_graph_of_non_existing_links(G)
+
+        print(G.graph['name'])
         
         N = G.number_of_nodes()
         while(True):
@@ -133,10 +137,12 @@ def calc_auc(G, p):
                 
                 em = choose_link(ML)
                 en = choose_link(NE)
-
+                
                 sm = jaccard_coeff(H, em)
                 sn = jaccard_coeff(H, en)
 
+                print('\t' + str(em) + ' sm=' + str(sm) + ' ' + str(en) + ' sn=' + str(sn))
+                
                 if sm > sn:
                         np += 1
                 elif sm == sn:
@@ -146,33 +152,36 @@ def calc_auc(G, p):
 
                 n += 1
 
-
         assert n > 0
         return (np + (0.5*float(npp))) / float(n)
 
+def plot(ps, b2ys):
+        fn = '/tmp/' + 'auc' + '-plot.png'
+        plt.figure()
+        plt.xlabel('% links')
+        plt.ylabel('AUC')
+        plt.title('ROC')
+
+        for name,aucs in b2ys.items():
+                plt.plot(ps, aucs, label=name)
+
+        plt.legend()
+        plt.savefig(fn)
+        logger.info('Wrote %s', fn)
 
 if __name__ == '__main__':
         books = Books()
         books.read()
-        p = 0.5
+        ps = np.arange(0.5, 1., 0.1)
+        b2ys = {}
 
-
-        fn = '/tmp/' + 'auc' + '-plot.png'
-        plt.figure()
-        plt.xlabel('%')
-        plt.ylabel('AUC')
-        plt.title('ROC')
-        
         for b in books.get_books():
-                (xs, ys) = ([], [])
-                for x=0.5; x<1.0; x += 0.1:
-                        xs.append(x)
-                        G = b.get_graph()
-                        auc = calc_auc(G, x)
-                        ys.append(auc)
-                        print(str(b.get_name()) + ',' + str(auc))
-                        plot(xs, ys, 'bv')
-                        
-
-        plt.savefig(fn)
-        logger.info('Wrote %s', fn)
+                G = b.get_graph()
+                name = b.get_name()
+                b2ys[name] = []
+                for p in ps:
+                        auc = calc_auc(G, p)
+                        b2ys[name].append(auc)
+                        logger.info('G(name)=%s, p=%f, AUC=%f', name, p, auc)
+        
+        plot(ps, b2ys)
