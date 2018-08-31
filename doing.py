@@ -22,60 +22,70 @@ logger = logging.getLogger(__name__)
 # LOCAL
 from books import *
 
-def get_name(G, v):
-        return G.node[v]['name']
-
-def add_degree(degs, key, val):
-        if key not in degs:
-                degs[key] = val
-        
-def how_many_nodes_intersect(G, u, v):
-        vs = G.neighbors(u)
-        ws = G.neighbors(v)
-
-        inter = 0
-        for v in vs:
-                vstr = get_name(G, v)
-                for w in ws:
-                        wstr = get_name(G, w)
-
-                        if (vstr == wstr):
-                                inter += 1
-
-        return inter
-                        
-if __name__=='__main__':
+if __name__ == '__main__':
         books = Books()
         books.read()
 
-        for b in books.get_books():
-                accs = [0.0, 0.0]
-                n = 0
-                m = 0
-                degs = {}
-                G = b.get_graph()
-                name = b.get_name()
-                print(name)
+        b = books.get_books()[1]
+        G = b.get_graph()
 
-                for u in G.nodes():
-                        n += 1
-                        add_degree(degs, u, G.degree(u)) 
-                        vs = G.neighbors(u)
+        for e in G.edges():
+                print(e)
+        
+# def get_name(G, v):
+#         return G.node[v]['name']
 
-                        for v in vs:
-                                m += 1
-                                add_degree(degs, v, G.degree(v))
-                                union = degs[u] + degs[v]
-                                inter = how_many_nodes_intersect(G, u, v)
+# def add_degree(degs, key, val):
+#         if key not in degs:
+#                 degs[key] = val
+        
+# def how_many_nodes_intersect(G, u, v):
+#         vs = G.neighbors(u)
+#         ws = G.neighbors(v)
 
-                                j = float(inter) / float(union)
-                                accs[0] += j
+#         inter = 0
+#         for v in vs:
+#                 vstr = get_name(G, v)
+#                 for w in ws:
+#                         wstr = get_name(G, w)
 
-                                if (inter > 0):
-                                        accs[1] += 1 / float(inter)
+#                         if (vstr == wstr):
+#                                 inter += 1
+
+#         return inter
+                        
+# if __name__=='__main__':
+#         books = Books()
+#         books.read()
+
+#         for b in books.get_books():
+#                 accs = [0.0, 0.0]
+#                 n = 0
+#                 m = 0
+#                 degs = {}
+#                 G = b.get_graph()
+#                 name = b.get_name()
+#                 print(name)
+
+#                 for u in G.nodes():
+#                         n += 1
+#                         add_degree(degs, u, G.degree(u)) 
+#                         vs = G.neighbors(u)
+
+#                         for v in vs:
+#                                 m += 1
+#                                 add_degree(degs, v, G.degree(v))
+#                                 union = degs[u] + degs[v]
+#                                 inter = how_many_nodes_intersect(G, u, v)
+
+#                                 j = float(inter) / float(union)
+#                                 accs[0] += j
+
+#                                 if (inter > 0):
+#                                         accs[1] += 1 / float(inter)
                                 
-                                #print("o J(%s[%d],%s[%d)]=%f"% (get_name(G,u), u , get_name(G, v), v, j))
-                print("%s=(%f,%f)" % (name,accs[0]/(m+n), accs[1]/(m+n)))
+#                                 #print("o J(%s[%d],%s[%d)]=%f"% (get_name(G,u), u , get_name(G, v), v, j))
+#                 print("%s=(%f,%f)" % (name,accs[0]/(m+n), accs[1]/(m+n)))
 
 # def plot(ys, book_name, ylabel):
 #         fn = '/tmp/' + book_name + '-' + ylabel + '-plot.png'
