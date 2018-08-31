@@ -47,7 +47,7 @@ class Main:
                 print('usage: ' + sys.argv[0] + ''' [options]
                 OPTIONS
                 -c, --centralities 
-                \tPlot the lobby and other centralities comparisons, generating PNG files.
+                \tPlot the lobby and other centralities comparisons, generating PDF files.
                 -g, --draw-graph
                 \tDraw the graph of characters encounters for visualization generating PNG files.
                 -b, --global

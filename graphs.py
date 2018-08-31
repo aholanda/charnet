@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Graphs():
-        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Eigenvector', 'Lobby', 'Pagerank']
+        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Lobby']
         
         @staticmethod
         def create_graph():
@@ -35,6 +35,9 @@ class Graphs():
                         centr_func = nx.eigenvector_centrality
                 elif which == 'Pagerank':
                         centr_func = nx.pagerank
+                elif which == 'Assortativity':
+                        centr_func = None
+                        pass
                 else:
                         logger.error('wrong centrality id=%s', which)
                         exit()
@@ -62,9 +65,9 @@ class Graphs():
                         f_to_fit.write(str(c) + '\n')
                 
                 f.close()
-                logger.info('wrote %s', fn)
+                #logger.info('wrote %s', fn)
                 f_to_fit.close()
-                logger.info('wrote %s', fn_to_fit)
+                #logger.info('wrote %s', fn_to_fit)
                 return float(acc) / N
                         
         
