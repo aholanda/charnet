@@ -15,7 +15,7 @@ def run_all_tasks(books):
                 tasks[i](books)
 
                 i += 1
-                if i == len(tasks)-1: # BUG: without this, in this form, dont stop
+                if i == len(tasks)-1: # BUG: without this, in this way, dont stop
                         exit()
 
 # header to tasks dictionary
