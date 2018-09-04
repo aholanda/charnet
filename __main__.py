@@ -20,7 +20,7 @@ def run_all_tasks(books):
 
 # header to tasks dictionary
 tasks = [ None, # sys.argv[0] name of the program, no flag associated
-          Plot.do_centralities, # -c
+          Plot.do, # -c
           Draw.do_graphs, # -g
           Formatting.write_global_measures, # -b
           Formatting.write_hapax_legomena_table, # -l
@@ -29,7 +29,7 @@ tasks = [ None, # sys.argv[0] name of the program, no flag associated
         
 # headers
 hdrs = ["__main__", 
-        "\n\t#### TASK 1 - Plot centralities ####",
+        "\n\t#### TASK 1 - Plot graphics ####",
         "\n\t#### TASK 2 - Draw graph ####", 
         "\n\t#### TASK 3 - Write global measures ####", 
         "\n\t#### TASK 4 - Write the frequency of _hapax_ _legomena_ ####", 
@@ -46,8 +46,8 @@ class Main:
         def usage():
                 print('usage: ' + sys.argv[0] + ''' [options]
                 OPTIONS
-                -c, --centralities 
-                \tPlot the lobby and other centralities comparisons, generating PDF files.
+                -p, --plot
+                \tPlot the lobby and other centralities comparisons, and assortativity mixing, generating files.
                 -g, --draw-graph
                 \tDraw the graph of characters encounters for visualization generating PNG files.
                 -b, --global
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         if n > 1:
                 for i in range(1, n):
                         opt = sys.argv[i]
-                        if opt == "-c" or opt == "--centralities":
+                        if opt == "-p" or opt == "--plot":
                                 opts[1] = True
                         elif opt == "-g" or opt == "--draw-graph":
                                 opts[2] = True
