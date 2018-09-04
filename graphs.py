@@ -1,5 +1,6 @@
 import math
 import networkx as nx
+import numpy as np
 
 # LOCAL
 from lobby import *
@@ -69,7 +70,6 @@ class Graphs():
                 f_to_fit.close()
                 #logger.info('wrote %s', fn_to_fit)
                 return float(acc) / N
-                        
         
         @staticmethod
         def calc_normalized_centralities(G):
@@ -124,3 +124,49 @@ class Graphs():
                         ## Already do the assignment of lobby value to each vertex                
                         Graphs.calc_graph_vertex_lobby(G, f)
                 f.close()
+
+        def get_degree_avg_neighbors(G):
+                k2knns = {} # map degree to average neighbor degree average
+                (xs, ys, xxs, yavgs) = ([], [], [], [])
+                (xsp, ysp, xxsp, yavgsp) = ([], [], [], [])
+
+                for u in G.nodes():
+                        k = G.degree(u)
+                        knn = 0.0 # degree average of neighbors
+
+                        for v in list(G.neighbors(u)):
+                                knn += G.degree(v)
+
+                        if len(list(G.neighbors(u))) > 0:
+                                knn /= len(list(G.neighbors(u)))
+                        else:
+                                continue
+                        
+                        xs.append(k)
+                        ys.append(knn)
+
+                        if k not in k2knns:
+                                k2knns[k] = []
+                        k2knns[k].append(knn)
+
+                # calculate the avg of knns
+                for k, knns in sorted(k2knns.items()):
+                        m = np.mean(np.array(knns))
+                        xxs.append(k)
+                        yavgs.append(m)
+
+
+                # NORMALIZE DATA
+                xmax = np.amax(np.array(xs))
+                ymax = np.amax(np.array(ys))
+                for i in range(len(xs)):
+                        xsp.append(float(xs[i])/float(xmax))
+                        ysp.append(float(ys[i])/float(ymax))
+
+                xmax = np.amax(np.array(xxs))
+                ymax = np.amax(np.array(yavgs))
+                for i in range(len(xxs)):
+                        xxsp.append(float(xxs[i])/float(xmax))
+                        yavgsp.append(float(yavgs[i])/float(ymax))
+
+                return (xsp, ysp, xxsp, yavgsp)
