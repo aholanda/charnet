@@ -74,11 +74,9 @@ class Plot:
                 lobbyf = open('lobby.centr.csv', 'w')
                 for b in books.get_books():
                         G = b.get_graph()
-                        b.avg['Assortativity'] = nx.degree_assortativity_coefficient(G)
                         for centr in centrs:
                                 b.avg[centr] = Graphs.get_avg_centrality(G, centr)
-
-                centrs.append('Assortativity')
+                                
                 for c in centrs:
                         k = 0
                         if c == 'Lobby': # Lobby is y in all 
@@ -93,8 +91,6 @@ class Plot:
                                 xs = b.avg[c]
                                 ys = b.avg['Lobby']
 
-                                xmin = np.array(xs)
-                                ymin = np.array(ys)
                                 
                                 axes[k].set_title(b.get_name(), fontsize=10)
                                 #axes[k].set_xlim(math.floor(xmin), 1.0)
@@ -142,11 +138,11 @@ class Plot:
                 """Assortativity mixing is calculated and plotted versus average degree.
                 """
                 fn = 'Figure-Assortativity.png'
-                xticklabels = np.arange(.0, 1.1, 0.1)
+                xticklabels = np.arange(0, 1.1, 0.1)
                 yticklabels = xticklabels
 
                 fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
-                fig.subplots_adjust(hspace=.075, wspace=.05)
+                fig.subplots_adjust(hspace=.125, wspace=.125)
                 axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
 
                 marker_style = dict(linestyle='', markersize=6)
@@ -156,27 +152,31 @@ class Plot:
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
-                        axes[k].grid(True)
+                        print(xxs)
+                        print(yavgs)
                         axes[k].plot(xxs, yavgs, label='avg', color='black')
                         axes[k].plot(xs, ys, '.', color='gray', label=b.get_name())
+                        axes[k].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
+                        axes[k].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
+                        axes[k].xaxis.set_tick_params(labelsize=6)
+                        axes[k].yaxis.set_tick_params(labelsize=6)
                         axes[k].legend(fontsize='x-small')
-
+                        axes[k].grid(True)
+                        
                         if k > 8: # if sharex fails
-                                axes[k].set_xlabel('$k/k_{max}$')
+                                axes[k].set_xlabel('$k/k_{max}$', fontsize=8)
                                 
                         if k % 3 == 0: # if sharey fails
-                                axes[k].set_ylabel('$knn/knn_{max}$')
+                                axes[k].set_ylabel('$knn/knn_{max}$', fontsize=8)
 
-                        axes[k].set_xticklabels(xticklabels, fontsize=7)
-                        axes[k].set_yticklabels(yticklabels, fontsize=7)
-                                
                         k = k + 1
                         if k==0:
                                 axes[k].legend(loc='upper right', fontsize=4)
-                        
+
                         if k == 12:
                                 break
 
+                print(yticklabels)
                 plt.savefig(fn)
                 logger.info('Wrote plot %s', fn)
 
