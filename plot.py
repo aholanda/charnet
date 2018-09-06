@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+
 from scipy.stats import pearsonr
 
 # LOCAL
@@ -9,16 +11,21 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class Plot:
-        # set of markers to be used in the plot
-        markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
+params = {'axes.labelsize': 'small',
+          'axes.titlesize':'large',
+          'xtick.labelsize':'small',
+          'ytick.labelsize':'small'}
+pylab.rcParams.update(params)
 
+class Plot:
+        markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
+        
         @staticmethod
         def get_color(book):
                 if (book.get_category() == BookCategory.FICTION):
-                        return 'black'
+                        return 'red'
                 elif (book.get_category() == BookCategory.BIOGRAPHY):
-                        return 'black'
+                        return 'blue'
                 elif (book.get_category() == BookCategory.CANONICAL):
                         return 'black'
                 else:
@@ -27,24 +34,23 @@ class Plot:
 
         @staticmethod
         def do_density_versus_clustering_coefficient(books):
-                fn = 'figure1.pdf'
+                fn = 'Figure-Density_versus_CC.pdf'
                 xs = []
                 ys = []
         
                 f = open(fn, "w")
-
+                
+                nms = 0 # counter for markers
                 for book in books.get_books():
-                        nms = 0 # counter for markers
                         G = book.get_graph()
 
                         x = nx.density(G)
                         y = nx.average_clustering(G)
 
-                        marker_style = dict(linestyle=':', color=Plot.get_color(book), markersize=8)
+                        marker_style = dict(linestyle='', color=Plot.get_color(book), markersize=8)
                         plt.plot(x, y, c=Plot.get_color(book),
                                  marker=Plot.markers[nms % len(Plot.markers)],
                                  label=book.get_raw_book_label(),
-                                 alpha=0.3, 
                                  **marker_style)
 
                         nms += 1 # increment no. of markers counter
@@ -68,17 +74,18 @@ class Plot:
                 offset_fig_nr = 1 # figure number starts after 1
                 centrs = Graphs.get_centrality_names()
                 
-                fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
-                axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
-
                 for c in Graphs.get_centrality_names():
-                        (xs, ys) = ([], [])
                         k = 0
-                        fn = 'Figure-' + c + '.png'
-                        
-                        nms = 0 # counter for markers
-                        marker_style = dict(linestyle='', markersize=6)
+                        fn = 'Figure-' + c + '.pdf'
+
+                        fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
+                        axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
+
+                        marker_style = dict(linestyle='', markersize=3)
                         for b in books.get_books():
+                                (xs, ys) = ([], [])
+                                cs = []
+                                
                                 G = b.get_graph()
                                 cs = Graphs.get_centrality_values(G, c)
                                 Graphs.get_centrality_values(G, 'Lobby')
@@ -86,40 +93,35 @@ class Plot:
                                         xs.append(cs[u])
                                         ys.append(G.nodes[u]['Lobby'])
 
-                                print(xs, '\n', ys)
+                                # calculate Pearson correlation
+                                (r_row, p_value) = pearsonr(xs, ys)
                                 
-                                axes[k].set_title(b.get_name(), fontsize=10)
-                                #axes[k].set_xlim(math.floor(xmin), 1.0)
-                                #axes[k].set_ylim(math.floor(ymin), 1.0)
+                                axes[k].set_title(b.get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)', fontsize=8)
                                 axes[k].set_xscale('log')
                                 axes[k].set_yscale('log')
-                                axes[k].plot(xs, ys, c = Plot.get_color(b),
-				             marker = Plot.markers[nms % len(Plot.markers)],
-				             label=b.get_name(),
-               			             alpha=0.3,
-				             **marker_style)
+                                axes[k].plot(xs, ys,
+                                             c = Plot.get_color(b),
+				             marker = '.',
+                                             alpha=.6,
+                                             **marker_style)
                                 axes[k].grid(True)
                                 axes[k].text(0.5, 1.1, '' ,
                                              style='italic',
                                              horizontalalignment='center',
                                              verticalalignment='center',
-                                             fontsize=8, color='gray',
+                                             color='gray',
                                              transform=axes[k].transAxes)
+                                
+                                if k % 3 == 0: # if sharey fails
+                                        axes[k].set_ylabel('Lobby', fontsize=8)
+                                        
+                                if k > 8: # if sharex fails
+                                        axes[k].set_xlabel(c, fontsize=8)
 
-                                k = k + 1
                                 if k==0:
                                         axes[k].legend(loc='upper right', fontsize=4)
-                        
-                                # calculate Pearson correlation
-                                (r_row, p_value) = pearsonr(xs, ys)
-                                #  print name, r_row, p_value
-                                # write Pearson correlation in the plot
-                                axes[k].text(.675, .875, '$r=$'+'{0:.3f}'.format(r_row),
-                                             horizontalalignment='center',
-                                             verticalalignment='center',
-                                             fontsize=10, color='black',
-                                             transform=axes[nms].transAxes)
-                                nms += 1 # increment no. of markers counter
+
+                                k = k + 1
                                 if k == 12:
                                         break
 
@@ -132,7 +134,7 @@ class Plot:
         def do_assortativity(books):
                 """Assortativity mixing is calculated and plotted versus average degree.
                 """
-                fn = 'Figure-Assortativity.png'
+                fn = 'Figure-Assortativity.pdf'
                 xticklabels = np.arange(0, 1.1, 0.1)
                 yticklabels = xticklabels
 
@@ -140,7 +142,7 @@ class Plot:
                 fig.subplots_adjust(hspace=.1, wspace=.1)
                 axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
 
-                marker_style = dict(linestyle='', markersize=6)
+                marker_style = dict(linestyle='', markersize=4)
                 k=0
                 for b in books.get_books():
                         G = b.get_graph()
@@ -148,7 +150,7 @@ class Plot:
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
                         axes[k].plot(xxs, yavgs, label='avg', color='black')
-                        axes[k].plot(xs, ys, '.', color='gray', label=b.get_name())
+                        axes[k].plot(xs, ys, '.', color='gray', label=b.get_name(), **marker_style)
                         axes[k].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[k].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         axes[k].xaxis.set_tick_params(labelsize=6)
@@ -157,10 +159,10 @@ class Plot:
                         axes[k].grid(True)
                         
                         if k > 8: # if sharex fails
-                                axes[k].set_xlabel('$k/k_{max}$', fontsize=8)
+                                axes[k].set_xlabel('$k/k_{max}$')
                                 
                         if k % 3 == 0: # if sharey fails
-                                axes[k].set_ylabel('$knn/knn_{max}$', fontsize=8)
+                                axes[k].set_ylabel('$knn/knn_{max}$')
 
                         k = k + 1
                         if k==0:
@@ -173,5 +175,7 @@ class Plot:
 
         @staticmethod
         def do(books):
+                Plot.do_density_versus_clustering_coefficient(books)
                 Plot.do_centrality(books)
                 Plot.do_assortativity(books)
+
