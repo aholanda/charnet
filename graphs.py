@@ -22,7 +22,6 @@ class Graphs():
 
         @staticmethod
         def get_centr_func(which):
-                print(which, '\n\n')
                 if which == 'Betweenness':
                         centr_func = nx.betweenness_centrality
                 elif which == 'Closeness':
@@ -130,7 +129,6 @@ class Graphs():
                 i = 0
                 for k, knns in sorted(k2knns.items()):
                         m = np.mean(np.array(knns))
-                        print(k, '\n', xs[i], '<\t\t', m, '\t', knns)
                         xxs.append(k)
                         yavgs.append(m)
                         i += 1
