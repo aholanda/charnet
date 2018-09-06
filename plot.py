@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 params = {'axes.labelsize': 'small',
           'axes.titlesize':'large',
-          'xtick.labelsize':'small',
-          'ytick.labelsize':'small'}
+          'xtick.labelsize':'x-small',
+          'ytick.labelsize':'x-small'}
 pylab.rcParams.update(params)
 
 class Plot:
@@ -72,9 +72,8 @@ class Plot:
                 are calculated using NetworkX. All measures are normalized.
                 """
                 offset_fig_nr = 1 # figure number starts after 1
-                centrs = Graphs.get_centrality_names()
                 
-                for c in Graphs.get_centrality_names():
+                for c, color in Graphs.get_centrality_names().items():
                         k = 0
                         fn = 'Figure-' + c + '.pdf'
 
@@ -100,7 +99,7 @@ class Plot:
                                 axes[k].set_xscale('log')
                                 axes[k].set_yscale('log')
                                 axes[k].plot(xs, ys,
-                                             c = Plot.get_color(b),
+                                             c = color,
 				             marker = '.',
                                              alpha=.6,
                                              **marker_style)
@@ -149,8 +148,8 @@ class Plot:
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
-                        axes[k].plot(xxs, yavgs, label='avg', color='black')
-                        axes[k].plot(xs, ys, '.', color='gray', label=b.get_name(), **marker_style)
+                        axes[k].plot(xxs, yavgs, label='avg', color='red')
+                        axes[k].plot(xs, ys, '.', color='blue', label=b.get_name(), **marker_style)
                         axes[k].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[k].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         axes[k].xaxis.set_tick_params(labelsize=6)
