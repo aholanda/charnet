@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
 
 # LOCAL
 from books import *
@@ -70,27 +71,22 @@ class Plot:
                 fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
                 axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
 
-                # Calculate the centralities
-                lobbyf = open('lobby.centr.csv', 'w')
-                for b in books.get_books():
-                        G = b.get_graph()
-                        for centr in centrs:
-                                b.avg[centr] = Graphs.get_avg_centrality(G, centr)
-                                
-                for c in centrs:
+                for c in Graphs.get_centrality_names():
+                        (xs, ys) = ([], [])
                         k = 0
-                        if c == 'Lobby': # Lobby is y in all 
-                                continue
-                        
                         fn = 'Figure-' + c + '.png'
                         
                         nms = 0 # counter for markers
-
                         marker_style = dict(linestyle='', markersize=6)
                         for b in books.get_books():
-                                xs = b.avg[c]
-                                ys = b.avg['Lobby']
+                                G = b.get_graph()
+                                cs = Graphs.get_centrality_values(G, c)
+                                Graphs.get_centrality_values(G, 'Lobby')
+                                for u in G.nodes:
+                                        xs.append(cs[u])
+                                        ys.append(G.nodes[u]['Lobby'])
 
+                                print(xs, '\n', ys)
                                 
                                 axes[k].set_title(b.get_name(), fontsize=10)
                                 #axes[k].set_xlim(math.floor(xmin), 1.0)
@@ -115,14 +111,14 @@ class Plot:
                                         axes[k].legend(loc='upper right', fontsize=4)
                         
                                 # calculate Pearson correlation
-                                #  (r_row, p_value) = pearsonr(xs, ys)
+                                (r_row, p_value) = pearsonr(xs, ys)
                                 #  print name, r_row, p_value
                                 # write Pearson correlation in the plot
-                                # axes[i].text(.675, .875, '$r=$'+'{0:.3f}'.format(r_row),
-                                # horizontalalignment='center',
-                                # verticalalignment='center',
-                                # fontsize=10, color='black',
-                                # transform=axes[i].transAxes)
+                                axes[k].text(.675, .875, '$r=$'+'{0:.3f}'.format(r_row),
+                                             horizontalalignment='center',
+                                             verticalalignment='center',
+                                             fontsize=10, color='black',
+                                             transform=axes[nms].transAxes)
                                 nms += 1 # increment no. of markers counter
                                 if k == 12:
                                         break
@@ -131,7 +127,6 @@ class Plot:
                         plt.tight_layout()
                         plt.savefig(fn)
                         logger.info('Wrote plot %s', fn)
-                        lobbyf.close()
 
         @staticmethod
         def do_assortativity(books):
@@ -142,7 +137,7 @@ class Plot:
                 yticklabels = xticklabels
 
                 fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
-                fig.subplots_adjust(hspace=.125, wspace=.125)
+                fig.subplots_adjust(hspace=.1, wspace=.1)
                 axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
 
                 marker_style = dict(linestyle='', markersize=6)
@@ -152,8 +147,6 @@ class Plot:
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
-                        print(xxs)
-                        print(yavgs)
                         axes[k].plot(xxs, yavgs, label='avg', color='black')
                         axes[k].plot(xs, ys, '.', color='gray', label=b.get_name())
                         axes[k].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
@@ -175,8 +168,6 @@ class Plot:
 
                         if k == 12:
                                 break
-
-                print(yticklabels)
                 plt.savefig(fn)
                 logger.info('Wrote plot %s', fn)
 
