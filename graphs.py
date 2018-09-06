@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Graphs():
-        centrality_names =  ['Betweenness', 'Closeness', 'Degree', 'Lobby']
+        centrality_names =  ['Betweenness', 'Closeness', 'Degree']
         
         @staticmethod
         def create_graph():
@@ -21,9 +21,8 @@ class Graphs():
                 return Graphs.centrality_names
 
         @staticmethod
-        def get_avg_centrality(G, which):
-                acc = 0.0
-      
+        def get_centr_func(which):
+                print(which, '\n\n')
                 if which == 'Betweenness':
                         centr_func = nx.betweenness_centrality
                 elif which == 'Closeness':
@@ -36,40 +35,16 @@ class Graphs():
                         centr_func = nx.eigenvector_centrality
                 elif which == 'Pagerank':
                         centr_func = nx.pagerank
-                elif which == 'Assortativity':
-                        centr_func = None
-                        pass
                 else:
                         logger.error('wrong centrality id=%s', which)
                         exit()
 
-                # store values at file in /tmp/ directory
-                fn = '/tmp/' + G.graph['name'] + '-' + which + '.csv'
-                fn_to_fit = '/tmp/' + G.graph['name'] + '-' + which + '-to-fit.txt'
+                return centr_func
 
-                f = open(fn, 'w')
-                f_to_fit = open(fn_to_fit, 'w') # used to run fitness algorithm do not include name
-                
-                N = G.number_of_nodes()
-                centrs = centr_func(G)
-                name2centr = {} # map vertex name to its centrality value
-                for i in range(N):
-                        c = centrs[i]
-                        acc = acc + c
-                        if c > 0.0:
-                                name2centr[G.node[i]['name']] = float(c)
-
-                # sort by descending centrality value
-                name2centr = dict(sorted(name2centr.items(), reverse=True, key=lambda x: x[1]))
-                for n, c in name2centr.items():
-                        f.write(str(n) + ',' + str(c) + '\n')
-                        f_to_fit.write(str(c) + '\n')
-                
-                f.close()
-                #logger.info('wrote %s', fn)
-                f_to_fit.close()
-                #logger.info('wrote %s', fn_to_fit)
-                return float(acc) / N
+        @staticmethod
+        def get_centrality_values(G, which):
+                func = Graphs.get_centr_func(which)
+                return func(G)
         
         @staticmethod
         def calc_normalized_centralities(G):
@@ -87,6 +62,12 @@ class Graphs():
                 closes = nx.closeness_centrality(G)
                 for i in range(G.number_of_nodes()):
                         G.node[i]['Closeness']   = closes[i]
+
+                return(degs, bets, closes, lobby(G, None))
+                        
+        @staticmethod
+        def calc_graph_vertex_lobby(G, log_file=None):
+                lobby(G, log_file)
 
         @staticmethod
         def degree_stat(G):
@@ -106,10 +87,6 @@ class Graphs():
                 stdev = math.sqrt(var_curr/(G.number_of_nodes() - 1))
 
                 return (avg_curr, stdev)
-
-        @staticmethod
-        def calc_graph_vertex_lobby(G, log_file=None):
-                lobby(G, log_file)
 
         @staticmethod
         def pre_process_centralities(books):
@@ -150,11 +127,13 @@ class Graphs():
                         k2knns[k].append(knn)
 
                 # calculate the avg of knns
+                i = 0
                 for k, knns in sorted(k2knns.items()):
                         m = np.mean(np.array(knns))
+                        print(k, '\n', xs[i], '<\t\t', m, '\t', knns)
                         xxs.append(k)
                         yavgs.append(m)
-
+                        i += 1
 
                 # NORMALIZE DATA
                 xmax = np.amax(np.array(xs))
@@ -163,8 +142,6 @@ class Graphs():
                         xsp.append(float(xs[i])/float(xmax))
                         ysp.append(float(ys[i])/float(ymax))
 
-                xmax = np.amax(np.array(xxs))
-                ymax = np.amax(np.array(yavgs))
                 for i in range(len(xxs)):
                         xxsp.append(float(xxs[i])/float(xmax))
                         yavgsp.append(float(yavgs[i])/float(ymax))
