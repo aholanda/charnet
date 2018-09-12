@@ -1,7 +1,11 @@
-all: __main__.py
+FIGS := Figure-Assortativity.pdf  Figure-Betweenness.pdf  Figure-Closeness.pdf  Figure-Degree.pdf  Figure-Density_versus_CC.pdf
+PLFIT := https://github.com/keflavich/plfit.git
+
+all: __main__.py plfit
 	./$< -a
 
-FIGS := Figure-Assortativity.pdf  Figure-Betweenness.pdf  Figure-Closeness.pdf  Figure-Degree.pdf  Figure-Density_versus_CC.pdf
+plfit:
+	git clone $(PLFIT)
 
 __main__.py: books.py  draw.py  formatting.py  graphs.py  lobby.py  plot.py
 
