@@ -32,7 +32,7 @@ class BookCategory(Enum):
         '''Books are classified in categories.'''
         FICTION = 1
         BIOGRAPHY = 2
-        CANONICAL = 3 # e.g., Bible
+        LEGENDARY = 3 # e.g., Bible
         
 class Book():
         def __init__(self):
@@ -250,7 +250,7 @@ class Acts(Book):
                 return 'acts'
 
         def get_category(self):
-                return BookCategory.CANONICAL
+                return BookCategory.LEGENDARY
         
         def get_datadir(self):
                 return Charnet.get_datadir()
@@ -269,7 +269,7 @@ class Apollonius(Book):
                 return 'apollonius'
 
         def get_category(self):
-                return BookCategory.CANONICAL
+                return BookCategory.LEGENDARY
         
         def get_datadir(self):
                 return Charnet.get_datadir()
@@ -402,7 +402,7 @@ class Luke(Book):
                 return 'luke'
 
         def get_category(self):
-                return BookCategory.CANONICAL
+                return BookCategory.LEGENDARY
         
         def get_datadir(self):
                 return Charnet.get_datadir()
@@ -472,25 +472,28 @@ class Tolkien(Book, Charnet):
                 return 'yellowgreen'
 
 class Books(Book):
-        def __init__(self):
-                self.books = [
-                        Acts(),
-                        Apollonius(),
-                        Arthur(),
-                        David(),
-                        Dick(),
-                        Hawking(),
-                        Hobbit(),
-                        Huck(),
-                        Luke(),
-                        Newton(),
-                        Pythagoras(),
-                        Tolkien()
-                ]
+        was_already_read = False
+        books = [
+                Acts(),
+                Apollonius(),
+                Arthur(),
+                David(),
+                Dick(),
+                Hawking(),
+                Hobbit(),
+                Huck(),
+                Luke(),
+                Newton(),
+                Pythagoras(),
+                Tolkien()
+        ]
 
-        def get_books(self):
-                return self.books
+        @staticmethod
+        def get_books():
+                if Books.was_already_read == False:
+                        Books.was_already_read = True
+                        logger.info("\n\t#### PRE-PROCESSING ####")
+                        for book in Books.books:
+                                book.read()
+                return Books.books
 
-        def read(self):
-                for book in self.books:
-                        book.read()
