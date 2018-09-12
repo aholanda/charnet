@@ -12,7 +12,7 @@ def run_all_tasks(books):
         i = 1
         while True:
                 print(hdrs[i])
-                tasks[i](books)
+                tasks[i]()
 
                 i += 1
                 if i == len(tasks)-1: # BUG: without this, in this way, dont stop
@@ -36,33 +36,26 @@ hdrs = ["__main__",
         "\n\t#### TASK 5 - Write statistics of centralities ####", 
         "\n\t#### RUNNING ALL TASKS ####"] 
 
-class Main:
-        def __init__(self):
-                print("\n\t#### PRE-PROCESSING ####")
-                self.books = Books()
-                self.books.read()
-                
-        @staticmethod
-        def usage():
-                print('usage: ' + sys.argv[0] + ''' [options]
-                OPTIONS
-                -p, --plot
-                \tPlot the lobby and other centralities comparisons, and assortativity mixing, generating files.
-                -g, --draw-graph
-                \tDraw the graph of characters encounters for visualization generating PNG files.
-                -b, --global
-                \tWrite global measures in a table in a LaTeX file.
-                -l, --legomena
-                \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
-                -s, --stat-centralities
-                \tGenerate statistics from centralities.
-                -a, --all
-                \tExecute all options.
-                -h, --help
-                \t Print this help message.
-                '''
-                )
-                exit()
+def usage():
+        print('usage: ' + sys.argv[0] + ''' [options]
+        OPTIONS
+        -p, --plot
+        \tPlot the lobby and other centralities comparisons, and assortativity mixing, generating files.
+        -g, --draw-graph
+        \tDraw the graph of characters encounters for visualization generating PNG files.
+        -b, --global
+        \tWrite global measures in a table in a LaTeX file.
+        -l, --legomena
+        \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
+        -s, --stat-centralities
+        \tGenerate statistics from centralities.
+        -a, --all
+        \tExecute all options.
+        -h, --help
+        \t Print this help message.
+        '''
+        )
+        exit()
 
 if __name__ == "__main__":
         """The main subroutine declares some attributes associated with the
@@ -101,11 +94,10 @@ if __name__ == "__main__":
                                 Main.usage()
                                 
         else:
-                Main.usage()
+                usage()
 
-        m = Main()
         for i in range(1, len(opts)):
                 if opts[i] == True:
                         print(hdrs[i])
-                        tasks[i](m.books)
+                        tasks[i]()
 
