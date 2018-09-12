@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Graphs():
-        centrality_names =  {'Betweenness':'blue', 'Closeness':'red', 'Degree':'green'}
+        centrality_names =  {'Betweenness', 'Closeness', 'Degree'}
         
         @staticmethod
         def create_graph():
