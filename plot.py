@@ -27,84 +27,88 @@ params = {'axes.labelsize': 'small',
           'legend.fontsize':'x-small'}
 pylab.rcParams.update(params)
 
-marker_style = dict(linestyle='', markersize=3)
-
-def plot_fill(axes, k, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
-        axes[k].set_title(subtitle, fontsize=8)
-        if loglog:
-                axes[k].set_xscale('log')
-                axes[k].set_yscale('log')
-        axes[k].plot(xs, ys,
-                          c = color,
-			  marker = '.',
-                          alpha=.6,
-                          **marker_style)
-        axes[k].grid(True)
-        axes[k].text(0.5, 1.1, '' ,
-                          style='italic',
-                          horizontalalignment='center',
-                          verticalalignment='center',
-                          color='gray',
-                          transform=axes[k].transAxes)
-        
-        multiplot_print_axis(axes, k, xlabel, 'x')
-        multiplot_print_axis(axes, k, 'Lobby', 'y')
-
-        
-        if k==0:
-                axes[k].legend(loc='upper right', fontsize=4)
-
-def plot_begin():
-        fig, ((ax0, ax1, ax2), (ax3, ax4, ax5), (ax6, ax7, ax8), (ax9, ax10, ax11)) = plt.subplots(nrows=4, ncols=3, sharey=True, sharex=True)
-        fig.subplots_adjust(hspace=.1, wspace=.1)
-        axes = [ax0, ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11]
-        
-        return (fig, axes)
-
-def multiplot_print_axis(axes, k, label, which):
-        fontsz = 6
-        if which is 'x':
-                if k > 8:
-                        axes[k].set_xlabel(label, fontsize=fontsz)
-        elif which is 'y':
-                if k % 3 == 0:
-                        axes[k].set_ylabel(label, fontsize=fontsz)
-        else:
-             logger.error('Axes {} is not defined' % which)
-             exit()
-
-def plot_end(fig, fn):
-        fig.subplots_adjust(hspace=0)
-        plt.tight_layout()
-        plt.savefig(fn)
-        logger.info('Wrote plot %s', fn)
+marker_style = dict(marker='.', linestyle='', markersize=3)
 
 def get_empty_xy_arrays():
         return ([], [])
 
-def plot_CDF(axes, xs, book, k, pl, **kwargs):
-        a = pl._alpha
-        a_str = '{0:.2f}'.format(round(a,2))
-        xmin = pl._xmin
+class MultiPlots():
+        def __init__(self, nrows=1, ncols=1, hspace=.1, wspace=.1):
+                self.fig, self.axes = plt.subplots(nrows=nrows, ncols=ncols)
+                self.fig.subplots_adjust(hspace, wspace)
+                self.nrows = nrows
+                self.ncols = ncols
+                self.hspace = hspace
+                self.wspace = wspace
 
-        xs = np.sort(xs)
-        n=len(xs)
-        xcdf = np.arange(n,0,-1,dtype='float')/float(n)
+        def get_xy_coords(self, c):
+                return (c % self.nrows, c % self.ncols)
 
-        q = xs[xs>=xmin]
-        fcdf = (q/xmin)**(1-a)
-        nc = xcdf[argmax(xs>=xmin)]
-        fcdf_norm = nc*fcdf
-
-        axes[k].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-        axes[k].plot(q, fcdf_norm, 'black', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
-        axes[k].set_xscale('log')
-        axes[k].set_yscale('log')
-        axes[k].legend(fontsize=4, loc='upper right')
-
-        multiplot_print_axis(axes, k, 'k', 'x')
-        multiplot_print_axis(axes, k, 'CDF', 'y')
+        def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
+                self.axes[i, j].set_title(subtitle, fontsize=8)
+                if loglog:
+                        self.axes[i, j].set_xscale('log')
+                        self.axes[i, j].set_yscale('log')
+                self.axes[i, j].plot(xs, ys,
+                                     c = color,
+			             alpha=.6,
+                                     **marker_style)
+                self.axes[i, j].grid(True)
+                self.axes[i, j].text(0.5, 1.1, '' ,
+                                     style='italic',
+                                     horizontalalignment='center',
+                                     verticalalignment='center',
+                                     color='gray',
+                                     transform=self.axes[i, j].transAxes)
         
+                self.print_axis(i, j, xlabel, 'x')
+                self.print_axis(i, j, 'Lobby', 'y')
+        
+                if i==0 and j==0:
+                        self.print_legend(i, j)
+
+        def print_axis(self, i, j, label, which, fontsize=6):
+                if which is 'x':
+                        if i == self.nrows-1:
+                                self.axes[i, j].set_xlabel(label, fontsize=fontsize)
+                elif which is 'y':
+                        if j == 0:
+                                self.axes[i, j].set_ylabel(label, fontsize=fontsize)
+                else:
+                        logger.error('Axes {} is not defined' % which)
+                        exit()
+
+        def plot_CDF(self, i, j, xs, book, pl, **kwargs):
+                a = pl._alpha
+                a_str = '{0:.2f}'.format(round(a,2))
+                xmin = pl._xmin
+
+                xs = np.sort(xs)
+                n=len(xs)
+                xcdf = np.arange(n,0,-1,dtype='float')/float(n)
+
+                q = xs[xs>=xmin]
+                fcdf = (q/xmin)**(1-a)
+                nc = xcdf[argmax(xs>=xmin)]
+                fcdf_norm = nc*fcdf
+
+                self.axes[i, j].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
+                self.axes[i, j].plot(q, fcdf_norm, 'black', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
+                self.axes[i, j].set_xscale('log')
+                self.axes[i, j].set_yscale('log')
+
+                self.print_axis(i, j, 'k', 'x')
+                self.print_axis(i, j, 'CDF', 'y')
+
+        def print_legend(self, i, j, fontsize=4, location='upper right'):
+                self.axes[i, j].legend(fontsize=4, loc=location)
+
+        def finalize(self, fn='plot.pdf'):
+                self.fig.subplots_adjust(hspace=0)
+                plt.tight_layout()
+                plt.savefig(fn)
+                logger.info('Wrote plot %s', fn)
+
 class Plot:
         markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
         
@@ -126,11 +130,11 @@ class Plot:
                 plfit.
                 '''
                 fn = 'Figure-Degree_Distrib.pdf'
-
-                (fig, axes) = plot_begin()
+                mplots = MultiPlots(4, 3)
 
                 books = Books.get_books()
                 for k in range(len(books)):
+                        (i ,j) = mplots.get_xy_coords(k)
                         G = books[k].get_graph()
                         degs = []
                         
@@ -141,16 +145,16 @@ class Plot:
 
                         pl = plfit.plfit(np.array(degs), usefortran=False, verbose=verbose, quiet=False)
 
-                        plot_CDF(axes, degs, books[k], k, pl)
+                        mplots.plot_CDF(i, j, degs, books[k], pl)
 
-                plot_end(fig, fn)
+                mplots.finalize(fn)
                         
         @staticmethod
         def do_density_versus_clustering_coefficient():
                 fn = 'Figure-Density_versus_CC.pdf'
                 (xs, ys) = get_empty_xy_arrays()
 
-                (fig, axes) = plot_begin()
+                #mplots = MultiPlots(1, 1)
                 
                 nms = 0 # counter for markers
                 books = Books.get_books()
@@ -161,7 +165,7 @@ class Plot:
                         y = nx.average_clustering(G)
 
                         marker_style = dict(linestyle='', color=Plot.get_color(books[k]), markersize=6)
-                        plt.plot(x, y, c=Plot.get_color(book),
+                        plt.plot(x, y, c=Plot.get_color(books[k]),
                                  marker=Plot.markers[nms % len(Plot.markers)],
                                  label=books[k].get_raw_book_label(),
                                  **marker_style)
@@ -171,7 +175,6 @@ class Plot:
                 plt.ylim(-0.1,0.8)
                 plt.xlabel('Density')
                 plt.ylabel('Clustering coefficient')
-                plt.grid()
                 plt.title('')
                 plt.legend(fontsize=7, loc='center right')
                 plt.savefig(fn)
@@ -190,10 +193,11 @@ class Plot:
                 for centr_name in Graphs.get_centrality_names():
                         fn = 'Figure-' + centr_name + '.pdf'
                         
-                        (fig, axes) = plot_begin()
-
+                        mplots = MultiPlots(4, 3)
+                        
                         books = Books.get_books()
                         for k in range(len(books)):
+                                (i, j) = mplots.get_xy_coords(k)
                                 (xs, ys) = get_empty_xy_arrays()
                                 centrs = []
                                 
@@ -208,9 +212,9 @@ class Plot:
                                 (r_row, p_value) = pearsonr(xs, ys)
                                 title = books[k].get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)'
 
-                                plot_fill(axes, k, title, xs, ys, centr_name, 'Lobby', Plot.get_color(books[k]))
+                                mplots.fill(i, j, title, xs, ys, centr_name, 'Lobby', Plot.get_color(books[k]))
 
-                        plot_end(fig, fn)
+                        mplots.finalize(fn)
                                 
         @staticmethod
         def do_assortativity():
@@ -220,39 +224,31 @@ class Plot:
                 xticklabels = np.arange(0, 1.1, 0.1)
                 yticklabels = xticklabels
 
-                (fig, axes) = plot_begin()
-
+                mplots = MultiPlots(4, 3)
+                axes = mplots.axes
+                
                 books = Books.get_books()
                 for k in range(len(books)):
+                        (i, j) = mplots.get_xy_coords(k)
                         G = books[k].get_graph()
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
-                        axes[k].plot(xxs, yavgs, label='avg', color='red')
-                        axes[k].plot(xs, ys, '.', color='blue', label=books[k].get_name(), **marker_style)
-                        axes[k].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
-                        axes[k].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
-                        axes[k].xaxis.set_tick_params(labelsize=6)
-                        axes[k].yaxis.set_tick_params(labelsize=6)
-                        axes[k].legend(fontsize='x-small')
-                        axes[k].grid(True)
+                        axes[i, j].plot(xxs, yavgs, '--', label='avg', color='gray', linewidth=1)
+                        axes[i, j].plot(xs, ys, '.', color=Plot.get_color(books[k]), label=books[k].get_name(), **marker_style)
+                        axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
+                        axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
-                        if k > 8: # if sharex fails
-                                axes[k].set_xlabel('$k/k_{max}$')
-                                
-                        if k % 3 == 0: # if sharey fails
-                                axes[k].set_ylabel('$knn/knn_{max}$')
-                                
-                        if k==0:
-                                axes[k].legend(loc='upper right', fontsize=4)
-
-                plt.savefig(fn)
-                logger.info('Wrote plot %s', fn)
+                        mplots.print_axis(i, j, '$k/k_{max}$', 'x')
+                        mplots.print_axis(i, j, '$knn/knn_{max}$', 'y')
+                        mplots.print_legend(i, j)
+                        
+                mplots.finalize(fn)
 
         @staticmethod
         def do():
                 Plot.do_degree_distrib()
-                # Plot.do_density_versus_clustering_coefficient()
-                # Plot.do_centralities()
-                # Plot.do_assortativity()
+                Plot.do_density_versus_clustering_coefficient()
+                Plot.do_centralities()
+                Plot.do_assortativity()
 
