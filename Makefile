@@ -1,4 +1,4 @@
-FIGS := Figure-Assortativity.pdf  Figure-Betweenness.pdf  Figure-Closeness.pdf  Figure-Degree.pdf  Figure-Density_versus_CC.pdf
+FIGS := Figure-Assortativity.pdf  Figure-Betweenness.pdf  Figure-Closeness.pdf  Figure-Degree.pdf  Figure-Density_versus_CC.pdf Figure-Degree_Distrib.pdf
 PLFIT := https://github.com/keflavich/plfit.git
 
 all: __main__.py plfit

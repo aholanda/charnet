@@ -48,6 +48,18 @@ class MultiPlots():
                 self.axes[i, j].set_xscale('log')
                 self.axes[i, j].set_yscale('log')
 
+        def set_lims(self, i, j, which_axe, inf=0.0, sup=1.0):
+                '''
+                Set the inferior and superior limits for plot according 
+                to axe.
+                '''
+                if which_axe == 'x':
+                        self.axes[i, j].set_xlim(inf, sup)
+                elif which_axe == 'y':
+                        self.axes[i, j].set_ylim(inf, sup)
+                else:
+                        log.error('Unknown axe {}' % which_axe)
+
         def print_legend(self, i, j, fontsize=4, location='upper right'):
                 self.axes[i, j].legend(fontsize=4, loc=location)
 
@@ -78,7 +90,8 @@ class MultiPlots():
                                      verticalalignment='center',
                                      color='gray',
                                      transform=self.axes[i, j].transAxes)
-        
+
+                self.set_lims(i, j, 'y')
                 self.print_axis(i, j, xlabel, 'x')
                 self.print_axis(i, j, 'Lobby', 'y')
         
@@ -100,7 +113,7 @@ class MultiPlots():
                 fcdf_norm = nc*fcdf
 
                 self.axes[i, j].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-                self.axes[i, j].plot(q, fcdf_norm, 'black', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
+                self.axes[i, j].plot(q, fcdf_norm, 'gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
 
                 self.loglog(i, j)
                 
@@ -148,7 +161,6 @@ class Plot:
                                 if deg > 0: degs.append(deg)
 
                         pl = plfit.plfit(np.array(degs), usefortran=False, verbose=verbose, quiet=False)
-
                         mplots.plot_CDF(i, j, degs, books[k], pl)
 
                 mplots.finalize(fn)
