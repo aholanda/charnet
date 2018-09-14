@@ -44,11 +44,29 @@ class MultiPlots():
         def get_xy_coords(self, c):
                 return (c % self.nrows, c % self.ncols)
 
+        def loglog(self, i, j):
+                self.axes[i, j].set_xscale('log')
+                self.axes[i, j].set_yscale('log')
+
+        def print_legend(self, i, j, fontsize=4, location='upper right'):
+                self.axes[i, j].legend(fontsize=4, loc=location)
+
+        def print_axis(self, i, j, label, which, fontsize=6):
+                if which is 'x':
+                        if i == self.nrows-1:
+                                self.axes[i, j].set_xlabel(label, fontsize=fontsize)
+                elif which is 'y':
+                        if j == 0:
+                                self.axes[i, j].set_ylabel(label, fontsize=fontsize)
+                else:
+                        logger.error('Axes {} is not defined' % which)
+                        exit()
+
         def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
                 self.axes[i, j].set_title(subtitle, fontsize=8)
                 if loglog:
-                        self.axes[i, j].set_xscale('log')
-                        self.axes[i, j].set_yscale('log')
+                        self.loglog(i, j)
+
                 self.axes[i, j].plot(xs, ys,
                                      c = color,
 			             alpha=.6,
@@ -67,17 +85,6 @@ class MultiPlots():
                 if i==0 and j==0:
                         self.print_legend(i, j)
 
-        def print_axis(self, i, j, label, which, fontsize=6):
-                if which is 'x':
-                        if i == self.nrows-1:
-                                self.axes[i, j].set_xlabel(label, fontsize=fontsize)
-                elif which is 'y':
-                        if j == 0:
-                                self.axes[i, j].set_ylabel(label, fontsize=fontsize)
-                else:
-                        logger.error('Axes {} is not defined' % which)
-                        exit()
-
         def plot_CDF(self, i, j, xs, book, pl, **kwargs):
                 a = pl._alpha
                 a_str = '{0:.2f}'.format(round(a,2))
@@ -94,14 +101,11 @@ class MultiPlots():
 
                 self.axes[i, j].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
                 self.axes[i, j].plot(q, fcdf_norm, 'black', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
-                self.axes[i, j].set_xscale('log')
-                self.axes[i, j].set_yscale('log')
 
+                self.loglog(i, j)
+                
                 self.print_axis(i, j, 'k', 'x')
                 self.print_axis(i, j, 'CDF', 'y')
-
-        def print_legend(self, i, j, fontsize=4, location='upper right'):
-                self.axes[i, j].legend(fontsize=4, loc=location)
 
         def finalize(self, fn='plot.pdf'):
                 self.fig.subplots_adjust(hspace=0)
