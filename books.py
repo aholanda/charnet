@@ -440,7 +440,7 @@ class Pythagoras(Book):
                 return 'pythagoras'
 
         def get_category(self):
-                return BookCategory.BIOGRAPHY
+                return BookCategory.LEGENDARY
         
         def get_datadir(self):
                 return Charnet.get_datadir()
