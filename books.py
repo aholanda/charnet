@@ -288,7 +288,7 @@ class Arthur(Book):
                 return 'arthur'
 
         def get_category(self):
-                return BookCategory.BIOGRAPHY
+                return BookCategory.FICTION
         
         def get_datadir(self):
                 return Charnet.get_datadir()
