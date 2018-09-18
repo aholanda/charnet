@@ -8,7 +8,7 @@ from books import *
 from draw import *
 from formatting import *
 
-def run_all_tasks(books):
+def run_all_tasks():
         i = 1
         while True:
                 print(hdrs[i])

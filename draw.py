@@ -5,14 +5,19 @@ import pygraphviz as pgv
 from books import *
 from plot import *
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 class Draw:
         @staticmethod
-        def do_graphs(books):
+        def do_graphs():
                 """Graphs for the characters' encounters are drawn for visualization
                 only using matplotlib and NetworkX."""
 
-                print('Drawing graphs...')
-                for book in books.get_books():
+                logger.info('Drawing graphs...')
+                books = Books.get_books()
+                for book in books:
                         factor = 10 # increase factor
                         G = book.get_graph()
                         color = book.get_vertex_color()
