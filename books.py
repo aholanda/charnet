@@ -497,3 +497,19 @@ class Books(Book):
                                 book.read()
                 return Books.books
 
+        @staticmethod
+        def pre_process_centralities():
+                """
+                Calculate centralities and store in associative array.
+                """
+                # PRE-processing
+                fn = 'lobby.log'
+                f = open(fn, 'w') # log file, used to debug the results
+                books = Books.get_books()
+                for book in books:
+                        G = book.get_graph()
+                        Graphs.calc_normalized_centralities(G)
+                        ## Already do the assignment of lobby value to each vertex                
+                        Graphs.calc_graph_vertex_lobby(G, f)
+                f.close()
+                logger.info('Wrote {}'.format(fn))
