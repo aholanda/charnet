@@ -1,0 +1,335 @@
+A. E. Van Vogt;11
+A. Huxley;1
+Adolf Eichmann;4
+Al Capone;4
+Alfred Bester;1
+Allen Ginsberg;3
+Allport;5
+Anarck Peake;6
+Andrew Butler;2
+Anne Hackett;2
+Anne;153
+Anthony Boucher;16
+Anthony Peake;22
+Antonio Lombardo;1
+Antonio Vieira;1
+Art Spiegelman;2
+Arthur Clarke;2
+Arthur Cover;2
+Arthur Koestler;3
+Arthur Marlin;2
+Asimov;2
+Asperger;1
+Attwood;2
+Avram Davidson;2
+Barbara Hershey;7
+Barney Hill;1
+Barry Spatz;7
+Ben;3
+Bernard Haisch;1
+Bernie Montbriand;2
+Betty Hill;2
+Betty Rivers;5
+Bill Christensen;3
+Bill Murray;1
+Bob Dylan;1
+Brad Steiger;14
+Brian Aldiss;1
+Brian Kelly;4
+Bucke;2
+Carl Jung;2
+Carol Carr;1
+Cattell;10
+Charles Lindbergh;1
+Chris Zielger;2
+Christopher;45
+Claudia Bush;12
+Claudia Krenz;1
+Clifford Simak;1
+Daisley;6
+Damon Knight;2
+Dan O’Bannon;1
+Daniel DePrez;1
+Daniel;1
+David Batty;1
+David Gerrold;3
+David Hartwell;3
+David Peoples;1
+Davis;1
+Diane;5
+Dickens;1
+Dom Sebastião; 1
+Don Delillo;1
+Donald “Don” Wollheim;4
+Doris;34
+Dorothea;1
+Dorothy Dick;76
+Douglas Trumbeell;1
+Drevdahl;1
+Dunne;4
+E. Carrere;4
+E. Warren;1
+Earl Kindred;2
+Edgar Dick (Ted);49
+Edmund Miskys;1
+Edna Matilda;3
+Eichmann;2
+Einstein;2
+Eldon Nichols;3
+Elizabeth;1
+Ellington;2
+Ervin Laszlo;1
+Ethel;1
+Francine Steiger;1
+Frank Baum;5
+Frank Hollander;6
+Franklin Roosevelt;1
+Frederic Brown;2
+Frederick Jameson;1
+Frederick Pohl;1
+Freud;1
+Fritz Leiber;1
+Gabriel Marquez;1
+Gaylene Cunningham;1
+Genady Sergeyev;1
+Genio Molanari;1
+George Kisley;1
+George Kohler;2
+George Langelaan;1
+George Moran;1
+George Scruggs;2
+George Smith;1
+George;8
+Gertrude;1
+Ginger Smith;7
+Glen Miller;1
+Glen Runciter;1
+Goethe;3
+Grania Davidson;14
+Greg;1
+Gregg Rickmann;32
+Grey;2
+Gwen Lee;4
+H. Block;1
+Hampton Fancher;13
+Hannah Arendt;1
+Harlan Ellison;14
+Harold Kinchen;2
+Harry Harrison;1
+Harvey Ross;6
+Hatte;2
+Hayles;2
+Heather Cattell;2
+Heidegger;3
+Henri Bugson;2
+Henry Korman;3
+Henry Ludmer;1
+Herb Hollis;21
+Herb Jaffe;3
+Herman Minkowski;9
+Hermann Weyl;1
+Hildegard Bingen;4
+Hoffmann;5
+Honor Jackson;2
+Hubbard;4
+Hume;6
+Hunter Thompsom;1
+Ila Howard;2
+Isa;12
+J. G. Ballard;1
+Jack Finney;1
+Jack Newkom;1
+Jack Spicer;2
+Jack Vance;1
+Jack;1
+James Pike;29
+James T. Farrell;9
+Jamis;2
+Jane;16
+Janelle Morgan;3
+Jannick Storm;1
+Jannie Storm;1
+Jayne;1
+Jaynes;15
+Jeanette Marlin;19
+Jenny;1
+Jerry Ackerman;10
+Jerry Kresy;1
+Jim Júnior;4
+Joan Simpson;13
+Joanna Russ;1
+Joanne McMahon;3
+Joe Hudner;2
+Joe Hunter;1
+Joe Vitale;9
+Joel Stein;3
+John (Kathy);1
+John Boonstra;7
+John Brunner;1
+John Campbell;2
+John Keel;2
+John Lennon;4
+John Locke;2
+John Rumer;3
+John Todd;1
+John Vitale;4
+John Yellott;1
+Jonathan Sceift;1
+Jorge Borges;4
+Joseph Bogen;1
+Judy Garland;1
+Julius;1
+June Kresy;1
+Kafka;3
+Karen;2
+Karl Marx;1
+Karson;2
+Kathy Demuelle;26
+Katy Heber;1
+Kennedy;2
+Kenneth Graham;3
+Kevin Briggs;9
+Kevin Jetter;4
+Kirsten;6
+Kleo;46
+Krug;1
+Kurt Vonegut;1
+Laura;21
+Laurence Sutin;23
+Leo Bulero;2
+Leon Rimov;4
+Lester Del Ray;1
+Lincoln;9
+Linda Levy;38
+Lovecraft;2
+Luce;2
+Lúcio Manfredi;2
+Lutsia Pavlova;1
+Lydia Marlin;2
+Lynne Aalan;9
+Makarec;1
+Malcom Edwards;1
+Malzberg;1
+Maren;14
+Margo;1
+Marin;2
+Marion;15
+Mark Chapman;1
+Mark Hurst;2
+Mark;1
+Martin Scorcese;1
+Mary Wilson;7
+McCarthy;2
+Michael Deeley;9
+Michael Gazzaniga;2
+Michael Moore;1
+Michael Walsh;2
+Mick;5
+Mike;1
+Monica;2
+Morrison;5
+Murray Lenister;1
+Nancy;40
+Neal;3
+Nicholas Roeg;1
+Nikolai Kozyrev;5
+Nita Busby;2
+Nita Petrunio;2
+Norman Mini;8
+Norman Spinrad;13
+O'Dell;2
+Olive Holt;1
+Oliver Sacks;2
+Ouspensky;2
+Pat Flannery;2
+Patricia Warrick;6
+Paul Verhoeven;1
+Paul Williams;15
+Paulo;1
+Persinger;6
+Peter Fitting;1
+Peter Nichols;2
+Philip J Farmer;3
+Philip K. Dick;1740
+Philip Lamantia;1
+Platão;3
+Poe;1
+Poul Anderson;1
+Prabhakaran;1
+Ray Bradbury;2
+Ray Nelson;32
+Ray Torrence;5
+Reich;2
+Richard Bucke;10
+Richard Lupoff;1
+Richard;3
+Rick;2
+Ridley Scott;2
+Rik Helmsley;1
+Robert Anton;1
+Robert Bloch;1
+Robert Crumb;2
+Robert Duncan;1
+Robert Harris;1
+Robert Heinlein;2
+Robert Jaffe;3
+Robert Mapson;1
+Robert Merle;1
+Robert Ornstein;10
+Robert Silverberg;1
+Roger Caillois;2
+Roger Sperry;5
+Roger Zelazny;7
+Rollo May;1
+Ronaldo Bressane;1
+Russell Galen;9
+Salvador Dalí;1
+Samuel Delany;1
+Samuel Umland;1
+Sandra;4
+Scott Apel;17
+Scott Fitzgerald;1
+Scott Meredith;7
+Sean Young;2
+Serena;5
+Serene Branson;2
+Sherie Rush;2
+Sirais;1
+Sócrates;1
+Sófocles;1
+Solenski;1
+Spinoza;1
+Stephanie;3
+Sue Hoglind;8
+Susan Walsh;11
+Sydney;1
+T. S. Eliot;2
+Tandy;1
+Terry Carr;1
+Tessa;200
+Thomas Disch;3
+Thomas Pynchon;1
+Tim Powers;49
+Timothy Leary;2
+Tom Schmidt;2
+Tony Borcher;1
+Tony Hiss;4
+Tzvetan Todorov;1
+Úrsula LeGuin;8
+Vernon;1
+Vince Lusby;17
+Vladimir Lenski;1
+Walter Benjamin;1
+Wanda Kendall;1
+Ward Moore;9
+Warren Harding;1
+Wendell;6
+Whitley;2
+William Burroughs;6
+William F Jenkins;1
+William Sarrel;1
+William Sarrill;3
+William Sullivan;4
+Willis McNelly;9
+
+

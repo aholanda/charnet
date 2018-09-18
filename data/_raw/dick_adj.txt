@@ -1,0 +1,193 @@
+Al Capone;Antonio Lombardo;1
+Anne Hackett;Maren;2
+Anne;Hatte;1
+Anne;Jayne;1
+Anne;Lynne Aalan;1
+Anne;Neal;1
+Anne;Richard;1
+Anne;Tandy;1
+Anthony Boucher;Philip K. Dick;1
+Anthony Peake;Mick;1
+Arthur Marlin;Lydia Marlin;1
+Avram Davidson; Philip K. Dick;1
+Avram Davidson;Grania Davidson;1
+Barbara Hershey; Hampton Fancher;1
+Barbara Hershey; Philip K. Dick;1
+Barbara Hershey;Tessa;1
+Betty Rivers;Philip K. Dick;1
+Bill Christensen; Philip K. Dick;1
+Bill Christensen;Anne;1
+Brad Steiger;Philip K. Dick;1
+Christopher;Philip K. Dick;3
+Christopher;Tessa;2
+Daisley;James Pike;1
+David Gerrold;Tessa;1
+Diane;James Pike;1
+Doris;Norman Spinrad;1
+Doris;Philip K. Dick;2
+Doris;Tessa;2
+Dorothy Dick; Philip K. Dick;5
+Dorothy Dick;Anne;1
+Dorothy Dick;Earl Kindred;1
+Dorothy Dick;Edgar Dick (Ted);3
+Dorothy Dick;Marion;1
+Dorothy Dick;Neal;1
+Edgar Dick (Ted);Christopher;1
+Edgar Dick (Ted);Dorothea;1
+Edgar Dick (Ted);Gertrude;1
+Edgar Dick (Ted);Tessa;1
+Edna Matilda;Dorothy Dick;2
+Edna Matilda;Earl Kindred;1
+Edna Matilda;Edgar Dick (Ted);1
+Edna Matilda;Philip K. Dick;2
+Eldon Nichols;Herb Hollis;1
+George; Philip K. Dick;1
+George; Tessa;1
+George;Linda Levy;1
+Grania Davidson; Philip K. Dick;2
+Grania Davidson;Ray Nelson;1
+Gregg Rickmann;Edgar Dick (Ted);1
+Hampton Fancher; Michael Deeley;1
+Hampton Fancher; Philip K. Dick;2
+Hampton Fancher;Tessa;1
+Harlan Ellison;Linda Levy;1
+Hatte;Jayne;1
+Hatte;Tandy;1
+Henry Korman; Philip K. Dick;2
+Honor Jackson;Nancy;1
+Jack;Margo;1
+James Pike;Jim Júnior;1
+James Pike;Maren;1
+James Pike;Nancy;1
+Jayne;Tandy;1
+Jeanette Marlin; Philip K. Dick;1
+Jerry Kresy;Kleo;1
+Joanne McMahon; Philip K. Dick;1
+Joe Hudner; Philip K. Dick;1
+Joe Hudner;Anne;1
+Joe Hudner;Dorothy Dick;2
+Joe Hudner;Lynne Aalan;2
+Joe Hudner;Neal;2
+John (Kathy); Philip K. Dick;1
+John (Kathy);Kathy;1
+John Locke;Ben;1
+Joseph Bogen;Michael Gazzaniga;1
+June Kresy;Jerry Kresy;1
+Karen;Kleo;1
+Karen;Philip K. Dick;1
+Kevin Briggs;Joan Simpson;1
+Kirsten;Anne;1
+Kleo;June Kresy;1
+Kleo;Norman Mini;1
+Kleo;Philip K. Dick;2
+Laura;Edgar Dick (Ted);1
+Laura;Gertrude;1
+Leon Rimov;Philip K. Dick;1
+Linda Levy;Norman Spinrad;1
+Linda Levy;Tessa;1
+Lynne Aalan;Dorothy Dick;2
+Lynne Aalan;Neal;1
+Lynne Aalan;Neal;1
+Marion;Edgar Dick (Ted);1
+Marion;Edna Matilda;1
+Marion;Joe Hudner;1
+Marion;Lynne Aalan;1
+Marion;Neal;1
+Michael Deeley;Katy Heber;1
+Michael Walsh;Susan Walsh;1
+Nancy;Bernie;1
+Nancy;Isa;2
+Nancy;Maren;2
+Nancy;Mike;1
+Nancy;Schmidt;1
+Nita Busby;Ginger Smith;1
+Norman Mini;Herb Hollis;1
+Norman Mini;Philip K. Dick;1
+Norman Spinrad;Tessa;1
+Pat Flannery;Herb Hollis;1
+Philip K. Dick; Sue Hoglind;1
+Philip K. Dick;A. E. Van Vogt;1
+Philip K. Dick;Anne Hackett;2
+Philip K. Dick;Anne;2
+Philip K. Dick;Anne;6
+Philip K. Dick;Barry Spatz;1
+Philip K. Dick;Edgar Dick (Ted);3
+Philip K. Dick;George Scruggs;1
+Philip K. Dick;George Smith;1
+Philip K. Dick;Ginger Smith;1
+Philip K. Dick;Gregg Rickmann;1
+Philip K. Dick;Gwen Lee;1
+Philip K. Dick;Harlan Ellison;2
+Philip K. Dick;Herb Hollis;2
+Philip K. Dick;Isa;2
+Philip K. Dick;Jack Spicer;1
+Philip K. Dick;Jack;1
+Philip K. Dick;James Pike;1
+Philip K. Dick;Jamis;1
+Philip K. Dick;Jerry Kresy;2
+Philip K. Dick;Joan Simpson;1
+Philip K. Dick;Joan Simpson;1
+Philip K. Dick;Joel Stein;1
+Philip K. Dick;John Boonstra;1
+Philip K. Dick;June Kresy;1
+Philip K. Dick;Kathy;1
+Philip K. Dick;Kevin Briggs;1
+Philip K. Dick;Laura;1
+Philip K. Dick;Linda Levy;3
+Philip K. Dick;Lynne Aalan;1
+Philip K. Dick;Maren;2
+Philip K. Dick;Margo;1
+Philip K. Dick;Marion;1
+Philip K. Dick;Michael Walsh;1
+Philip K. Dick;Nancy;4
+Philip K. Dick;Neal;1
+Philip K. Dick;Norman Spinrad;3
+Philip K. Dick;Olive Holt;1
+Philip K. Dick;Paul Williams;2
+Philip K. Dick;Philip Lamantia;1
+Philip K. Dick;Ray Nelson;1
+Philip K. Dick;Ray Torrence;2
+Philip K. Dick;Robert Duncan;1
+Philip K. Dick;Roger Zelazny;1
+Philip K. Dick;Russell Galen;1
+Philip K. Dick;Scott Ridley;1
+Philip K. Dick;Tessa;7
+Philip K. Dick;Tim Powers;5
+Philip K. Dick;Vince Lusby;1
+Philip K. Dick;Willis McNelly;1
+Philip K. DickSusan Walsh;2
+Poul Anderson;Karen;1
+Poul Anderson;Kleo;1
+Poul Anderson;Philip K. Dick;1
+Ray Nelson; Philip K. Dick;3
+Ray Nelson;Anne;1
+Ray Nelson;Kirsten;1
+Ray Torrence;Joan Simpson;1
+Richard;Hatte;1
+Richard;Jayne;1
+Richard;Tandy;1
+Rick; Philip K. Dick;1
+Roger Sperry;Joseph Bogen;1
+Roger Sperry;Michael Gazzaniga;1
+Scott Apel;Joan Simpson;1
+Scott Apel;Kevin Briggs;2
+Scott Apel;Philip K. Dick;1
+Scott Ridley;Sydney;1
+Stephanie; Philip K. Dick;1
+Stephanie;Susan Walsh;2
+Stephanie;Wendell;1
+Susan Walsh;Serena;1
+Susan Walsh;Wendell;1
+Tessa;Ginger Smith;1
+Tessa;Nita Busby;1
+Tessa;Tim Powers;2
+Tim Powers;Chris Zielger;1
+Tim Powers;Linda Levy;1
+Tim Powers;Serena;1
+Tim Powers;Susan Walsh;1
+Tony Hiss; Philip K. Dick;2
+Tony Hiss;Henry Korman;2
+Vince Lusby;Monica;1
+Vince Lusby;Anne;1
+Wendell;Jeanette Marlin;1
+William Sarrill;Philip K. Dick;1
