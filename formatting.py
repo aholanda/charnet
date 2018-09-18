@@ -59,7 +59,7 @@ class Formatting:
                 f.write('{\small\\begin{tabular}{@{}ccccccc@{}}\\toprule\n')
                 f.write('\\bf\\hfil Book\\hfil '
                         + ' & \\hfil \\hphantom{00} $\\mathbf N$ \\hphantom{00} \\hfil '
-                        + ' & \\hfil \\bf Links\hfil '
+                        + ' & \\hfil \\mathbf M\hfil '
                         + ' & \\hfil \\hphantom{0} $\\mathbf\langle K\rangle$ \\hphantom{0} \\hfil '
                         + ' & \\hfil \\hphantom{0} $\\mathbf D$ \\hphantom{0} \\hfil ' # Density
                         + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil ' # Cluster. Coef.
