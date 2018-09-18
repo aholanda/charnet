@@ -7,7 +7,7 @@ from graphs import *
 
 class Formatting:
         @staticmethod
-        def write_hapax_legomena_table(books):
+        def write_hapax_legomena_table():
                 """"Hapax Legomena The write_hapax_legomena_table() function write the
                 _Hapax_ frequency to be included in the paper using LaTeX
                 syntax for tables.
@@ -19,10 +19,12 @@ class Formatting:
                 f.write("\\bf Book &  $\\mathbf HL^N=H/N$ & $\\mathbf DL^N=DL/N$ \\\\ \\colrule \n")
 	
 	        # count the lapaxes for each book
-                for book in books.get_books():
+                books = Books.get_books()
+                for book in books:
+                        G = book.get_graph()
                         nr_hapaxes = book.get_number_hapax_legomenas()
                         nr_dis = book.get_number_dis_legomenas()                
-                        nr_chars = book.get_number_characters()
+                        nr_chars = G.number_of_nodes()
                         
                         ln = book.get_label() + " & "
                         ln += '{0:02d}'.format(nr_hapaxes) + "/"
@@ -92,7 +94,7 @@ class Formatting:
                 Plot.do_density_versus_clustering_coefficient()
 
         @staticmethod
-        def write_stat_centralities(books):
+        def write_stat_centralities():
                 """
                 Calculate the mean and deviation for centralities for each book.
                 """
@@ -101,13 +103,14 @@ class Formatting:
 
                 centrs = ['Degree', 'Betweenness', 'Closeness', 'Assortativity', 'Lobby']
 
-                Graphs.pre_process_centralities(books)
+                Books.pre_process_centralities()
 
                 f.write("{\small\\begin{tabular}{@{}cccccc@{}}\\toprule\n")
                 f.write("\\bf Book &\\bf Degree &\\bf Betweenness &\\bf Closeness &\\bf Assortativity &\\bf Lobby \\\ \\colrule \n");
-                for book in books.get_books():
+                books = Books.get_books()
+                for book in books:
                         f.write(book.get_label() + ' & ')
-                        G = book.G
+                        G = book.get_graph()
                         for centr in centrs:
                                 vals = []
 
