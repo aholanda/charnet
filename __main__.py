@@ -88,10 +88,10 @@ if __name__ == "__main__":
                                 for i in range(1, n-1): # to not repeat tasks
                                         opts[i] = False
                         elif opt == "-h" or opt == "--help": # help make exit
-                                Main.usage()
+                                usage()
                         else:
                                 print('Unknown OPTION:', opt)
-                                Main.usage()
+                                usage()
                                 
         else:
                 usage()
