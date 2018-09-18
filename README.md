@@ -15,7 +15,8 @@ This project performed studies using complex networks in some books. We consider
 * Python and the packages:
   * [matplotlib](https://matplotlib.org/);
   * [NetworkX](https://networkx.github.io/);
-  * [PyGraphviz](https://pygraphviz.github.io/).
+  * [PyGraphviz](https://pygraphviz.github.io/);
+  * [plfit](https://github.com/keflavich/plfit) - this package is automatically installed after running `make`. It is used to fit data to power law distribution.
 
 ## Structure
 
@@ -63,7 +64,7 @@ the biography of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 
 - [`Project`](books.py): template (interface) for project properties.
 
-- [`Main`](__main__.py): client to execute the operations.
+- [`__main__`](__main__.py): client to execute the operations.
 
 ## Running
 
