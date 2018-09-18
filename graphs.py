@@ -1,11 +1,12 @@
 import math
-import networkx as nx
 import numpy as np
+import logging
+
+import networkx as nx
 
 # LOCAL
 from lobby import *
 
-import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -86,20 +87,6 @@ class Graphs():
                 stdev = math.sqrt(var_curr/(G.number_of_nodes() - 1))
 
                 return (avg_curr, stdev)
-
-        @staticmethod
-        def pre_process_centralities(books):
-                """
-                Calculate centralities and store in associative array.
-                """
-                # PRE-processing
-                f = open('lobby.log', 'w') # log file, used to debug the results
-                for book in books.get_books():
-                        G = book.get_graph()
-                        Graphs.calc_normalized_centralities(G)
-                        ## Already do the assignment of lobby value to each vertex                
-                        Graphs.calc_graph_vertex_lobby(G, f)
-                f.close()
 
         def get_degree_avg_neighbors(G):
                 k2knns = {} # map degree to average neighbor degree average
