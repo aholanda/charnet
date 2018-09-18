@@ -61,7 +61,7 @@ class MultiPlots():
                         log.error('Unknown axe {}' % which_axe)
 
         def print_legend(self, i, j, fontsize=4, location='upper right'):
-                self.axes[i, j].legend(fontsize=4, loc=location)
+                self.axes[i, j].legend(fontsize=5, loc=location)
 
         def print_axis(self, i, j, label, which, fontsize=6):
                 if which is 'x':
@@ -113,8 +113,9 @@ class MultiPlots():
                 fcdf_norm = nc*fcdf
 
                 self.axes[i, j].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-                self.axes[i, j].plot(q, fcdf_norm, 'gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
-
+                self.axes[i, j].plot(q, fcdf_norm, '--', color='gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
+                
+                self.print_legend(i, j)
                 self.loglog(i, j)
                 
                 self.print_axis(i, j, 'k', 'x')
@@ -124,6 +125,7 @@ class MultiPlots():
                 self.fig.subplots_adjust(hspace=0)
                 plt.tight_layout()
                 plt.savefig(fn)
+                plt.close()
                 logger.info('Wrote plot %s', fn)
 
 class Plot:
@@ -142,35 +144,8 @@ class Plot:
                         exit()
 
         @staticmethod
-        def do_degree_distrib(verbose=False):
-                '''Plot degree distribution for books with curve fitting made by
-                plfit.
-                '''
-                fn = 'Figure-Degree_Distrib.pdf'
-                mplots = MultiPlots(4, 3)
-
-                books = Books.get_books()
-                for k in range(len(books)):
-                        (i ,j) = mplots.get_xy_coords(k)
-                        G = books[k].get_graph()
-                        degs = []
-                        
-                        # get the degrees
-                        for n in G.nodes():
-                                deg = G.degree(n)
-                                if deg > 0: degs.append(deg)
-
-                        pl = plfit.plfit(np.array(degs), usefortran=False, verbose=verbose, quiet=False)
-                        mplots.plot_CDF(i, j, degs, books[k], pl)
-
-                mplots.finalize(fn)
-                        
-        @staticmethod
         def do_density_versus_clustering_coefficient():
                 fn = 'Figure-Density_versus_CC.pdf'
-                (xs, ys) = get_empty_xy_arrays()
-
-                #mplots = MultiPlots(1, 1)
                 
                 nms = 0 # counter for markers
                 books = Books.get_books()
@@ -197,6 +172,30 @@ class Plot:
 
                 logger.info('Wrote %s', fn)
 
+        @staticmethod
+        def do_degree_distrib(verbose=False):
+                '''Plot degree distribution for books with curve fitting made by
+                plfit.
+                '''
+                fn = 'Figure-Degree_Distrib.pdf'
+                mplots = MultiPlots(4, 3)
+
+                books = Books.get_books()
+                for k in range(len(books)):
+                        (i ,j) = mplots.get_xy_coords(k)
+                        G = books[k].get_graph()
+                        degs = []
+                        
+                        # get the degrees
+                        for n in G.nodes():
+                                deg = G.degree(n)
+                                if deg > 0: degs.append(deg)
+
+                        pl = plfit.plfit(np.array(degs), usefortran=False, verbose=verbose, quiet=False)
+                        mplots.plot_CDF(i, j, degs, books[k], pl)
+
+                mplots.finalize(fn)
+                        
         @staticmethod
         def do_centralities():
                 """
