@@ -21,7 +21,6 @@ BS Brad Steiger
 BZ Barry Spatz
 CH Christopher
 CZ Chris Zielger
-GD Grania Davidson
 DA Daisley
 DD Dorothy Dick
 DE Dorothea
@@ -133,7 +132,7 @@ WS William Sarrill
 0:AM,LM
 0:AD,PD
 0:AD,GD
-0:BH, HF
+0:BH,HF
 0:BH,PD
 0:BH,TE
 0:BR,PD
@@ -142,7 +141,7 @@ WS William Sarrill
 0:BS,PD
 0:CH,PD;CH,PD;CH,PD
 0:CH,TE;CH,TE
-0:DA,JP,1
+0:DA,JP
 0:DG,TE
 0:DI,JP
 0:DO,NS
@@ -218,7 +217,7 @@ WS William Sarrill
 0:MD,KH
 0:MW,SW
 0:NA,BN
-0:NA,IS,NA,IS
+0:NA,IS;NA,IS
 0:NA,MR;NA,MR
 0:NA,MK
 0:NA,SC
@@ -263,7 +262,7 @@ WS William Sarrill
 0:PD,MW
 0:PD,NA;PD,NA;PD,NA;PD,NA
 0:PD,NE
-0:PD,NS;PD,NS;PD,NS;
+0:PD,NS;PD,NS;PD,NS
 0:PD,OH
 0:PD,PW;PD,PW
 0:PD,PL
@@ -287,7 +286,7 @@ WS William Sarrill
 0:RT,JS
 0:RC,HT
 0:RC,JY
-0:RC,TS
+0:RC,TA
 0:RI,PD
 0:RS,JB
 0:RS,MG
@@ -297,7 +296,7 @@ WS William Sarrill
 0:SR,SY
 0:ST,PD
 0:ST,SW;ST,SW
-0:ST;WE
+0:ST,WE
 0:SW,SE
 0:SW,WE
 0:TE,GS
