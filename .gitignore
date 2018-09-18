@@ -5,6 +5,9 @@ plfit
 # astah-com
 *.bak
 
+# vim
+*.un~
+
 # emacs backup
 .#*
 
