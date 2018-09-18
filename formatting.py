@@ -41,7 +41,7 @@ class Formatting:
                 print('Wrote',fn)
 
         @staticmethod
-        def write_global_measures(books):
+        def write_global_measures():
                 """Global measures for each character network are written as a table and
                 included in a LaTeX file named `global.tex` to be included in the
                 manuscript.
@@ -65,7 +65,8 @@ class Formatting:
                         + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil ' # Cluster. Coef.
                         + ' \\\\ \\colrule\n'
                 )
-                for book in books.get_books():
+                books = Books.get_books()
+                for book in books:
                         G = book.G
                         G.graph['clustering'] = nx.average_clustering(book.G)
                         G.graph['density'] = nx.density(book.G)
@@ -88,7 +89,7 @@ class Formatting:
 
                 print('Wrote %s'% fn)
 
-                Plot.do_density_versus_clustering_coefficient(books)
+                Plot.do_density_versus_clustering_coefficient()
 
         @staticmethod
         def write_stat_centralities(books):
