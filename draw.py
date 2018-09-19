@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import pygraphviz as pgv
+import logging
 
 # LOCAL
 from books import *
 from plot import *
 
-import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -54,4 +55,4 @@ class Draw:
                         nx.draw_networkx_labels(G, pos, labels, font_size=11)
                         plt.tight_layout()
                         plt.savefig(fn, format="PNG")
-                        print('Wrote %s' % fn )
+                        logger.info('Wrote %s' % fn )
