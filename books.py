@@ -161,6 +161,7 @@ class Book():
                                 # check the order
                                 if u > v:
                                         logger.error('Labels {} and {} is out of order in {}'.format(u, v, book_name))
+                                        exit()
                                 
                                 #DEBUG
                                 logger.debug("* G.add_node({}, name={})".format(v, character_name))
@@ -478,13 +479,9 @@ class Books(Book):
                 Calculate centralities and store in associative array.
                 """
                 # PRE-processing
-                fn = 'lobby.log'
-                f = open(fn, 'w') # log file, used to debug the results
                 books = Books.get_books()
                 for book in books:
                         G = book.get_graph()
                         Graphs.calc_normalized_centralities(G)
                         ## Already do the assignment of lobby value to each vertex                
-                        Graphs.calc_graph_vertex_lobby(G, f)
-                f.close()
-                logger.info('Wrote {}'.format(fn))
+                        Graphs.calc_graph_vertex_lobby(G)
