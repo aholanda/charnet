@@ -82,14 +82,17 @@ class Book():
                 return self.__str__()
         
         def get_number_characters(self):
-                return self.nr_chars
+                assert self.G
+                return self.G.number_of_nodes()
 
         def get_number_hapax_legomenas(self):
                 """
                 _Hapax_ _Legomena_ are words with occurrence frequency equals to one.
                 """
+                assert self.G
                 nr_hapaxes = 0
-                for name, freq in self.name_freqs.items():
+                freqs = nx.get_node_attributes(self.G, 'frequency')
+                for freq in freqs:
                         if (freq == 1):
                                 nr_hapaxes += 1
 
@@ -100,7 +103,8 @@ class Book():
                 _Dis_ _Legomena_ are words with occurrence frequency equals to two.
                 """
                 nr_dis = 0
-                for name, freq in self.name_freqs.items():
+                freqs = nx.get_node_attributes(self.G, 'frequency')
+                for freq in freqs:
                         if (freq == 2):
                                 nr_dis += 1
 
@@ -122,14 +126,8 @@ class Book():
                 -------
                 networkx graph
                 """
-                self.code_names = {}
-                self.name_idxs = {}
-                self.name_freqs = {}
-                next_idx = 0
-                arcs = {}
                 are_edges = False
-                V = 0 # number of vertices
-                E = 0 # number of edges
+                book_name = self.get_name().title()
 
                 # assert data file is not read several times
                 if (self.was_read == False):
@@ -137,23 +135,42 @@ class Book():
                 else:
                         return self.G
 
-                # file name to store vertex and edge growth number
-                fn_VE_growth = '/tmp/' +  self.get_name() + '-VE-growth.csv'
-                f_VE_growth = open(fn_VE_growth, 'w')
+                # name the Graph
+                self.get_graph().graph['name'] = self.get_name()
                 
                 fn = self.get_file_name()
                 f = open(fn, "r")
+                u = 'AA' # store old vertex label and it is used to check it the order is right
                 for ln in f:
-                        if (ln.startswith(self.get_comment_token())): # ignore comments
+                        # ignore comments
+                        if (ln.startswith(self.get_comment_token())): 
                                 continue
 
-                        if (ln.startswith('\n') or ln.startswith('\r')): # edges start after empty line
+                        # edges start after an empty line
+                        if (ln.startswith('\n') or ln.startswith('\r')):
                                 are_edges = True
                                 continue
-                                
+
+                        # remove new line
+                        ln = ln.rstrip("\n")
+                        
+                        # boolean are_edges indicates if it is inside nodes region
                         if (are_edges==False):
-                                (code, charname) = ln.split(' ', 1)
-                                self.code_names[code] = charname
+                                (v, character_name) = ln.split(' ', 1)
+
+                                # check the order
+                                if u > v:
+                                        logger.error('Labels {} and {} is out of order in {}'.format(u, v, book_name))
+                                
+                                #DEBUG
+                                logger.debug("* G.add_node({}, name={})".format(v, character_name))
+                                #GUBED
+                                if v not in self.G.node:
+                                        self.G.add_node(v, frequency=1, name=character_name)
+                                        u = v
+                                else:
+                                        logger.error('Label {} is repeated in book {}.'.format(v, book_name))
+                                        exit()
                                 continue
 
                         # edges region from here
@@ -161,8 +178,7 @@ class Book():
                         (chapter, edges_list) = ln.split(':', 1)
 
                         # eg., split "ST,MR;ST,PH,MA;MA,DO" => ["ST,MR", "ST,PH,MA", "MA,DO"]
-                        edges = edges_list.rstrip("\n").split(';')
-                        E += len(edges)
+                        edges = edges_list.split(';')
 
                         if(edges[0] == ''): # eliminate chapters with no edges
                                 continue
@@ -171,75 +187,34 @@ class Book():
                                 # eg., split "ST,PH,MA" => ["ST", "PH", "MA"]
                                 vs = e.split(',')  # vertices
 
-                                # assign an index to label, if does not exist
+                                # add nodes to graph G if it does not exit
                                 # otherwise, increment frequency
                                 for v in vs:
-                                        if (v in self.name_idxs.keys()):
-                                                self.name_freqs[v] += 1
+                                        if (v not in self.G.node):
+                                                logger.error('Label <{}> was not added as node in the graph for book {}.'.format(v, book_name))
+                                                exit()
                                         else:
-                                                self.name_idxs[v] = V
-                                                V += 1
-                                                self.name_freqs[v] = 1
+                                                self.G.node[v]['frequency'] += 1
 
-                                # add characters encounters linked (adjacency list) in a dictionary
+                                # add characters encounters (edges) to graph G
                                 for i in range(len(vs)):
                                         u = vs[i]
-                                        if (u not in arcs.keys()):
-                                                arcs[u] = []
-                                    
                                         for j in range(i+1, len(vs)):
                                                 v = vs[j]
-                                                arcs[u].append(v)
-                            
-                            #logger.info(str(V) + ',' + str(E) + '\n')
-                                                
+
+                                                if (u,v) not in self.G.edges():
+                                                        self.G.add_edge(u, v, weight=1)
+                                                else:
+                                                        self.G[u][v]['weight'] += 1
+
+                                                #DEBUG
+                                                action = 'add'
+                                                w = self.G[u][v]['weight']
+                                                if w > 1: action = 'mod'
+                                                logger.debug('* G.{}_edge({}, {}, weight={})'.format(action, u, v, w))
+                                                #GUBED
                 f.close()
-
-                f_VE_growth.close()
-                logger.info('Wrote %s', fn_VE_growth)
-                
-                self.nr_chars = next_idx
-
-                # Some files in `data/` directory with ".freq" extension contains characters'
-                # frequency already counted during data compilation. For the books that
-                # don't have this file in `data/`, this file are generated and written
-                # in a file with the same extension. The file has the following format:
-                
-                # ````
-                # Sir Isaac Newton;4
-                # ````
-                
-                # where "`;`" is the separator, the first column is the character name and
-                # the second the frequency.
-                if (self.has_frequency_file()==True):
-                        name_freqs = {}
-                        fn = self.get_file_name_freq()
-
-                        f = open(fn, "r")
-                        for ln in f:
-                                (vname, freq) = ln.rstrip("\n").split(';')
-                                name_freqs[vname] = int(freq)
-                        f.close()                        
-
-                # name the Graph
-                self.get_graph().graph['name'] = self.get_name()
-                
-		# name the vertices
-                for name, idx in self.name_idxs.items():
-                        self.G.add_node(idx, name=name)
-			
-		# add the edges
-                for u_name, vs in arcs.items():
-                        u = self.name_idxs[u_name]
-                        for v_name in vs:
-                                v = self.name_idxs[v_name]  #
-
-                                if (self.G.has_edge(u, v)==True): # increase weight
-                                        self.G[u][v]['weight'] += 1
-                                else: # add edge with weight = 1
-                                        self.G.add_edge(u, v, weight=1)
-
-                logger.info("read G from book \"%s\"", self.get_name().title())
+                logger.info("read G from book \"{}\"".format(book_name))
                 return self.G
         
 class Acts(Book):
