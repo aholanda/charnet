@@ -3,10 +3,15 @@
 import sys
 sys.path.append('/usr/local/lib/python2.7/dist-packages/')
 
+import logging
+
 # LOCAL
 from books import *
 from draw import *
 from formatting import *
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def run_all_tasks():
         i = 1
@@ -37,7 +42,7 @@ hdrs = ["__main__",
         "\n\t#### RUNNING ALL TASKS ####"] 
 
 def usage():
-        print('usage: ' + sys.argv[0] + ''' [options]
+        logger.error('usage: ' + sys.argv[0] + ''' [options]
         OPTIONS
         -p, --plot
         \tPlot the lobby and other centralities comparisons, and assortativity mixing, generating files.
@@ -90,7 +95,7 @@ if __name__ == "__main__":
                         elif opt == "-h" or opt == "--help": # help make exit
                                 usage()
                         else:
-                                print('Unknown OPTION:', opt)
+                                logger.error('Unknown OPTION:', opt)
                                 usage()
                                 
         else:
@@ -98,6 +103,6 @@ if __name__ == "__main__":
 
         for i in range(1, len(opts)):
                 if opts[i] == True:
-                        print(hdrs[i])
+                        logger.info(hdrs[i])
                         tasks[i]()
 
