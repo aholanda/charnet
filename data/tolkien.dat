@@ -1,7 +1,7 @@
 * File "tolkien.dat" from Characters Network project (C) 2017 University of Sao Paulo, Brazil
 * J. R. R. Tolkien, by Michael White.
 * This file may be freely copied.
-* The encounters are not in order of appearance; 0 means no chapter was gathered.
+* The encounters are not in order of appearance; 0 means no chapter was annotated.
 AC Aleister Crowley
 AE Annie
 AG Arthur Greeves
@@ -17,12 +17,11 @@ CO Colin Hardie
 CP Charlotte Plimmer
 CS Christopher Wiseman
 CT Christopher Reuel Tolkien, J. R. R. Tolkien's son
-CW Christopher Willians
 CU Cullis
+CW Christopher Willians
 DA Desmond Albrow
 DI Dickie Reynolds
 DO Denis Oplimmer
-DR doctor
 DS Donald Swann
 DT Denis Tolhurst
 EB Edith Bratt
@@ -34,10 +33,9 @@ EM Emily
 EN Edwin Neave
 ER Eric Gordon
 ET Edith (Bratt) Tolkien
-IE Marjorie, May's daughter
 FA Faulkner
 FM Francis Xavier Morgan, priest
-FN Farnell
+FN Farnell, Dr.
 GA George Allen
 GB George Brewerton
 GE G. E. K. Braunholtz
@@ -51,6 +49,7 @@ GY George Sayers
 HD Hugo Dyson
 HT Hilary Tolkien, J. R. R. Tolkien's brother
 HU Humprey, Dr. Harvard
+IE Marjorie, May's daughter
 JA Jane
 JF John Francis Remel, J. R. R. Tolkien's son
 JG Joy Gresham
@@ -62,8 +61,6 @@ JT J. R. R. Tolkien
 JU Judith
 JW Joe Wright, Dr.
 KS Kenneth Sisan
-PK Paul Kruger
-PT Priscilla Tolkien, J. R. R. Tolkien's daughter
 MA Mary Tolkien
 MI May Incledon
 MP Murphy
@@ -72,8 +69,10 @@ MT Mabel (Suffield) Tolkien
 MW Milton Waldman
 NC Nevill Coghil
 PF priest Francis
-PK professor. Kilby
+PG Paul Kruger
+PK professor Kilby
 PR priest
+PT Priscilla Tolkien, J. R. R. Tolkien's daughter
 RB Richard Burton
 RD Robert Davard
 RG Roger Lancelyn Green
@@ -82,7 +81,7 @@ RU Rayner Unwin, Stanley's son
 RM R. M. Dawkins
 RY Mary, May's daughter
 SA Susan Dagnall
-SD Simonne d´Ardenne
+SD Simonne d'Ardenne
 ST Ms. Till
 SU Stanley Unwin
 TG John Tokien, J. R. R. Tolkien's grandfather
@@ -102,7 +101,7 @@ WT Walter
 0:AT,MT
 0:AT,JT
 0:AT,MI,WI
-0:AT,PK
+0:AT,PG
 0:CL,EE
 0:CL,AJ
 0:CL,JM
@@ -119,7 +118,7 @@ WT Walter
 0:CH,AC
 0:CH,TW,MS
 0:CS,RI
-0:ET,FN,DR
+0:ET,FN
 0:ET,JO,UC
 0:ET,JR
 0:ET,MP,PR,JT
@@ -162,7 +161,7 @@ WT Walter
 0:JT,DI
 0:JT,JW
 0:JT,GF
-0:JT,FN, Dr
+0:JT,FN
 0:JT,KS
 0:JT,ET
 0:JT,FM
@@ -178,7 +177,7 @@ WT Walter
 0:JT,GH
 0:JT,GH
 0:JT,CS
-0:JT,TM
+0:JT,MT
 0:JT,EE
 0:JT,CL
 0:JT,ET,JF,JR
