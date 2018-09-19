@@ -1,0 +1,454 @@
+* by Mariane Matias
+Abe Taub;Jane;2
+Abe Taub;Stephen Hawking;2
+Agnes Walker;Stephen Hawking;1
+Alan Deyermond;Jane;3
+Alan Deyermond;Stephen Hawking;1
+Alan Hardy;Jonathan Jones;1
+Alex;Lucy;1
+Amarjit Chohan;Jane;1
+Amarjit Chohan;Stephen Hawking;
+Andrei Linde;Jane;1
+Andrei Linde;Stephen Hawking;1
+Anna Bidder;Jane;1
+Annie Dicke;Jane;2
+Annie Dicke;Stephen Hawking;1
+Antony Melville;Robert George Hawking;2
+Arthur Eddington;Kevin;1
+Arthur Eddington;Timothy;2
+Aude;Jane;1
+Basil;Diana King;1
+Basil;Stephen Hawking;1
+Belinda;Arthur Eddington;1
+Belinda;Jane;1
+Belinda;Kevin;1
+Belinda;Timothy;1
+Bernard Carr;Iolanta;1
+Bernard Carr;Jane;2
+Bernard Rogers;Jane;1
+Bernard Rogers;Stephen Hawking;1
+Bernard Whiting;Mary Whiting;3
+Bill Lewis;Jane;1
+Bill Lewis;Pilar;1
+Bill Loveless;Cecil Gibbons;1
+Bill Loveless;Robert George Hawking;1
+Bill Loveless;Stephen Hawking;1
+Bob Dicke;Annie Dicke;1
+Bob Dicke;Jane;1
+Bob Dicke;Stephen Hawking;1
+Brandon Carter;Catherine;1
+Brandon Carter;Jane;2
+Brandon Carter;Jim Bardeen;2
+Brandon Carter;Stephen Hawking;6
+Brian Burns;Jane;1
+Brian Burns;Stephen Hawking;1
+Caroline Chamberlain;George Hill;1
+Caroline Chamberlain;Jane;2
+Caroline Chamberlain;Peter;1
+Caroline Chamberlain;Stephen Hawking;1
+Chaim Herzog;Stephen Hawking;1
+Chaim Herzog;Yitzhak Shamir;1
+Charlie Misner;Jane;2
+Charlie Misner;Stephen Hawking;3
+Charlie Misner;Susanne;1
+Chester White;Nikki Manatuna;1
+Chopin;George Sand;1
+Chopin;Maria;1
+Chris;Jane;1
+Christine Ikin;Jane;1
+Christine Ikin;Timothy;1
+Christine Putnis;Jane;1
+Christine Putnis;Ros Mays;1
+Christopher Penrose;Toby Penrose;1
+Christopher;Jonathan Jones;1
+Christopher;Penélope;2
+Christopher;Robert George Hawking;1
+Christopher;Stephen Hawking;1
+Cice;Abe Taub;1
+Cice;Jane;2
+Cice;Stephen Hawking;2
+Clarke;Jane;1
+Claude;Jane;2
+Claudio Teitelbaum;Allende;1
+Claudio Teitelbaum;Pablo Neruda;1
+Constance Willis;Caroline Chamberlain;1
+Cressida Dronke;Inigo Shaffer;1
+David Ireland;Jane;1
+David Ireland;John Ireland;1
+David Ireland;Joyce Ireland;2
+David Ireland;Stephen Hawking;1
+Dennis Sciama;Lydia Sciama;1
+Dennis Sciama;Stephen Hawking;3
+Diana King;Gillian;2
+Diana King;Jane;5
+Don Page;Jane;5
+Don Page;Jonathan Jones;1
+Don Page;Kip Thorne;1
+Don Page;Stephen Hawking;3
+Dorothy Needham;Jane;3
+Edward Hawking;Stephen Hawking;1
+Elaine Mason;Jane;1
+Elaine Mason;Stephen Hawking;4
+Elizabeth Chant;Diana King;1
+Elizabeth Chant;Jane;1
+Eva;Jane;1
+Eve Suckling;Jane;1
+Frank Hawking; Edward Hawking;1
+Frank Hawking;Jane;3
+Frank Hawking;Stephen Hawking;2
+Fred Hoyle;Jayant Narlikar;1
+Fred Hoyle;Stephen Hawking;1
+Fred Hoyle;Thomas Gold;1
+Geoffrey;Jane;2
+Geoffrey;Stephen Hawking;2
+George Ellis;Andy;1
+George Ellis;Jane;1
+George Ellis;Maggie Ellis;2
+George Ellis;Stephen Hawking;5
+George;Jane;1
+George;Robert George Hawking;1
+Ghee Ang;Jane;1
+Ghee Ang;Peck Ang;1
+Gillian;Geoffrey;2
+Gillian;Jane;4
+Gonzalo Vargas Llosa;Jane;1
+Gow;Constance Willis;1
+Hanna Scolnicov;Anat;1
+Hanna Scolnicov;Ariel;1
+Hanna Scolnicov;Jane;1
+Hanna Scolnicov;Shmuel;1
+Heimann Bondi;Fred Hoyle;1
+Heimann Bondi;Stephen Hawking;1
+Heimann Bondi;Thomas Gold;1
+Herman Hardenberg;Jane;1
+Herman Hardenberg;Janet;1
+Igor Novikov;Stephen Hawking;1
+Iolanta;Stephen Hawking;1
+Irene;Jane;1
+Irene;Jonathan Jones;1
+Irene;Sara;1
+Irene;Timothy;1
+Isobel Hawking;Beryl Graves;1
+Isobel Hawking;Frank Hawking;3
+Isobel Hawking;Jane;9
+Isobel Hawking;Robert Graves;1
+Isobel Hawking;Stephen Hawking;2
+Ivanenko;Kip Thorne;1
+Jack;Mãe Jane;1
+James Fitzsimons;Aude;1
+James Fitzsimons;Jane;1
+Jane;Abercrombie;1
+Jane;Alan Hardy;1
+Jane;Alan Lapedes;1
+Jane;Anna Zytkov;1
+Jane;Arthur Eddington;1
+Jane;Barnard Whiting;2
+Jane;Bill Loveless;2
+Jane;Cecil Gibbons;1
+Jane;Chester White;1
+Jane;Christopher;5
+Jane;Constance Willis;2
+Jane;Dennis Sciama;1
+Jane;Dorothy Woollard;1
+Jane;Dunham;1
+Jane;Effie;1
+Jane;Gent;1
+Jane;Ghee Ang;1
+Jane;Hiroko Naka;1
+Jane;Janet;1
+Jane;Jean Stark;1
+Jane;Joan;2
+Jane;John Christian;1
+Jane;John Farman;2
+Jane;John Varey;1
+Jane;Jonathan Jones;22
+Jane;Joy Cadbury;3
+Jane;Judy Fella;1
+Jane;Ken Naka;1
+Jane;Lucy;21
+Jane;Lydia Sciama;1
+Jane;Margaret Smithson;2
+Jane;Margit Wigner;2
+Jane;Maribel;1
+Jane;Martin Rees;1
+Jane;Mary Hawking;1
+Jane;Mary Taylor;1
+Jane;Mary Thatcher;1
+Jane;Mary Whiting;2
+Jane;Matthews;2
+Jane;Molly Du Cane;1
+Jane;Muriel;1
+Jane;Nigel Wickens;3
+Jane;Nikolaus Pevsner;1
+Jane;Paul Dirac;2
+Jane;Peck Ang;1
+Jane;Penélope;1
+Jane;Peter Dronke;1
+Jane;Stephen Hawking;108
+Jane;Sue Ellis;2
+Jane;Susanne;2
+Jane;Swan;2
+Jane;Teversham;1
+Jane;Timothy;13
+Jane;Toby Church;1
+Jane;Ursula;1
+Jane;Vitaly Ginzburg;1
+Jane;Winnie Brown;1
+Jean Stark;Dan Stark;1
+Jeannette Wheeler;Jane;1
+Jeannette Wheeler;Stephen Hawking;1
+Jean-Pierre Elkabbach;Jane;1
+Jean-Pierre Elkabbach;Jean Le Pen;1
+Jeremy Prynne;Stephen Hawking;1
+Jim Bardeen;Nancy;1
+Jim Hartle;Stephen Hawking;1
+Joan;Christopher Penrose;1
+Joan;Roger Penrose;1
+Joan;Toby Penrose;1
+Jocelyn Bell;Antony Hewish;1
+John C. Taylor;Mary Taylor;1
+John Christian;Jill Sturdy;1
+John Farman;Stephen Hawking;1
+John Jones;Irene;1
+John Jones;Jane;1
+John Jones;Jonathan Jones;1
+John Jones;Sara;1
+John Jones;Timothy;1
+John Stark;Dan Stark;1
+John Stark;Jane;1
+John Stark;Jean Stark;1
+John Stark;Robert George Hawking;1
+John Sturdy;Jill Sturdy;1
+John Sturdy;John Christian;1
+Jonathan Jones;Bernard Whiting;2
+Jonathan Jones;Bill Loveless;1
+Jonathan Jones;Brandon Carter;1
+Jonathan Jones;Gent;1
+Jonathan Jones;Janet;1
+Jonathan Jones;Lucette;1
+Jonathan Jones;Lucy;4
+Jonathan Jones;Mary Whiting;1
+Jonathan Jones;Robert George Hawking;1
+Jonathan Jones;Stephen Hawking;5
+Joseph Needham;Dorothy;1
+Joy Cadbury;Lucy Cadbury;1
+Joy Cadbury;Thomas Cadbury;1
+Joyce Ireland;Jane;1
+Joyce Ireland;John Ireland;1
+Joyce Ireland;Stephen Hawking;1
+Judy Fella;Stephen Hawking;1
+Kate Bertram;Jane;1
+Katrina;George;1
+Katrina;Robert George Hawking;1
+Kevin;Jane;1
+Khalatnikov;Jane;1
+Khalatnikov;Stephen Hawking;1
+Khalatnikov;Valentina Nikolaevna;1
+Kip Thorne;Evgeny Lifshitz;1
+Kip Thorne;Jane;6
+Kip Thorne;Linda;1
+Kip Thorne;Robert George Hawking;1
+Kip Thorne;Stephen Hawking;4
+Laura Ward;Jane;1
+Laura Ward;Stephen Hawking;1
+Leather;Jane;1
+Lee Pearson;Jane;1
+Linda;Jane;1
+Lizzie;Lucy;1
+Lola;Andy;1
+Lola;George Ellis;1
+Lola;Maggie Ellis;1
+Lola;Sue Ellis;1
+Loraine;Heimann Bondi;1
+Loraine;Rus;1
+Loraine;Stephen Hawking;1
+Lucette;Brandon Carter;2
+Lucette;Catherine;1
+Lucette;Jane;3
+Lucy Grace;Joy Cadbury;1
+Lucy;Bill Loveless;1
+Lucy;Lucy Cadbury;1
+Lucy;Shu;1
+Lucy;William;1
+M. Hilay Gent;Jane;1
+Madame Maillet;Jane;1
+Madame Maillet;Jonathan;1
+Mãe Jane;Jane;11
+Mãe Jane;Jonathan Jones;1
+Mãe Jane;Robert George Hawking;2
+Maggie Ellis;Andy;1
+Mariah;Jane (Mariah);1
+Mary Hawking;Stephen Hawking;3
+Mary Whiting;Timothy;1
+Maurice Yaffe;Jane;1
+Michael Mair;Jane;1
+Michael Mair;Solome;1
+Michael Mair;Stephen Hawking;1
+Mimi;Jane;1
+Mimi;Stephen;1
+Ming;Ghee Ang;1
+Ming;Peck Ang;1
+Molly Du Cane;Agnes Walker;1
+Mr. Jo;Jane;1
+Mr. Jo;Stephen Hawking;1
+Muriel;Frank Hawking;1
+Muriel;Stephen Hawking;1
+Murray Gell-Mann;Jane;1
+Murray Gell-Mann;Stephen Hawking;1
+Nancy;Jane;1
+Nick Hughes;Stephen Hawking;1
+Nick Warner;Jane;2
+Nick Warner;Stephen Hawking;2
+Nigel Weiss;Judy;1
+Nigel Wickens;Amy Klohr;1
+Nigel Wickens;Laura;1
+Nikki Manatunga;Jane;1
+Nikki Manatunga;Stephen Hawking;1
+Pablo Neruda;Allende;1
+Pai Jane;Henry Button;1
+Pai Jane;Jane;13
+Pai Jane;John Owens;1
+Pai Jane;Jonathan Jones;1
+Pai Jane;Mãe Jane;4
+Pam;Jane;1
+Pam;Theresa;1
+Pat;Jane;1
+Paul Dirac; Stephen Hawking;1
+Paul Dirac;Margit Wigner;2
+Paul Lucas;Jane;1
+Paul Lucas;Stephen Hawking;1
+Penélope;Jonathan Jones;1
+Peter Dronke;Ursula;1
+Philippa Hawking;Jane;2
+Philippa Hawking;Stephen Hawking;4
+Pilar de Ubeda;Jane;2
+Pilar de Ubeda;Maribel;1
+Pilar;Jane;2
+Pilar;Sylvia;2
+Príncipe Philip;Jane;1
+Príncipe Philip;Robert George Hawking;1
+Príncipe Philip;Timothy;1
+Renata Galosh;Andrei Linde;1
+Renata Galosh;Jane;1
+Renata Galosh;Stephen Hawking;1
+Rob Donovan;Jane (Mariah);1
+Rob Donovan;Jane;1
+Rob Donovan;Mariah;1
+Rob Donovan;Stephen Hawking;3
+Robert Boyer;Jane;2
+Robert Boyer;Stephen Hawking;2
+Robert George Hawking;Dan Stark;1
+Robert George Hawking;Inigo Shaffer;7
+Robert George Hawking;Jane;40
+Robert George Hawking;Lucy Grace;1
+Robert George Hawking;Lucy;7
+Robert George Hawking;Shu;1
+Robert George Hawking;Stephen Hawking;14
+Robert George Hawking;Thomas Cadbury;1
+Robert George Hawking;Thomas Grace;1
+Robert George Hawking;Timothy;3
+Robert Graves;Beryl Graves;1
+Roger Penrose;Jane;2
+Roger Penrose;Stephen Hawking;3
+Ros Mays;Jane;1
+Rus;Stephen Hawking;2
+Ruth Hughes;Jane;1
+Sara;Jane;1
+Sara;Jonathan Jones;1
+Sara;Miriam;1
+Shu;Hiroko Naka;1
+Shu;Ken Naka;1
+Simpson;Constance Willis;1
+Solome; Jane;1
+Solome;Stephen Hawking;1
+Stephen Armstrong;Jane;1
+Stephen Harvey;Jane;1
+Stephen Hawking;Alan Lapedes;5
+Stephen Hawking;Anne Young;1
+Stephen Hawking;Arthur Eddington;1
+Stephen Hawking;Bernard Carr;3
+Stephen Hawking;Bernard Carr;4
+Stephen Hawking;Bernard Whiting;2
+Stephen Hawking;Bill Lewis;1
+Stephen Hawking;Brian Whitt;1
+Stephen Hawking;Constance Willis;1
+Stephen Hawking;Diana King;1
+Stephen Hawking;Gary Gibbons;2
+Stephen Hawking;Ghee Ang;1
+Stephen Hawking;Ghee Ang;2
+Stephen Hawking;Janet;1
+Stephen Hawking;Jim Bardeen;2
+Stephen Hawking;Joan;1
+Stephen Hawking;John McClenahan;1
+Stephen Hawking;Lucy;8
+Stephen Hawking;Mãe Jane;1
+Stephen Hawking;Mary Thatcher;1
+Stephen Hawking;Mary Whiting;2
+Stephen Hawking;Nigel Weiss;1
+Stephen Hawking;Peck Ang;1
+Stephen Hawking;Peck Ang;1
+Stephen Hawking;Peter De'Ath;1
+Stephen Hawking;Polly Grand Montagne;1
+Stephen Hawking;Príncipe Charles;1
+Stephen Hawking;Príncipe Philip;2
+Stephen Hawking;Sir Alan Hodgkin;2
+Stephen Hawking;Sue Ellis;1
+Stephen Hawking;Sue Smith;1
+Stephen Hawking;Susanne;2
+Stephen Hawking;Swan;2
+Stephen Hawking;Sylvie Teschke;1
+Stephen Hawking;Timothy;2
+Stephen Hawking;Vitaly Ginzburg;1
+Subrahmanyan Chandrasekhar;Andy;1
+Subrahmanyan Chandrasekhar;George Ellis;1
+Subrahmanyan Chandrasekhar;Lola;1
+Subrahmanyan Chandrasekhar;Maggie Ellis;1
+Subrahmanyan Chandrasekhar;Sue Ellis;1
+Sue Ellis;Andy;1
+Sue Ellis;George Ellis;3
+Sue Ellis;Jane;2
+Sue Ellis;Maggie Ellis;2
+Sue Ellis;Robert George Hawking;1
+Sue Ellis;Stephen Hawking;1
+Susan;Ghee Ang;1
+Susan;Ming;1
+Susan;Peck Ang;1
+Susie Burns;Jane;1
+Susie Burns;Stephen Hawking;1
+Sylvia;Jane;2
+Thelma Thatcher; Jane;7
+Thelma Thatcher;Chalmers;1
+Thelma Thatcher;Ghee Ang;1
+Thelma Thatcher;Mary Thatcher;1
+Thelma Thatcher;Peck Ang;1
+Thelma Thatcher;Stephen Hawking;2
+Thelma Thatcher;Teulon-Porter;1
+Theresa;Jane;1
+Thomas Cadbury;Lucy Cadbury;1
+Thomas Grace;Joy Cadbury;1
+Thomas Grace;Lucy Grace;2
+Thomas Grace;Lucy;1
+Thrift;Jane;1
+Timothy;Jonathan Jones;2
+Timothy;Kevin;1
+Timothy;Lee Pearson;1
+Timothy;Lucy;2
+Timothy;Sara;1
+Tom Wesley;Stephen Hawking;1
+Tricia Holmes;Jane;1
+Tricia Holmes;Lizzie;1
+Valerie Broadbent-Keeble;Jane;1
+Valerie Broadbent-Keeble;Robert George Hawking;1
+Valerie Broadbent-Keeble;Timothy;1
+Vera Petrovna;Lucy;1
+Vladimir Belinsky;Kip Thorne;1
+William Thatcher;Jane;2
+William Thatcher;Mary Thatcher;1
+Willy Fowler;Jane;1
+Willy Fowler;Stephen Hawking;1
+Wilson;Jane;1
+Wilson;Jane;1
+Wilson;Robert George Hawking;1
+Wilson;Timothy;1
+Yakov Borisovich Zel'dovich;Igor Novikov;1
+Yitzhak Shamir;Stephen Hawking;1
