@@ -1,5 +1,5 @@
 * File "tolkien.dat" from Characters Network project (C) 2017 University of Sao Paulo, Brazil
-* J. R. R. Tolkien, by Michael White.
+* J. R. R. Tolkien, by Michael White. The data was gathered by prof. Sueli Mara Soares Pinto Ferreira.
 * This file may be freely copied.
 * The encounters are not in order of appearance; 0 means no chapter was annotated.
 AC Aleister Crowley
@@ -53,10 +53,10 @@ IE Marjorie, May's daughter
 JA Jane
 JF John Francis Remel, J. R. R. Tolkien's son
 JG Joy Gresham
+JM Janie Moore
 JO Jessop
 JR Jennie Grove
 JS John Suffield, Mabel's father
-JM Janie Moore
 JT J. R. R. Tolkien
 JU Judith
 JW Joe Wright, Dr.
@@ -77,8 +77,8 @@ RB Richard Burton
 RD Robert Davard
 RG Roger Lancelyn Green
 RI Robert Gilson
-RU Rayner Unwin, Stanley's son
 RM R. M. Dawkins
+RU Rayner Unwin, Stanley's son
 RY Mary, May's daughter
 SA Susan Dagnall
 SD Simonne d'Ardenne
