@@ -1,13 +1,13 @@
 * File "hobbit.dat" from Characters Network project (C) 2017 University of Sao Paulo, Brazil
 * Hobbit, by J. R. R. Tolkien
 * This file may be freely copied.
-* The encounters are not in order of appearance; 0 means no chapter was gathered.
+* The encounters are not in order of appearance; 0 means no chapter was annotated.
 AZ Azog
 BA Balin
 BD Beladona
 BE Bert
-BI Bilbo
 BF Bifur
+BI Bilbo
 BL Bolg
 BM Bombur
 BN Beorn
