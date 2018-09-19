@@ -50,43 +50,34 @@ class Graphs():
         def calc_normalized_centralities(G):
 		# DEGREE
                 degs = nx.degree_centrality(G)                
-                for i in range(G.number_of_nodes()):
-                        G.node[i]['Degree'] = degs[i]
+                for v in G.nodes():
+                        G.node[v]['Degree'] = degs[v]
                         
 		# BETWEENNESS
                 bets = nx.betweenness_centrality(G)
-                for i in range(G.number_of_nodes()):
-                        G.node[i]['Betweenness'] = bets[i]
+                for v in G.nodes():
+                        G.node[v]['Betweenness'] = bets[v]
 
 		# CLOSENESS - already normalized
                 closes = nx.closeness_centrality(G)
-                for i in range(G.number_of_nodes()):
-                        G.node[i]['Closeness']   = closes[i]
+                for v in G.nodes():
+                        G.node[v]['Closeness']   = closes[v]
 
-                return(degs, bets, closes, lobby(G, None))
+                return(degs, bets, closes, lobby(G))
                         
         @staticmethod
-        def calc_graph_vertex_lobby(G, log_file=None):
-                lobby(G, log_file)
+        def calc_graph_vertex_lobby(G):
+                lobby(G)
 
         @staticmethod
         def degree_stat(G):
                 """Calculate the average degree and the standard deviation degree.
-                Source: http://holanda.xyz/files/mean.c
                 """
-                avg_prev = float(G.degree(0))
-                var_prev = 0
-                for i in range(1, G.number_of_nodes()):
-                        deg = float(G.degree(i))
-                        avg_curr = avg_prev + (deg - avg_prev)/(i + 1)
-                        var_curr = var_prev + (deg - avg_prev) * (deg - avg_curr)
-                        
-                        avg_prev = avg_curr
-                        var_prev = var_curr
-                        
-                stdev = math.sqrt(var_curr/(G.number_of_nodes() - 1))
+                deg_sum = [] # degree summation
+                for v in G.nodes():
+                        deg_sum.append(G.degree(v))
 
-                return (avg_curr, stdev)
+                return (np.mean(deg_sum), np.std(deg_sum))
 
         def get_degree_avg_neighbors(G):
                 k2knns = {} # map degree to average neighbor degree average
