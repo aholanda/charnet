@@ -1,9 +1,13 @@
-import networkx as nx
 import numpy as np
+import logging
+import networkx as nx
 
 # LOCAL
 from plot import *
 from graphs import *
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Formatting:
         @staticmethod
@@ -40,7 +44,7 @@ class Formatting:
 
                 f.write("\\botrule \\end{tabular}\n")
                 f.close()
-                print('Wrote',fn)
+                logger.info('Wrote {}'.format(fn))
 
         @staticmethod
         def write_global_measures():
@@ -52,7 +56,7 @@ class Formatting:
                 routine.  We also calculate
                 [density](https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.classes.function.density.html).
                 """
-                print('Writing global measures...')
+                logger.info('Writing global measures...')
         
                 fn = 'global.tex'
                 
@@ -69,10 +73,9 @@ class Formatting:
                 )
                 books = Books.get_books()
                 for book in books:
-                        G = book.G
-                        G.graph['clustering'] = nx.average_clustering(book.G)
-                        G.graph['density'] = nx.density(book.G)
-
+                        G = book.get_graph()
+                        G.graph['clustering'] = nx.average_clustering(G)
+                        G.graph['density'] = nx.density(G)
                         (deg_avg, deg_stdev) = Graphs.degree_stat(G)
                 
                         # OUTPUT
@@ -89,7 +92,7 @@ class Formatting:
                 f.write("\\botrule\\end{tabular}}\n")        
                 f.close()
 
-                print('Wrote %s'% fn)
+                logger.info('Wrote {}'.format(fn))
 
                 Plot.do_density_versus_clustering_coefficient()
 
@@ -118,8 +121,8 @@ class Formatting:
                                         f.write('${0:.3f}'.format(nx.degree_assortativity_coefficient(G)) +'$ & ')
                                         continue
                                 
-                                for i in range(G.number_of_nodes()):
-                                        vals.append(G.node[i][centr])
+                                for v in G.nodes():
+                                        vals.append(G.node[v][centr])
 
                                 m = np.mean(np.array(vals))
                                 std = np.std(np.array(vals))
@@ -132,5 +135,5 @@ class Formatting:
                                                 f.write(' \\botrule')
                         f.write('\n')
                 f.write('\\end{tabular}}\n')
-                print('Wrote', fn)
+                logger.info('Wrote {}'.format(fn))
                 f.close()
