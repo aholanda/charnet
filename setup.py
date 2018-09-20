@@ -10,5 +10,7 @@ setup(
         packages=['charnet',],
         license='GPL2',
         long_description=open('LICENSE').read(),
-        install_requires=['networkx', 'numpy', 'pygraphviz'],
+        install_requires=['networkx', 'numpy',
+                          'scipy', 'pygraphviz',
+        ],
 )
