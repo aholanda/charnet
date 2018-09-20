@@ -36,7 +36,7 @@ class Graphs():
                 elif which == 'Pagerank':
                         centr_func = nx.pagerank
                 else:
-                        logger.error('wrong centrality id=%s', which)
+                        logger.error('* Wrong centrality id=%s', which)
                         exit()
 
                 return centr_func

@@ -71,7 +71,7 @@ class MultiPlots():
                         if j == 0:
                                 self.axes[i, j].set_ylabel(label, fontsize=fontsize)
                 else:
-                        logger.error('Axes {} is not defined' % which)
+                        logger.error('* Axes {} is not defined' % which)
                         exit()
 
         def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
@@ -126,7 +126,7 @@ class MultiPlots():
                 plt.tight_layout()
                 plt.savefig(fn)
                 plt.close()
-                logger.info('Wrote plot %s', fn)
+                logger.info('* Wrote plot %s', fn)
 
 class Plot:
         markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
@@ -140,7 +140,7 @@ class Plot:
                 elif (book.get_category() == BookCategory.LEGENDARY):
                         return 'green'
                 else:
-                        logger.error('Non categorized book ', book.get_name())
+                        logger.error('* Non categorized book ', book.get_name())
                         exit()
 
         @staticmethod
@@ -170,7 +170,7 @@ class Plot:
                 plt.legend(fontsize=7, loc='center right')
                 plt.savefig(fn)
 
-                logger.info('Wrote %s', fn)
+                logger.info('* Wrote %s', fn)
 
         @staticmethod
         def do_degree_distrib(verbose=False):

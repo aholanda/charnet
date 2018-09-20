@@ -44,7 +44,7 @@ class Formatting:
 
                 f.write("\\botrule \\end{tabular}\n")
                 f.close()
-                logger.info('Wrote {}'.format(fn))
+                logger.info('* Wrote {}'.format(fn))
 
         @staticmethod
         def write_global_measures():
@@ -56,7 +56,7 @@ class Formatting:
                 routine.  We also calculate
                 [density](https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.classes.function.density.html).
                 """
-                logger.info('Writing global measures...')
+                logger.info('* Writing global measures...')
         
                 fn = 'global.tex'
                 
@@ -92,7 +92,7 @@ class Formatting:
                 f.write("\\botrule\\end{tabular}}\n")        
                 f.close()
 
-                logger.info('Wrote {}'.format(fn))
+                logger.info('* Wrote {}'.format(fn))
 
                 Plot.do_density_versus_clustering_coefficient()
 
@@ -135,5 +135,5 @@ class Formatting:
                                                 f.write(' \\botrule')
                         f.write('\n')
                 f.write('\\end{tabular}}\n')
-                logger.info('Wrote {}'.format(fn))
+                logger.info('* Wrote {}'.format(fn))
                 f.close()

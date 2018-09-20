@@ -16,7 +16,7 @@ class Draw:
                 """Graphs for the characters' encounters are drawn for visualization
                 only using matplotlib and NetworkX."""
 
-                logger.info('Drawing graphs...')
+                logger.info('* Drawing graphs...')
                 books = Books.get_books()
                 for book in books:
                         factor = 10 # increase factor
@@ -55,4 +55,4 @@ class Draw:
                         nx.draw_networkx_labels(G, pos, labels, font_size=11)
                         plt.tight_layout()
                         plt.savefig(fn, format="PNG")
-                        logger.info('Wrote %s' % fn )
+                        logger.info('* Wrote %s' % fn )

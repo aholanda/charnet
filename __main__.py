@@ -42,7 +42,7 @@ hdrs = ["__main__",
         "\n\t#### RUNNING ALL TASKS ####"] 
 
 def usage():
-        logger.error('usage: ' + sys.argv[0] + ''' [options]
+        logger.error('* Usage: ' + sys.argv[0] + ''' [options]
         OPTIONS
         -p, --plot
         \tPlot the lobby and other centralities comparisons, and assortativity mixing, generating files.
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                         elif opt == "-h" or opt == "--help": # help make exit
                                 usage()
                         else:
-                                logger.error('Unknown OPTION:', opt)
+                                logger.error('* Unknown OPTION:', opt)
                                 usage()
                                 
         else:
