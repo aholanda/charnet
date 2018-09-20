@@ -7,8 +7,9 @@ This project performed studies using complex networks in some books. We consider
 
 ## Directories content
 
-* `data` - data gathered for the project;
-* `sgb` - some data from [Stanford GraphBase](http://www-cs-faculty.stanford.edu/~uno/sgb.html).
+* [`charnet`](charnet/) - Python code for the project;
+* [`data`](data/) - data gathered for the project;
+* [`sgb`](sgb/) - some data from [Stanford GraphBase](http://www-cs-faculty.stanford.edu/~uno/sgb.html).
 
 ## Prerequisites
 
@@ -20,10 +21,11 @@ This project performed studies using complex networks in some books. We consider
 
 ## Structure
 
-The structure of the project follows, mainly, the Composite design
-pattern where `Book` is the `Component`, `Books` class is the
-`Composite`, and the books like "acts of the apostles" (`Acts`) and
-the biography of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
+The structure of the project in [`charnet/`](charnet/) follows,
+mainly, the Composite design pattern where `Book` is the `Component`,
+`Books` class is the `Composite`, and the books like "acts of the
+apostles" (`Acts`) and the biography of J. R. R. Tolkien (`Tolkien`)
+are `Leaf`s.
  
 ![UML class diagram](dia.png)
 
@@ -68,22 +70,28 @@ the biography of J. R. R. Tolkien (`Tolkien`) are `Leaf`s.
 
 ## Running
 
-To generate all results and plots, just run:
+To install the dependencies, the easy way is to run
 
 ````
-$ make
+$ python3 setup.py build
 ````
 
-To select a specific target, see the help:
+To run all the project tasks:
 
 ````
-$ make help
+$ python3 charnet -a
 ````
 
-To clean the output generated:
+To print the possible tasks to be performed apart:
 
 ````
-$ make clean
+$ python3 charnet -h
+````
+
+To clean the generated files:
+
+````
+$ python setup.py clean --all
 ````
 
 ## Feedback
