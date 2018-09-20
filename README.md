@@ -17,7 +17,7 @@ This project performed studies using complex networks in some books. We consider
   * [matplotlib](https://matplotlib.org/);
   * [NetworkX](https://networkx.github.io/);
   * [PyGraphviz](https://pygraphviz.github.io/);
-  * [plfit](https://github.com/keflavich/plfit) - this package is automatically installed after running `setup.py`. It is used to fit data to power law distribution.
+  * [plfit](https://github.com/keflavich/plfit) - it is a package used to fit data to power law distribution.
 
 ## Structure
 
@@ -73,7 +73,8 @@ are `Leaf`s.
 To install the dependencies, the easy way is to run
 
 ````
-$ python3 setup.py build
+$ git clone https://github.com/keflavich/plfit
+$ python3 setup.py install --user
 ````
 
 To run all the project tasks:
