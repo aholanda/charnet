@@ -55,22 +55,10 @@ class Book():
                 '''Return the default file extension.'''
                 return '.dat'
 
-        def get_file_freq_ext(self):
-                '''Return the character frequency file extension.'''
-                return '.freq'
-
         def get_file_name(self):
                 '''Return the file name to be read.'''
                 return self.get_datadir() + self.__str__() + self.get_file_ext()
 
-        def get_file_name_freq(self):
-                '''Return the file name with character frequency to be read.'''
-                return self.get_datadir() + self.__str__() + self.get_file_freq_ext()
-        
-        def has_frequency_file(self):
-                '''Return if the book has a file containg character frequency.'''
-                pass
-        
         def get_graph(self):
                 return self.G
 
@@ -160,7 +148,7 @@ class Book():
 
                                 # check the order
                                 if u > v:
-                                        logger.error('Labels {} and {} is out of order in {}'.format(u, v, book_name))
+                                        logger.error('* Labels {} and {} is out of order in {}'.format(u, v, book_name))
                                         exit()
                                 
                                 #DEBUG
@@ -170,7 +158,7 @@ class Book():
                                         self.G.add_node(v, frequency=1, name=character_name)
                                         u = v
                                 else:
-                                        logger.error('Label {} is repeated in book {}.'.format(v, book_name))
+                                        logger.error('* Label {} is repeated in book {}.'.format(v, book_name))
                                         exit()
                                 continue
 
@@ -192,7 +180,7 @@ class Book():
                                 # otherwise, increment frequency
                                 for v in vs:
                                         if (v not in self.G.node):
-                                                logger.error('Label <{}> was not added as node in the graph for book {}.'.format(v, book_name))
+                                                logger.error('* Label <{}> was not added as node in the graph for book {}.'.format(v, book_name))
                                                 exit()
                                         else:
                                                 self.G.node[v]['frequency'] += 1
@@ -215,12 +203,13 @@ class Book():
                                                 logger.debug('* G.{}_edge({}, {}, weight={})'.format(action, u, v, w))
                                                 #GUBED
                 f.close()
-                logger.info("read G from book \"{}\"".format(book_name))
+                logger.info("* Read G from book \"{}\"".format(book_name))
                 return self.G
         
-class Acts(Book):
+class Acts(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
         def __str__(self):
                 return 'acts'
@@ -228,18 +217,13 @@ class Acts(Book):
         def get_category(self):
                 return BookCategory.LEGENDARY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'khaki'
 
-class Apollonius(Book):
+class Apollonius(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
         def __str__(self):
                 return 'apollonius'
@@ -247,18 +231,13 @@ class Apollonius(Book):
         def get_category(self):
                 return BookCategory.LEGENDARY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'red'
 
-class Arthur(Book):
+class Arthur(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
         def __str__(self):
                 return 'arthur'
@@ -266,18 +245,13 @@ class Arthur(Book):
         def get_category(self):
                 return BookCategory.FICTION
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'cyan'
 
-class David(Book):
+class David(Book, SGB):
         def __init__(self):
                 Book.__init__(self)
+                SGB.__init__(self)
                 
         def __str__(self):
                 return 'david'
@@ -285,18 +259,13 @@ class David(Book):
         def get_category(self):
                 return BookCategory.FICTION
         
-        def get_datadir(self):
-                return SGB.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'orange'
 
-class Dick(Book):
+class Dick(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
         def __str__(self):
                 return 'dick'
@@ -304,37 +273,27 @@ class Dick(Book):
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'orchid'
 
-class Hawking(Book):
+class Hawking(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
-                               
+                Charnet.__init__(self)
+                
         def __str__(self):
                 return 'hawking'
 
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return True
-
         def get_vertex_color(self):
                 return 'silver'
 
 class Hobbit(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
+                Charnet.__init__(self)
                 
         def __str__(self):
                 return 'hobbit'
@@ -342,18 +301,13 @@ class Hobbit(Book, Charnet):
         def get_category(self):
                 return BookCategory.FICTION
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'gold'
 
-class Huck(Book):
+class Huck(Book, SGB):
         def __init__(self):
                 Book.__init__(self)
+                SGB.__init__(self)
                 
         def __str__(self):
                 return 'huck'
@@ -361,31 +315,20 @@ class Huck(Book):
         def get_category(self):
                 return BookCategory.FICTION
         
-        def get_datadir(self):
-                return SGB.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'salmon'
 
-class Luke(Book):
+class Luke(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
-               
+                Charnet.__init__(self)
+                
         def __str__(self):
                 return 'luke'
 
         def get_category(self):
                 return BookCategory.LEGENDARY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'wheat'
 
@@ -400,14 +343,10 @@ class Newton(Book, Charnet):
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        
         def get_vertex_color(self):
                 return 'tan'
 
-class Pythagoras(Book):
+class Pythagoras(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
@@ -418,12 +357,6 @@ class Pythagoras(Book):
         def get_category(self):
                 return BookCategory.LEGENDARY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return True
-
         def get_vertex_color(self):
                 return 'tomato'
 
@@ -438,12 +371,6 @@ class Tolkien(Book, Charnet):
         def get_category(self):
                 return BookCategory.BIOGRAPHY
         
-        def get_datadir(self):
-                return Charnet.get_datadir()
-
-        def has_frequency_file(self):
-                return False
-
         def get_vertex_color(self):
                 return 'yellowgreen'
 
