@@ -10,7 +10,7 @@ from graphs import *
 class Project:
         '''Template for specific project configurations.'''
         @staticmethod
-        def get_datadir(self):
+        def get_datadir():
                 '''Return the directory containing data for the project.'''
                 pass
 
