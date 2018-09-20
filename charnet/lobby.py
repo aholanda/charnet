@@ -1,3 +1,4 @@
+import os.path
 import logging
 from networkx import *
 
@@ -5,8 +6,9 @@ from networkx import *
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+handler = None
 if logger.getEffectiveLevel() == logging.DEBUG:
-    handler = logging.FileHandler('./lobby.log')
+    handler = logging.FileHandler(os.path.join(Project.get_outdir(),'lobby.log'))
     formatter = logging.Formatter('%(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -65,5 +67,7 @@ def lobby(G):
         
         lobbies[u] = G.node[u]['Lobby']
 
+        if handler:logger.debug('* Wrote {}'.format(handler.stream.name))
+        
     return lobbies
             
