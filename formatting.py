@@ -1,3 +1,4 @@
+import os.path
 import numpy as np
 import logging
 import networkx as nx
@@ -16,7 +17,7 @@ class Formatting:
                 _Hapax_ frequency to be included in the paper using LaTeX
                 syntax for tables.
                 """
-                fn = 'legomenas.tex'
+                fn = os.path.join(Project.get_outdir(), 'legomenas.tex')
 
                 f = open(fn, "w")
                 f.write("\\begin{tabular}{@{}ccc@{}}\\toprule \n")
@@ -58,7 +59,7 @@ class Formatting:
                 """
                 logger.info('* Writing global measures...')
         
-                fn = 'global.tex'
+                fn = os.path.join(Project.get_outdir(), 'global.tex')
                 
                 f = open(fn, "w")
 
@@ -101,7 +102,7 @@ class Formatting:
                 """
                 Calculate the mean and deviation for centralities for each book.
                 """
-                fn = 'centr.tex'
+                fn = os.path.join(Project.get_outdir(), 'centr.tex')
                 f = open(fn, "w")
 
                 centrs = ['Degree', 'Betweenness', 'Closeness', 'Assortativity', 'Lobby']
@@ -139,6 +140,27 @@ class Formatting:
                 f.close()
 
         @staticmethod
+        def write_vertices_degree():
+                suf = '-vertex-degree.csv'
+                sep = ','
+
+                books = Books.get_books()
+                for book in books:
+                        G = book.get_graph()
+
+                        for v in G.nodes():
+                                G.node[v]['degree'] = G.degree(v)
+
+                        fn = book.get_name() + suf
+                        fn = os.path.join(Project.get_outdir(), fn)
+                        f = open(fn, 'w')
+                        for v, data in sorted(G.nodes(data=True), reverse=True, key=lambda x: x[1]['degree']):
+                                f.write(v + sep + '\"' + data['name'] + '\"'+ sep + str(data['degree']) + '\n')
+
+                        f.close()
+                        logger.info('* Wrote {}'.format(fn))                
+
+        @staticmethod
         def write_vertices_frequency():
                 suf = '-vertex-frequency.csv'
                 sep = ','
@@ -147,7 +169,8 @@ class Formatting:
                 for book in books:
                         G = book.get_graph()
 
-                        fn = '/tmp/' + book.get_name() + suf
+                        fn = book.get_name() + suf
+                        fn = os.path.join(Project.get_outdir(), fn) 
                         f = open(fn, 'w')
                         for v, data in sorted(G.nodes(data=True), reverse=True, key=lambda x: x[1]['frequency']):
                                 f.write(v + sep + '\"' + data['name'] + '\"'+ sep + str(data['frequency']) + '\n')

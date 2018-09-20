@@ -1,4 +1,4 @@
-import asyncio
+import os.path
 import functools
 
 import matplotlib.pyplot as plt
@@ -121,7 +121,7 @@ class MultiPlots():
                 self.print_axis(i, j, 'k', 'x')
                 self.print_axis(i, j, 'CDF', 'y')
 
-        def finalize(self, fn='plot.pdf'):
+        def finalize(self, fn=os.path.join(Project.get_outdir(), 'plot.pdf')):
                 self.fig.subplots_adjust(hspace=0)
                 plt.tight_layout()
                 plt.savefig(fn)
@@ -145,7 +145,7 @@ class Plot:
 
         @staticmethod
         def do_density_versus_clustering_coefficient():
-                fn = 'Figure-Density_versus_CC.pdf'
+                fn = os.path.join(Project.get_outdir(), 'Figure-Density_versus_CC.pdf')
                 
                 nms = 0 # counter for markers
                 books = Books.get_books()
@@ -177,7 +177,7 @@ class Plot:
                 '''Plot degree distribution for books with curve fitting made by
                 plfit.
                 '''
-                fn = 'Figure-Degree_Distrib.pdf'
+                fn = os.path.join(Project.get_outdir(), 'Figure-Degree_Distrib.pdf')
                 mplots = MultiPlots(4, 3)
 
                 books = Books.get_books()
@@ -207,6 +207,7 @@ class Plot:
                 
                 for centr_name in Graphs.get_centrality_names():
                         fn = 'Figure-' + centr_name + '.pdf'
+                        fn = os.path.join(Project.get_outdir(), fn)
                         
                         mplots = MultiPlots(4, 3)
                         
@@ -235,7 +236,7 @@ class Plot:
         def do_assortativity():
                 """Assortativity mixing is calculated and plotted versus average degree.
                 """
-                fn = 'Figure-Assortativity.pdf'
+                fn = os.path.join(Project.get_outdir(), 'Figure-Assortativity.pdf')
                 xticklabels = np.arange(0, 1.1, 0.1)
                 yticklabels = xticklabels
 

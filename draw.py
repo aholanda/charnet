@@ -1,3 +1,4 @@
+import os.path
 import matplotlib.pyplot as plt
 import pygraphviz as pgv
 import logging
@@ -22,7 +23,9 @@ class Draw:
                         factor = 10 # increase factor
                         G = book.get_graph()
                         color = book.get_vertex_color()
+
                         fn = "g-" + book.get_name() + ".png"
+                        fn = os.path.join(Project.get_outdir(), fn)
 
                         # edge proportional to weight
                         edgewidths=[]
