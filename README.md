@@ -70,6 +70,12 @@ are `Leaf`s.
 
 ## Running
 
+Download the project using `git` and enter in the `charnet` directory:
+
+````
+$ git clone https://github.com/ajholanda/charnet.git && cd charnet
+````
+
 To install the dependencies, the easy way is to run
 
 ````
