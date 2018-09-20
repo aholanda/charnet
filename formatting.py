@@ -137,3 +137,20 @@ class Formatting:
                 f.write('\\end{tabular}}\n')
                 logger.info('* Wrote {}'.format(fn))
                 f.close()
+
+        @staticmethod
+        def write_vertices_frequency():
+                suf = '-vertex-frequency.csv'
+                sep = ','
+
+                books = Books.get_books()
+                for book in books:
+                        G = book.get_graph()
+
+                        fn = '/tmp/' + book.get_name() + suf
+                        f = open(fn, 'w')
+                        for v, data in sorted(G.nodes(data=True), reverse=True, key=lambda x: x[1]['frequency']):
+                                f.write(v + sep + '\"' + data['name'] + '\"'+ sep + str(data['frequency']) + '\n')
+
+                        f.close()
+                        logger.info('* Wrote {}'.format(fn))                
