@@ -30,6 +30,7 @@ tasks = [ None, # sys.argv[0] name of the program, no flag associated
           Formatting.write_global_measures, # -b
           Formatting.write_hapax_legomena_table, # -l
           Formatting.write_stat_centralities, # -s
+          Formatting.write_vertices_frequency,
           run_all_tasks] # -a
         
 # headers
@@ -88,8 +89,10 @@ if __name__ == "__main__":
                                 opts[4] = True
                         elif opt == "-s" or opt == "--stat-centralities":
                                 opts[5] = True
-                        elif opt == "-a" or opt == "--all-tasks":
+                        elif opt == "-f" or opt == "--frequency":
                                 opts[6] = True
+                        elif opt == "-a" or opt == "--all-tasks":
+                                opts[7] = True
                                 for i in range(1, n-1): # to not repeat tasks
                                         opts[i] = False
                         elif opt == "-h" or opt == "--help": # help make exit
