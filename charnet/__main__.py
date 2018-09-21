@@ -32,6 +32,7 @@ tasks = [ None, # sys.argv[0] name of the program, no flag associated
           Formatting.write_stat_centralities, # -s
           Formatting.write_vertices_degree, # -d
           Formatting.write_vertices_frequency, # -f
+          Formatting.write_edges_weight, # -e
           run_all_tasks] # -a
         
 # headers
@@ -42,7 +43,8 @@ hdrs = ["__main__",
         "\n\t#### TASK 4 - Write the frequency of _hapax_ _legomena_ ####", 
         "\n\t#### TASK 5 - Write statistics of centralities ####",
         "\n\t#### TASK 6 - Write the vertices' degree ####",
-        "\n\t#### TASK 7 - Write the characters' frequency ####", 
+        "\n\t#### TASK 7 - Write the characters' frequency ####",
+        "\n\t#### TASK 8 - Write the edges' weight ####", 
         "\n\t#### RUNNING ALL TASKS ####"] 
 
 def usage():
@@ -59,16 +61,18 @@ def usage():
         -s, --stat-centralities
         \tGenerate statistics from centralities.
         -d, --degree
-        \tWrite the vertices' degree in a file named \"/tmp/<book_name>-vertex-degree.csv\".
+        \tWrite the vertices' degree in a file named \"{dir}/<book_name>-vertex-degree.csv\".
         -f, --frequency
-        \tWrite the frequency of characters' appearance in a file named \"/tmp/<book_name>-vertex-frequency.csv\".
+        \tWrite the frequency of characters' appearance in a file named \"{dir}/<book_name>-vertex-frequency.csv\".
+        -e, --weight
+        \tWrite the weight of edges in a file named \"{dir}/<book_name>-edge-weight.csv\".
         -a, --all
         \tExecute all options.
         -o <directory>, --output-dir <directory>
-        \tSet the <directory> to write the generated files.
+        \tSet the <directory> to write the generated files. Default directory: \"{dir}\"
         -h, --help
         \t Print this help message.
-        '''
+        '''.format(dir=Project.get_outdir())
         )
         exit()
 
@@ -125,8 +129,10 @@ if __name__ == "__main__":
                                 opts[6] = True
                         elif opt == "-f" or opt == "--frequency":
                                 opts[7] = True
-                        elif opt == "-a" or opt == "--all-tasks":
+                        elif opt == "-e" or opt == "--weight":
                                 opts[8] = True
+                        elif opt == "-a" or opt == "--all-tasks":
+                                opts[9] = True
                                 for i in range(1, n-1): # to not repeat tasks
                                         opts[i] = False
                         elif opt == "-h" or opt == "--help": # help make exit

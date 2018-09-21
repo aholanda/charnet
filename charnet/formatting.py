@@ -177,3 +177,25 @@ class Formatting:
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
+
+        @staticmethod
+        def write_edges_weight():
+                suf = '-edge-weight.csv'
+                sep = ','
+                lnk = '--'
+
+                books = Books.get_books()
+                for book in books:
+                        G = book.get_graph()
+
+                        fn = book.get_name() + suf
+                        fn = os.path.join(Project.get_outdir(), fn) 
+                        f = open(fn, 'w')
+                        for u, v, data in sorted(G.edges(data=True), reverse=True, key=lambda x: x[2]['weight']):
+                                (nu, nv) = (G.node[u]['name'], G.node[v]['name'])
+                                w = data['weight']
+
+                                f.write(u + lnk + v + sep + '\"' + nu + '\"' + lnk + '\"' + nv + '\"' + sep + str(w) + '\n')
+
+                        f.close()
+                        logger.info('* Wrote {}'.format(fn))                
