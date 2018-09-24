@@ -107,8 +107,6 @@ class Formatting:
 
                 centrs = ['Degree', 'Betweenness', 'Closeness', 'Assortativity', 'Lobby']
 
-                Books.pre_process_centralities()
-
                 f.write("{\small\\begin{tabular}{@{}cccccc@{}}\\toprule\n")
                 f.write("\\bf Book &\\bf Degree &\\bf Betweenness &\\bf Closeness &\\bf Assortativity &\\bf Lobby \\\ \\colrule \n");
                 books = Books.get_books()
@@ -122,8 +120,7 @@ class Formatting:
                                         f.write('${0:.3f}'.format(nx.degree_assortativity_coefficient(G)) +'$ & ')
                                         continue
                                 
-                                for v in G.nodes():
-                                        vals.append(G.node[v][centr])
+                                vals = list(Graphs.get_centrality_values(G, centr).values())
 
                                 m = np.mean(np.array(vals))
                                 std = np.std(np.array(vals))
@@ -199,3 +196,31 @@ class Formatting:
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
+
+        @staticmethod
+        def write_biconnected_comps():
+                suf = '-bicomponents.txt'
+                sep = '--'
+                books = Books.get_books()
+                
+                for book in books:
+                        G = book.get_graph()
+
+                        lns = []
+                        bicomps = nx.biconnected_components(G)
+                        for c in sorted(bicomps,  key=len, reverse=True):
+                                l = len(c)
+                                comps = list(c)
+                                lns.append(str(l)+':')
+                                lns.append(comps[0])
+                                for i in range(1, l):
+                                         lns.append(sep + comps[i])
+                                lns.append('\n')
+
+                        # Write to a file
+                        fn = book.get_name() + suf
+                        fn = os.path.join(Project.get_outdir(), fn)
+                        f = open(fn, 'w')
+                        f.writelines(lns)
+                        f.close()
+                        logger.info('* Wrote {}'.format(fn))
