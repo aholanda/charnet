@@ -22,52 +22,31 @@ class Graphs():
                 return Graphs.centrality_names
 
         @staticmethod
-        def get_centr_func(which):
+        def calc_distances(G):
+                '''
+                Calculate the edge distance as the inverse of the weight.
+                '''
+                for u,v in G.edges():
+                        G[u][v]['distance'] = 1/float(G[u][v]['weight'])
+                
+        @staticmethod
+        def get_centrality_values(G, which):
                 if which == 'Betweenness':
-                        centr_func = nx.betweenness_centrality
+                        return nx.betweenness_centrality(G, weight='weight')
                 elif which == 'Closeness':
-                        centr_func = nx.closeness_centrality
+                        Graphs.calc_distances(G)
+                        centr_func = nx.closeness_centrality(G,
+                                                             distance='distance',
+                                                             normalized=True)
                 elif which == 'Degree':
-                        centr_func = nx.degree_centrality
+                        centr_func = nx.degree_centrality(G)
                 elif which == 'Lobby':
-                        centr_func = lobby
-                elif which == 'Eigenvector':
-                        centr_func = nx.eigenvector_centrality
-                elif which == 'Pagerank':
-                        centr_func = nx.pagerank
+                        centr_func = lobby(G)
                 else:
                         logger.error('* Wrong centrality id=%s', which)
                         exit()
 
                 return centr_func
-
-        @staticmethod
-        def get_centrality_values(G, which):
-                func = Graphs.get_centr_func(which)
-                return func(G)
-        
-        @staticmethod
-        def calc_normalized_centralities(G):
-		# DEGREE
-                degs = nx.degree_centrality(G)                
-                for v in G.nodes():
-                        G.node[v]['Degree'] = degs[v]
-                        
-		# BETWEENNESS
-                bets = nx.betweenness_centrality(G)
-                for v in G.nodes():
-                        G.node[v]['Betweenness'] = bets[v]
-
-		# CLOSENESS - already normalized
-                closes = nx.closeness_centrality(G)
-                for v in G.nodes():
-                        G.node[v]['Closeness']   = closes[v]
-
-                return(degs, bets, closes, lobby(G))
-                        
-        @staticmethod
-        def calc_graph_vertex_lobby(G):
-                lobby(G)
 
         @staticmethod
         def degree_stat(G):
