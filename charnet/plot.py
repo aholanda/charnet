@@ -4,6 +4,8 @@ import functools
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 
+import scipy.stats as ss
+import scipy.special as sz
 from numpy import argmax
 
 from scipy.stats import pearsonr
@@ -44,10 +46,19 @@ class MultiPlots():
         def get_xy_coords(self, c):
                 return (c % self.nrows, c % self.ncols)
 
-        def loglog(self, i, j):
-                self.axes[i, j].set_xscale('log')
-                self.axes[i, j].set_yscale('log')
+        def set_axislog(self, i, j, which):
+                ok = False
+                if which == 'x' or which == 'xy':
+                        self.axes[i, j].set_xscale('log')
+                        ok = True
+                if which == 'y' or which == 'xy':
+                        self.axes[i, j].set_yscale('log')
+                        ok = True
 
+                if not ok:
+                        logger.error('Wrong label for axes: \"{}\"'.format(which))
+                        exit()
+                
         def set_lims(self, i, j, which_axe, inf=0.0, sup=1.0):
                 '''
                 Set the inferior and superior limits for plot according 
@@ -58,7 +69,8 @@ class MultiPlots():
                 elif which_axe == 'y':
                         self.axes[i, j].set_ylim(inf, sup)
                 else:
-                        log.error('Unknown axe {}' % which_axe)
+                        logger.error('Unknown axe {}' % which_axe)
+                        exit()
 
         def print_legend(self, i, j, fontsize=4, location='upper right'):
                 self.axes[i, j].legend(fontsize=5, loc=location)
@@ -77,7 +89,8 @@ class MultiPlots():
         def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
                 self.axes[i, j].set_title(subtitle, fontsize=8)
                 if loglog:
-                        self.loglog(i, j)
+                        self.is_loglog=True
+                        self.set_axislog(i, j, 'xy')
 
                 self.axes[i, j].plot(xs, ys,
                                      c = color,
@@ -91,36 +104,60 @@ class MultiPlots():
                                      color='gray',
                                      transform=self.axes[i, j].transAxes)
 
-                self.set_lims(i, j, 'y')
+                #self.set_lims(i, j, 'y')
                 self.print_axis(i, j, xlabel, 'x')
                 self.print_axis(i, j, 'Lobby', 'y')
-        
-                if i==0 and j==0:
-                        self.print_legend(i, j)
 
-        def plot_CDF(self, i, j, xs, book, pl, **kwargs):
+        def plot_CDF(self, i, j, datax, book, **kwargs):
+                pl = plfit.plfit(np.array(datax), usefortran=False, verbose=True, quiet=False)
                 a = pl._alpha
                 a_str = '{0:.2f}'.format(round(a,2))
                 xmin = pl._xmin
 
-                xs = np.sort(xs)
-                n=len(xs)
-                xcdf = np.arange(n,0,-1,dtype='float')/float(n)
+                # Empirical data, inverse CDF
+                vals, base = np.histogram(datax, bins=len(np.unique(datax)))
+                vals = vals/float(len(datax)) # nomalize frequncy in hist.
 
-                q = xs[xs>=xmin]
-                fcdf = (q/xmin)**(1-a)
-                nc = xcdf[argmax(xs>=xmin)]
-                fcdf_norm = nc*fcdf
+                csum = np.cumsum(vals) # accumulate the probability
+                ys = np.insert(csum, 0, 0.0) # add 0.0 at front
+                
+                xs = np.unique(datax)
+                ys = 1 - ys[:len(ys)-1] # invert the distribution
 
-                self.axes[i, j].plot(xs, xcdf, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-                self.axes[i, j].plot(q, fcdf_norm, '--', color='gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
+                # Theoretical line
+                cf = np.power(xs[xs>=xmin], -a)/(sz.zeta(a) - np.power(np.sum(np.arange(1,xmin)), -a))
+                cf = np.cumsum(cf)
+                cf = np.insert(cf, 0, 0.0)
+                cf = 1 - cf[:len(cf)-1] # invert the probs
+                print(xmin, '\t\t', cf)
+                ci, = np.where(xs == xmin)
+                ci = ci[0]
+                cf = cf * ys[ci] # normalize
+
+                print('\n\nys=', ys,'\n\n')
+                print(book.get_name(), '\n\ny=',  ys[ci],' cf=', cf, 'xs[xmin-1:]', xs[ci:], '\n\n')
+                
+                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
+                self.axes[i, j].plot(xs[ci:], cf, '--', color='gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
                 
                 self.print_legend(i, j)
-                self.loglog(i, j)
+                self.set_axislog(i, j, 'xy')
                 
                 self.print_axis(i, j, 'k', 'x')
                 self.print_axis(i, j, 'CDF', 'y')
 
+                # Write CDF data to a file to debug
+                lns = []
+                fn = book.get_name() + '-CDF.csv'
+                fn = os.path.join(Project.get_outdir(), fn)
+                f = open(fn, 'w')
+                for k in range(len(xs)):
+                        lns.append(str(xs[k]) + ',')
+                        lns.append('{0:.5f}'.format(ys[k]) + '\n')
+                f.writelines(lns)
+                f.close()
+                logger.info('* Wrote {}'.format(fn))
+                
         def finalize(self, fn=os.path.join(Project.get_outdir(), 'plot.pdf')):
                 self.fig.subplots_adjust(hspace=0)
                 plt.tight_layout()
@@ -156,14 +193,13 @@ class Plot:
                         y = nx.average_clustering(G)
 
                         marker_style = dict(linestyle='', color=Plot.get_color(books[k]), markersize=6)
-                        plt.plot(x, y, c=Plot.get_color(books[k]),
-                                 marker=Plot.markers[nms % len(Plot.markers)],
+                        plt.plot(x, y, marker=Plot.markers[nms % len(Plot.markers)],
                                  label=books[k].get_raw_book_label(),
                                  **marker_style)
 
                         nms += 1 # increment no. of markers counter
 
-                plt.ylim(-0.1,0.8)
+                plt.ylim(0.0,1,0)
                 plt.xlabel('Density')
                 plt.ylabel('Clustering coefficient')
                 plt.title('')
@@ -173,7 +209,7 @@ class Plot:
                 logger.info('* Wrote %s', fn)
 
         @staticmethod
-        def do_degree_distrib(verbose=False):
+        def do_degree_distrib():
                 '''Plot degree distribution for books with curve fitting made by
                 plfit.
                 '''
@@ -191,8 +227,7 @@ class Plot:
                                 deg = G.degree(n)
                                 if deg > 0: degs.append(deg)
 
-                        pl = plfit.plfit(np.array(degs), usefortran=False, verbose=verbose, quiet=False)
-                        mplots.plot_CDF(i, j, degs, books[k], pl)
+                        mplots.plot_CDF(i, j, degs, books[k])
 
                 mplots.finalize(fn)
                         
@@ -264,7 +299,7 @@ class Plot:
         @staticmethod
         def do():
                 Plot.do_degree_distrib()
-                Plot.do_density_versus_clustering_coefficient()
-                Plot.do_centralities()
-                Plot.do_assortativity()
+                #Plot.do_density_versus_clustering_coefficient()
+                #Plot.do_centralities()
+                #Plot.do_assortativity()
 
