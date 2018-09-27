@@ -35,13 +35,20 @@ def get_empty_xy_arrays():
         return ([], [])
 
 class MultiPlots():
-        def __init__(self, nrows=1, ncols=1, hspace=.1, wspace=.1):
-                self.fig, self.axes = plt.subplots(nrows=nrows, ncols=ncols)
+        def __init__(self, nrows=1, ncols=1, hspace=.1, wspace=.1,
+                     xticklabels=np.arange(0.001, 1.1, 0.1),
+                     yticklabels=np.arange(0.0001, 1.1, 0.1),
+                     is_loglog=True):
+                self.fig, self.axes = plt.subplots(nrows=nrows, ncols=ncols,
+                                                   sharex=True)
                 self.fig.subplots_adjust(hspace, wspace)
                 self.nrows = nrows
                 self.ncols = ncols
                 self.hspace = hspace
                 self.wspace = wspace
+                self.xticklabels=xticklabels
+                self.yticklabels=yticklabels
+                self.is_loglog = True
 
         def get_xy_coords(self, c):
                 return (c % self.nrows, c % self.ncols)
@@ -51,6 +58,7 @@ class MultiPlots():
                 if which == 'x' or which == 'xy':
                         self.axes[i, j].set_xscale('log')
                         ok = True
+
                 if which == 'y' or which == 'xy':
                         self.axes[i, j].set_yscale('log')
                         ok = True
@@ -59,44 +67,51 @@ class MultiPlots():
                         logger.error('Wrong label for axes: \"{}\"'.format(which))
                         exit()
                 
-        def set_lims(self, i, j, which_axe, inf=0.0, sup=1.0):
-                '''
-                Set the inferior and superior limits for plot according 
-                to axe.
-                '''
-                if which_axe == 'x':
-                        self.axes[i, j].set_xlim(inf, sup)
-                elif which_axe == 'y':
-                        self.axes[i, j].set_ylim(inf, sup)
-                else:
-                        logger.error('Unknown axe {}' % which_axe)
-                        exit()
+        def print_grid(self, i, j):
+                # Customize the major grid
+                self.axes[i, j].grid(which='major', linestyle='-', linewidth='0.3', color='gray')
+                # Customize the minor grid
+                self.axes[i, j].grid(which='minor', linestyle=':', linewidth='0.3', color='gray')
 
         def print_legend(self, i, j, fontsize=4, location='upper right'):
                 self.axes[i, j].legend(fontsize=5, loc=location)
 
         def print_axis(self, i, j, label, which, fontsize=6):
-                if which is 'x':
+                xy = [self.xticklabels[0],
+                      self.xticklabels[len(self.xticklabels)-1],
+                      self.yticklabels[0],
+                      self.yticklabels[len(self.yticklabels)-1]]
+
+                self.axes[i, j].axis(xy)
+
+                if which == 'x':
                         if i == self.nrows-1:
                                 self.axes[i, j].set_xlabel(label, fontsize=fontsize)
-                elif which is 'y':
+
+                elif which == 'y':
                         if j == 0:
                                 self.axes[i, j].set_ylabel(label, fontsize=fontsize)
+
                 else:
                         logger.error('* Axes {} is not defined' % which)
                         exit()
 
-        def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black', loglog=True):
+        # almost named centr_fill() caused its used only for centrality
+        def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black'):
                 self.axes[i, j].set_title(subtitle, fontsize=8)
-                if loglog:
-                        self.is_loglog=True
+
+                if self.is_loglog==True:
                         self.set_axislog(i, j, 'xy')
+
+                self.print_grid(i, j)
+                self.print_axis(i, j, xlabel, 'x')
+                self.print_axis(i, j, 'Lobby', 'y')
 
                 self.axes[i, j].plot(xs, ys,
                                      c = color,
 			             alpha=.6,
                                      **marker_style)
-                self.axes[i, j].grid(True)
+
                 self.axes[i, j].text(0.5, 1.1, '' ,
                                      style='italic',
                                      horizontalalignment='center',
@@ -104,12 +119,8 @@ class MultiPlots():
                                      color='gray',
                                      transform=self.axes[i, j].transAxes)
 
-                #self.set_lims(i, j, 'y')
-                self.print_axis(i, j, xlabel, 'x')
-                self.print_axis(i, j, 'Lobby', 'y')
-
         def plot_CDF(self, i, j, datax, book, **kwargs):
-                pl = plfit.plfit(np.array(datax), usefortran=False, verbose=True, quiet=False)
+                pl = plfit.plfit(np.array(datax), usefortran=False, verbose=False, quiet=False)
                 a = pl._alpha
                 a_str = '{0:.2f}'.format(round(a,2))
                 xmin = pl._xmin
@@ -129,14 +140,11 @@ class MultiPlots():
                 cf = np.cumsum(cf)
                 cf = np.insert(cf, 0, 0.0)
                 cf = 1 - cf[:len(cf)-1] # invert the probs
-                print(xmin, '\t\t', cf)
+
                 ci, = np.where(xs == xmin)
                 ci = ci[0]
                 cf = cf * ys[ci] # normalize
 
-                print('\n\nys=', ys,'\n\n')
-                print(book.get_name(), '\n\ny=',  ys[ci],' cf=', cf, 'xs[xmin-1:]', xs[ci:], '\n\n')
-                
                 self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
                 self.axes[i, j].plot(xs[ci:], cf, '--', color='gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
                 
@@ -302,4 +310,3 @@ class Plot:
                 Plot.do_density_versus_clustering_coefficient()
                 Plot.do_centralities()
                 Plot.do_assortativity()
-
