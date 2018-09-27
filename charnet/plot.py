@@ -74,7 +74,7 @@ class MultiPlots():
                 self.axes[i, j].grid(which='minor', linestyle=':', linewidth='0.1', color='gray')
 
         def print_legend(self, i, j, fontsize=4, location='upper right'):
-                self.axes[i, j].legend(fontsize=5, loc=location)
+                self.axes[i, j].legend(fontsize=fontsize, loc=location)
 
         def print_axis(self, i, j, label, which, fontsize=6):
                 xy = [self.xticklabels[0],
@@ -146,13 +146,13 @@ class MultiPlots():
                 cf = cf * ys[ci] # normalize
 
                 self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-                self.axes[i, j].plot(xs[ci:], cf, '--', color='gray', label=r'$x^{1-\alpha}, \alpha=' + a_str + '$')
+                self.axes[i, j].plot(xs[ci:], cf, '--', color='gray', label=r'$\hat{\alpha}=' + a_str + '$')
                 
                 self.print_legend(i, j)
                 self.set_axislog(i, j, 'xy')
                 
                 self.print_axis(i, j, 'k', 'x')
-                self.print_axis(i, j, 'CDF', 'y')
+                self.print_axis(i, j, 'P(k)', 'y')
 
                 # Write CDF data to a file to debug
                 lns = []
@@ -214,7 +214,7 @@ class Plot:
                 plt.legend(fontsize=7, loc='center right')
                 plt.savefig(fn)
 
-                logger.info('* Wrote %s', fn)
+                logger.info('* Wrote plot %s', fn)
 
         @staticmethod
         def do_degree_distrib():
@@ -222,7 +222,7 @@ class Plot:
                 plfit.
                 '''
                 fn = os.path.join(Project.get_outdir(), 'Figure-Degree_Distrib.pdf')
-                mplots = MultiPlots(4, 3)
+                mplots = MultiPlots(4, 3, xticklabels=np.arange(1, 1000, 1))
 
                 books = Books.get_books()
                 for k in range(len(books)):
