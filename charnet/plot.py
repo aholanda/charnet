@@ -37,7 +37,7 @@ def get_empty_xy_arrays():
 class MultiPlots():
         def __init__(self, nrows=1, ncols=1, hspace=.1, wspace=.1,
                      xticklabels=np.arange(0.001, 1.1, 0.1),
-                     yticklabels=np.arange(0.0001, 1.1, 0.1),
+                     yticklabels=np.arange(0.001, 1.1, 0.1),
                      is_loglog=True):
                 self.fig, self.axes = plt.subplots(nrows=nrows, ncols=ncols,
                                                    sharex=True)
