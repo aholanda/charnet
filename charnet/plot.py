@@ -299,7 +299,7 @@ class Plot:
         @staticmethod
         def do():
                 Plot.do_degree_distrib()
-                #Plot.do_density_versus_clustering_coefficient()
-                #Plot.do_centralities()
-                #Plot.do_assortativity()
+                Plot.do_density_versus_clustering_coefficient()
+                Plot.do_centralities()
+                Plot.do_assortativity()
 
