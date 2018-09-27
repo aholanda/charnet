@@ -71,7 +71,7 @@ class MultiPlots():
                 # Customize the major grid
                 self.axes[i, j].grid(which='major', linestyle='-', linewidth='0.3', color='gray')
                 # Customize the minor grid
-                self.axes[i, j].grid(which='minor', linestyle=':', linewidth='0.3', color='gray')
+                self.axes[i, j].grid(which='minor', linestyle=':', linewidth='0.1', color='gray')
 
         def print_legend(self, i, j, fontsize=4, location='upper right'):
                 self.axes[i, j].legend(fontsize=5, loc=location)
