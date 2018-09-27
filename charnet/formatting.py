@@ -95,8 +95,6 @@ class Formatting:
 
                 logger.info('* Wrote {}'.format(fn))
 
-                Plot.do_density_versus_clustering_coefficient()
-
         @staticmethod
         def write_stat_centralities():
                 """
