@@ -146,7 +146,7 @@ class MultiPlots():
                 cf = cf * ys[ci] # normalize
 
                 self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
-                self.axes[i, j].plot(xs[ci:], cf, '--', color='gray', label=r'$\hat{\alpha}=' + a_str + '$')
+                self.axes[i, j].plot(xs[ci:], cf, '-', color='black', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
                 
                 self.print_legend(i, j)
                 self.set_axislog(i, j, 'xy')
