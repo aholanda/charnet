@@ -399,19 +399,19 @@ class Tolkien(Book, Charnet):
 
 class Books(Book):
         was_already_read = False
-        books = [
-                Acts(),
-                Apollonius(),
-                Arthur(),
-                David(),
-                Dick(),
-                Hawking(),
-                Hobbit(),
-                Huck(),
-                Luke(),
-                Newton(),
-                Pythagoras(),
-                Tolkien()
+        books = [             # row, col
+                Dick(),       #  0,  0
+                Apollonius(), #  1,  1
+                Hobbit(),     #  2,  2
+                Tolkien(),    #  3,  0
+                Acts(),       #  0,  1
+                David(),      #  1,  2
+                Newton(),     #  2,  0
+                Pythagoras(), #  3,  1
+                Arthur(),     #  0,  2
+                Hawking(),    #  1,  0
+                Luke(),       #  2,  1
+                Huck(),       #  3,  2
         ]
 
         @staticmethod
