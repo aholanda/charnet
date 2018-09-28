@@ -115,7 +115,7 @@ class MultiPlots():
                                      color='gray',
                                      transform=self.axes[i, j].transAxes)
 
-        def plot_CDF(self, i, j, datax, book, **kwargs):
+        def plot_CDF(self, i, j, datax, book):
                 pl = plfit.plfit(np.array(datax), usefortran=False, verbose=False, quiet=False)
                 a = pl._alpha
                 a_str = '{0:.2f}'.format(round(a,2))
@@ -141,7 +141,7 @@ class MultiPlots():
                 ci = ci[0]
                 cf = cf * ys[ci] # normalize
 
-                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book), **kwargs)
+                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book))
                 self.axes[i, j].plot(xs[ci:], cf, '-', color='black', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
                 
                 self.print_legend(i, j)
