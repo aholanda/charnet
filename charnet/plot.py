@@ -296,8 +296,8 @@ class Plot:
                         axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
-                        mplots.print_axis(i, j, '$k/max(k)$', 'x')
-                        mplots.print_axis(i, j, '$knn/max(k_{nn})$', 'y')
+                        mplots.print_axis(i, j, '$\\frac{k}{max(k)}$', 'x')
+                        mplots.print_axis(i, j, '$\\frac{k_{nn}}{max(k_{nn})}$', 'y')
                         mplots.print_legend(i, j)
                         
                 mplots.finalize(fn)
