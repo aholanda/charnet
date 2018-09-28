@@ -29,8 +29,6 @@ params = {'axes.labelsize': 'small',
           'legend.fontsize':'x-small'}
 pylab.rcParams.update(params)
 
-marker_style = dict(marker='.', linestyle='', markersize=3)
-
 def get_empty_xy_arrays():
         return ([], [])
 
@@ -95,7 +93,7 @@ class MultiPlots():
                         exit()
 
         # almost named centr_fill() caused its used only for centrality
-        def fill(self, i, j, subtitle, xs, ys, xlabel, ylabel, color='black'):
+        def fill(self, i, j, book, subtitle, xs, ys, xlabel, ylabel, color='black'):
                 self.axes[i, j].set_title(subtitle, fontsize=8)
 
                 if self.is_loglog==True:
@@ -108,7 +106,7 @@ class MultiPlots():
                 self.axes[i, j].plot(xs, ys,
                                      c = color,
 			             alpha=.6,
-                                     **marker_style)
+                                     **Plot.get_marker_style(book))
 
                 self.axes[i, j].text(0.5, 1.1, '' ,
                                      style='italic',
@@ -143,7 +141,7 @@ class MultiPlots():
                 ci = ci[0]
                 cf = cf * ys[ci] # normalize
 
-                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **marker_style, **kwargs)
+                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book), **kwargs)
                 self.axes[i, j].plot(xs[ci:], cf, '-', color='black', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
                 
                 self.print_legend(i, j)
@@ -174,15 +172,37 @@ class MultiPlots():
 class Plot:
         markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
         extension = '.eps' # default for IJMP_C
+        marker_font_size = 2.5
         
+        @staticmethod
+        def set_extension(ext):
+                Plot.extension = ext
+
+        @staticmethod
+        def set_marker_font_size(fontsz):
+                Plot.marker_font_size = fontsz
+                
         @staticmethod
         def get_color(book):
                 if (book.get_category() == BookCategory.FICTION):
-                        return 'red'
+                        return 'black'
                 elif (book.get_category() == BookCategory.BIOGRAPHY):
-                        return 'blue'
+                        return 'black'
                 elif (book.get_category() == BookCategory.LEGENDARY):
-                        return 'green'
+                        return 'black'
+                else:
+                        logger.error('* Non categorized book ', book.get_name())
+                        exit()
+        @staticmethod
+        def get_marker_style(book):
+                msz = Plot.marker_font_size
+
+                if (book.get_category() == BookCategory.FICTION):
+                        return dict(marker=".", linestyle='', markersize=msz)
+                elif (book.get_category() == BookCategory.BIOGRAPHY):
+                        return dict(marker="+", linestyle='', markersize=msz)
+                elif (book.get_category() == BookCategory.LEGENDARY):
+                        return dict(marker="x", linestyle='', markersize=msz)
                 else:
                         logger.error('* Non categorized book ', book.get_name())
                         exit()
@@ -257,11 +277,12 @@ class Plot:
                         
                         books = Books.get_books()
                         for k in range(len(books)):
+                                book = books[k]
                                 (i, j) = mplots.get_xy_coords(k)
                                 (xs, ys) = get_empty_xy_arrays()
                                 centrs = []
                                 
-                                G = books[k].get_graph()
+                                G = book.get_graph()
                                 centrs = Graphs.get_centrality_values(G, centr_name)
                                 Graphs.get_centrality_values(G, 'Lobby')
                                 for u in G.nodes():
@@ -270,9 +291,9 @@ class Plot:
 
                                 # Calculate Pearson correlation and concatenate to graphic title
                                 (r_row, p_value) = pearsonr(xs, ys)
-                                title = books[k].get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)'
+                                title = book.get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)'
 
-                                mplots.fill(i, j, title, xs, ys, centr_name, 'Lobby', Plot.get_color(books[k]))
+                                mplots.fill(i, j, book, title, xs, ys, centr_name, 'Lobby', Plot.get_color(books[k]))
 
                         mplots.finalize(fn)
                                 
@@ -290,13 +311,14 @@ class Plot:
                 
                 books = Books.get_books()
                 for k in range(len(books)):
+                        book = books[k]
                         (i, j) = mplots.get_xy_coords(k)
-                        G = books[k].get_graph()
+                        G = book.get_graph()
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
                         axes[i, j].plot(xxs, yavgs, '-', label='avg', color='gray', linewidth=1)
-                        axes[i, j].plot(xs, ys, '.', color=Plot.get_color(books[k]), label=books[k].get_name(), **marker_style)
+                        axes[i, j].plot(xs, ys, '.', color=Plot.get_color(books[k]), label=books[k].get_name(), **Plot.get_marker_style(book))
                         axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
