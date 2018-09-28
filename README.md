@@ -17,7 +17,7 @@ This project performed studies using complex networks in some books. We consider
   * [matplotlib](https://matplotlib.org/);
   * [NetworkX](https://networkx.github.io/);
   * [PyGraphviz](https://pygraphviz.github.io/);
-  * [plfit](https://github.com/keflavich/plfit) - it is a package used to fit data to power law distribution.
+  * [powerlaw](https://github.com/jeffalstott/powerlaw) - it is a package used to fit data to power law distribution.
 
 ## Structure
 
@@ -79,7 +79,6 @@ $ git clone https://github.com/ajholanda/charnet.git && cd charnet
 To install the dependencies, the easy way is to run
 
 ````
-$ git clone https://github.com/keflavich/plfit
 $ python3 setup.py install --user
 ````
 

@@ -12,5 +12,6 @@ setup(
         long_description=open('LICENSE').read(),
         install_requires=['networkx', 'numpy',
                           'scipy', 'pygraphviz',
+                          'powerlaw',
         ],
 )

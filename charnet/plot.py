@@ -11,9 +11,9 @@ from numpy import argmax
 from scipy.stats import pearsonr
 import sys
 
+import powerlaw
+
 # LOCAL
-sys.path.append('./plfit/')
-import plfit
 
 from books import *
 from graphs import *
@@ -116,10 +116,10 @@ class MultiPlots():
                                      transform=self.axes[i, j].transAxes)
 
         def plot_CDF(self, i, j, datax, book):
-                pl = plfit.plfit(np.array(datax), usefortran=False, verbose=False, quiet=False)
-                a = pl._alpha
+                res = powerlaw.Fit(np.array(datax))
+                a = res.power_law.alpha
                 a_str = '{0:.2f}'.format(round(a,2))
-                xmin = pl._xmin
+                xmin = res.power_law.xmin
 
                 # Empirical data, inverse CDF
                 vals, base = np.histogram(datax, bins=len(np.unique(datax)))
@@ -142,7 +142,7 @@ class MultiPlots():
                 cf = cf * ys[ci] # normalize
 
                 self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book))
-                self.axes[i, j].plot(xs[ci:], cf, '-', color='black', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
+                self.axes[i, j].plot(xs[ci:], cf, '-', color='gray', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
                 
                 self.print_legend(i, j)
                 self.set_axislog(i, j, 'xy')
