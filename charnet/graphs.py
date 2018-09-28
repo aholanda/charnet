@@ -36,8 +36,7 @@ class Graphs():
                 elif which == 'Closeness':
                         Graphs.calc_distances(G)
                         centr_func = nx.closeness_centrality(G,
-                                                             distance='distance',
-                                                             normalized=True)
+                                                             distance='distance')
                 elif which == 'Degree':
                         centr_func = nx.degree_centrality(G)
                 elif which == 'Lobby':
@@ -58,6 +57,7 @@ class Graphs():
 
                 return (np.mean(deg_sum), np.std(deg_sum))
 
+        @staticmethod
         def get_degree_avg_neighbors(G):
                 k2knns = {} # map degree to average neighbor degree average
                 (xs, ys, xxs, yavgs) = ([], [], [], [])
