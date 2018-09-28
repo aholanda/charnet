@@ -173,6 +173,7 @@ class MultiPlots():
 
 class Plot:
         markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
+        extension = '.eps' # default for IJMP_C
         
         @staticmethod
         def get_color(book):
@@ -188,7 +189,8 @@ class Plot:
 
         @staticmethod
         def do_density_versus_clustering_coefficient():
-                fn = os.path.join(Project.get_outdir(), 'Figure-Density_versus_CC.pdf')
+                fn = 'Figure-Density_versus_CC' + Plot.extension
+                fn = os.path.join(Project.get_outdir(), fn)
                 
                 nms = 0 # counter for markers
                 books = Books.get_books()
@@ -219,7 +221,8 @@ class Plot:
                 '''Plot degree distribution for books with curve fitting made by
                 plfit.
                 '''
-                fn = os.path.join(Project.get_outdir(), 'Figure-Degree_Distrib.pdf')
+                fn = 'Figure-Degree_Distrib' + Plot.extension
+                fn = os.path.join(Project.get_outdir(), fn)
                 mplots = MultiPlots(4, 3, xticklabels=np.arange(1, 1000, 1))
 
                 books = Books.get_books()
@@ -247,7 +250,7 @@ class Plot:
                 offset_fig_nr = 1 # figure number starts after 1
                 
                 for centr_name in Graphs.get_centrality_names():
-                        fn = 'Figure-' + centr_name + '.pdf'
+                        fn = 'Figure-' + centr_name + Plot.extension
                         fn = os.path.join(Project.get_outdir(), fn)
                         
                         mplots = MultiPlots(4, 3)
@@ -277,7 +280,8 @@ class Plot:
         def do_assortativity():
                 """Assortativity mixing is calculated and plotted versus average degree.
                 """
-                fn = os.path.join(Project.get_outdir(), 'Figure-Assortativity.pdf')
+                fn = 'Figure-Assortativity' + Plot.extension
+                fn = os.path.join(Project.get_outdir(), fn)
                 xticklabels = np.arange(0, 1.1, 0.1)
                 yticklabels = xticklabels
 
