@@ -291,13 +291,13 @@ class Plot:
                         # xs (vertices), ys (degree of neighbors of xs), xs, ys_avg (avg degree of neighbors of xs)
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
-                        axes[i, j].plot(xxs, yavgs, '--', label='avg', color='gray', linewidth=1)
+                        axes[i, j].plot(xxs, yavgs, '-', label='avg', color='gray', linewidth=1)
                         axes[i, j].plot(xs, ys, '.', color=Plot.get_color(books[k]), label=books[k].get_name(), **marker_style)
                         axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
-                        mplots.print_axis(i, j, '$k/k_{max}$', 'x')
-                        mplots.print_axis(i, j, '$knn/knn_{max}$', 'y')
+                        mplots.print_axis(i, j, '$k/max(k)$', 'x')
+                        mplots.print_axis(i, j, '$knn/max(k_{nn})$', 'y')
                         mplots.print_legend(i, j)
                         
                 mplots.finalize(fn)
