@@ -163,7 +163,7 @@ class Book():
                                 continue
 
                         # remove new line
-                        ln = ln.rstrip("\n")
+                        ln = ln.rstrip('\r\n')
                         
                         # boolean are_edges indicates if it is inside nodes region
                         if (are_edges==False):
