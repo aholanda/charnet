@@ -116,11 +116,18 @@ class MultiPlots():
                                      transform=self.axes[i, j].transAxes)
 
         def plot_CDF(self, i, j, datax, book):
-                res = powerlaw.Fit(np.array(datax))
-                a = res.power_law.alpha
+                fit = powerlaw.Fit(np.array(datax))
+                a = fit.power_law.alpha
                 a_str = '{0:.2f}'.format(round(a,2))
-                xmin = res.power_law.xmin
+                xmin = fit.power_law.xmin
 
+                # Compare with other distributions
+                logger.info('*\t Compare powerlaw x exponential')
+                R, p = fit.distribution_compare('power_law', 'exponential', normalized_ratio=True)
+                dist = 'POWER_LAW'
+                if R < 0.0: dist = 'EXPONENTIAL'
+                logger.info('*\t\tR={0:.2f}, p={0:.2f} => {d}'.format(R, p, d=dist))
+                
                 # Empirical data, inverse CDF
                 vals, base = np.histogram(datax, bins=len(np.unique(datax)))
                 vals = vals/float(len(datax)) # nomalize frequncy in hist.
@@ -142,8 +149,10 @@ class MultiPlots():
                 cf = cf * ys[ci] # normalize
 
                 self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book))
-                self.axes[i, j].plot(xs[ci:], cf, '-', color='gray', linewidth=0.5, label=r'$\hat{\alpha}=' + a_str + '$')
-                
+                self.axes[i, j].plot(xs[ci:], cf, '-',
+                                     color='gray',
+                                     linewidth=0.5,
+                                     label=r'$\hat{k}_{'+ 'min}=' + str(xmin) + ',\hat{\\alpha}=' + a_str + '$')
                 self.print_legend(i, j)
                 self.set_axislog(i, j, 'xy')
                 
