@@ -122,11 +122,11 @@ class MultiPlots():
                 xmin = fit.power_law.xmin
 
                 # Compare with other distributions
-                logger.info('*\t Compare powerlaw x exponential')
+                logger.debug('*\t Compare powerlaw x exponential')
                 R, p = fit.distribution_compare('power_law', 'exponential', normalized_ratio=True)
                 dist = 'POWER_LAW'
                 if R < 0.0: dist = 'EXPONENTIAL'
-                logger.info('*\t\tR={0:.2f}, p={0:.2f} => {d}'.format(R, p, d=dist))
+                logger.debug('*\t\tR={0:.2f}, p={0:.2f} => {d}'.format(R, p, d=dist))
                 
                 # Empirical data, inverse CDF
                 vals, base = np.histogram(datax, bins=len(np.unique(datax)))
