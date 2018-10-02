@@ -38,7 +38,7 @@ class SGB(Project):
                 
         @staticmethod
         def get_datadir():
-                return 'sgb/'
+                return 'sgb-data/'
 
 class Charnet(Project):
         '''Handle specific configuration for books gathered by Charnet project.'''
