@@ -7,9 +7,10 @@ This project performed studies using complex networks in some books. We consider
 
 ## Directories content
 
+* [`_assets`](_assets/) - contains files used to document or manage the project;
 * [`charnet`](charnet/) - Python code for the project;
 * [`data`](data/) - data gathered for the project;
-* [`sgb`](sgb/) - some data from [Stanford GraphBase](http://www-cs-faculty.stanford.edu/~uno/sgb.html).
+* [`sgb-data`](sgb-data/) - some data from [Stanford GraphBase](http://www-cs-faculty.stanford.edu/~uno/sgb.html).
 
 ## Prerequisites
 
