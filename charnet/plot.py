@@ -148,7 +148,7 @@ class MultiPlots():
                 ci = ci[0]
                 cf = cf * ys[ci] # normalize
 
-                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color=Plot.get_color(book), **Plot.get_marker_style(book))
+                self.axes[i, j].plot(xs, ys, '.', label=book.get_name(), color='black', **Plot.get_marker_style(book))
                 self.axes[i, j].plot(xs[ci:], cf, '-',
                                      color='gray',
                                      linewidth=0.5,
@@ -179,7 +179,7 @@ class MultiPlots():
                 logger.info('* Wrote plot %s', fn)
 
 class Plot:
-        markers = ['+', '^', 'v', 'o', 'p', 's', '.', '*', 'd']
+        markers = ["+", '>', '<', '^', 'v', 's', '.', '1', 'd', '*', 'x', 'p']
         extension = '.eps' # default for IJMP_C
         marker_font_size = 2.5
         
@@ -192,29 +192,17 @@ class Plot:
                 Plot.marker_font_size = fontsz
                 
         @staticmethod
-        def get_color(book):
-                if (book.get_category() == BookCategory.FICTION):
-                        return 'black'
-                elif (book.get_category() == BookCategory.BIOGRAPHY):
-                        return 'black'
-                elif (book.get_category() == BookCategory.LEGENDARY):
-                        return 'black'
-                else:
-                        logger.error('* Non categorized book ', book.get_name())
-                        exit()
-        @staticmethod
         def get_marker_style(book):
                 msz = Plot.marker_font_size
-
-                if (book.get_category() == BookCategory.FICTION):
+                gen = book.get_genre()
+                
+                if (gen == BookGenre.FICTION):
                         return dict(marker=".", linestyle='', markersize=msz)
-                elif (book.get_category() == BookCategory.BIOGRAPHY):
+                elif (gen == BookGenre.BIOGRAPHY):
                         return dict(marker="+", linestyle='', markersize=msz)
-                elif (book.get_category() == BookCategory.LEGENDARY):
-                        return dict(marker="x", linestyle='', markersize=msz)
                 else:
-                        logger.error('* Non categorized book ', book.get_name())
-                        exit()
+                        # (gen == BookGenre.LEGENDARY)
+                        return dict(marker="x", linestyle='', markersize=msz)
 
         @staticmethod
         def do_density_versus_clustering_coefficient():
@@ -224,14 +212,16 @@ class Plot:
                 nms = 0 # counter for markers
                 books = Books.get_books()
                 for k in range(len(books)):
+                        book = books[k]
+                        lbl = book.get_name() + '(' + Books.get_genre_label(book) + ')'
                         G = books[k].get_graph()
 
                         x = nx.density(G)
                         y = nx.average_clustering(G)
 
-                        marker_style = dict(linestyle='', color=Plot.get_color(books[k]), markersize=6)
+                        marker_style = dict(linestyle='', color='black', markersize=6)
                         plt.plot(x, y, marker=Plot.markers[nms % len(Plot.markers)],
-                                 label=books[k].get_raw_book_label(),
+                                 label=lbl,
                                  **marker_style)
 
                         nms += 1 # increment no. of markers counter
@@ -302,7 +292,7 @@ class Plot:
                                 (r_row, p_value) = pearsonr(xs, ys)
                                 title = book.get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)'
 
-                                mplots.fill(i, j, book, title, xs, ys, centr_name, 'Lobby', Plot.get_color(books[k]))
+                                mplots.fill(i, j, book, title, xs, ys, centr_name, 'Lobby', 'black')
 
                         mplots.finalize(fn)
                                 
@@ -327,7 +317,7 @@ class Plot:
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
 
                         axes[i, j].plot(xxs, yavgs, '-', label='avg', color='gray', linewidth=1)
-                        axes[i, j].plot(xs, ys, '.', color=Plot.get_color(books[k]), label=books[k].get_name(), **Plot.get_marker_style(book))
+                        axes[i, j].plot(xs, ys, '.', color='black', label=books[k].get_name(), **Plot.get_marker_style(book))
                         axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
