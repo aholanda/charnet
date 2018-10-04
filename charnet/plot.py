@@ -213,7 +213,7 @@ class Plot:
                 books = Books.get_books()
                 for k in range(len(books)):
                         book = books[k]
-                        lbl = book.get_name() + '(' + Books.get_genre_label(book) + ')'
+                        lbl = book.get_name() + ' (' + Books.get_genre_label(book) + ')'
                         G = books[k].get_graph()
 
                         x = nx.density(G)
