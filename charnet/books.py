@@ -51,7 +51,7 @@ class Charnet(Project):
                 return 'data/'
         
 from enum import Enum
-class BookCategory(Enum):
+class BookGenre(Enum):
         '''Books are classified in categories.'''
         FICTION = 1
         BIOGRAPHY = 2
@@ -67,7 +67,7 @@ class Book():
                 '''Return the name of the book.'''
                 pass
                 
-        def get_category(self):
+        def get_genre(self):
                 pass
         
         def get_comment_token(self):
@@ -237,8 +237,8 @@ class Acts(Book, Charnet):
         def __str__(self):
                 return 'acts'
 
-        def get_category(self):
-                return BookCategory.LEGENDARY
+        def get_genre(self):
+                return BookGenre.LEGENDARY
         
         def get_vertex_color(self):
                 return 'khaki'
@@ -251,8 +251,8 @@ class Apollonius(Book, Charnet):
         def __str__(self):
                 return 'apollonius'
 
-        def get_category(self):
-                return BookCategory.LEGENDARY
+        def get_genre(self):
+                return BookGenre.LEGENDARY
         
         def get_vertex_color(self):
                 return 'red'
@@ -265,8 +265,8 @@ class Arthur(Book, Charnet):
         def __str__(self):
                 return 'arthur'
 
-        def get_category(self):
-                return BookCategory.FICTION
+        def get_genre(self):
+                return BookGenre.FICTION
         
         def get_vertex_color(self):
                 return 'cyan'
@@ -279,8 +279,8 @@ class David(Book, SGB):
         def __str__(self):
                 return 'david'
 
-        def get_category(self):
-                return BookCategory.FICTION
+        def get_genre(self):
+                return BookGenre.FICTION
         
         def get_vertex_color(self):
                 return 'orange'
@@ -293,8 +293,8 @@ class Dick(Book, Charnet):
         def __str__(self):
                 return 'dick'
 
-        def get_category(self):
-                return BookCategory.BIOGRAPHY
+        def get_genre(self):
+                return BookGenre.BIOGRAPHY
         
         def get_vertex_color(self):
                 return 'orchid'
@@ -307,8 +307,8 @@ class Hawking(Book, Charnet):
         def __str__(self):
                 return 'hawking'
 
-        def get_category(self):
-                return BookCategory.BIOGRAPHY
+        def get_genre(self):
+                return BookGenre.BIOGRAPHY
         
         def get_vertex_color(self):
                 return 'silver'
@@ -321,8 +321,8 @@ class Hobbit(Book, Charnet):
         def __str__(self):
                 return 'hobbit'
 
-        def get_category(self):
-                return BookCategory.FICTION
+        def get_genre(self):
+                return BookGenre.FICTION
         
         def get_vertex_color(self):
                 return 'gold'
@@ -335,8 +335,8 @@ class Huck(Book, SGB):
         def __str__(self):
                 return 'huck'
 
-        def get_category(self):
-                return BookCategory.FICTION
+        def get_genre(self):
+                return BookGenre.FICTION
         
         def get_vertex_color(self):
                 return 'salmon'
@@ -349,8 +349,8 @@ class Luke(Book, Charnet):
         def __str__(self):
                 return 'luke'
 
-        def get_category(self):
-                return BookCategory.LEGENDARY
+        def get_genre(self):
+                return BookGenre.LEGENDARY
         
         def get_vertex_color(self):
                 return 'wheat'
@@ -363,8 +363,8 @@ class Newton(Book, Charnet):
         def __str__(self):
                 return 'newton'
 
-        def get_category(self):
-                return BookCategory.BIOGRAPHY
+        def get_genre(self):
+                return BookGenre.BIOGRAPHY
         
         def get_vertex_color(self):
                 return 'tan'
@@ -377,8 +377,8 @@ class Pythagoras(Book, Charnet):
         def __str__(self):
                 return 'pythagoras'
 
-        def get_category(self):
-                return BookCategory.LEGENDARY
+        def get_genre(self):
+                return BookGenre.LEGENDARY
         
         def get_vertex_color(self):
                 return 'tomato'
@@ -391,8 +391,8 @@ class Tolkien(Book, Charnet):
         def __str__(self):
                 return 'tolkien'
                 
-        def get_category(self):
-                return BookCategory.BIOGRAPHY
+        def get_genre(self):
+                return BookGenre.BIOGRAPHY
         
         def get_vertex_color(self):
                 return 'yellowgreen'
@@ -413,6 +413,19 @@ class Books(Book):
                 Luke(),       #  2,  1
                 Huck(),       #  3,  2
         ]
+
+        @staticmethod
+        def get_genre_label(book):
+                gen = book.get_genre()
+                if (gen == BookGenre.FICTION):
+                        return 'F'
+                elif (gen == BookGenre.BIOGRAPHY):
+                        return 'B'
+                elif (gen == BookGenre.LEGENDARY):
+                        return 'L'
+                else:
+                        logger.error('* Unknown book: \"{}\"'.format(book.get_name()))
+                        exit()
 
         @staticmethod
         def get_books():
