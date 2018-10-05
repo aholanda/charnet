@@ -69,10 +69,10 @@ class MultiPlots():
                 # Customize the major grid
                 self.axes[i, j].grid(which='major', linestyle='-', linewidth='0.4', color='gray')
 
-        def print_legend(self, i, j, fontsize=5, location='upper right'):
+        def print_legend(self, i, j, fontsize=5.5, location='upper right'):
                 self.axes[i, j].legend(fontsize=fontsize, loc=location)
 
-        def print_axis(self, i, j, label, which, fontsize=6):
+        def print_axis(self, i, j, label, which, fontsize=7):
                 xy = [self.xticklabels[0],
                       self.xticklabels[len(self.xticklabels)-1],
                       self.yticklabels[0],
