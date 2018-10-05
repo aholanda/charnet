@@ -69,7 +69,7 @@ class MultiPlots():
                 # Customize the major grid
                 self.axes[i, j].grid(which='major', linestyle='-', linewidth='0.4', color='gray')
 
-        def print_legend(self, i, j, fontsize=4, location='upper right'):
+        def print_legend(self, i, j, fontsize=5, location='upper right'):
                 self.axes[i, j].legend(fontsize=fontsize, loc=location)
 
         def print_axis(self, i, j, label, which, fontsize=6):
@@ -321,8 +321,8 @@ class Plot:
                         axes[i, j].set_xlim(xticklabels[0], xticklabels[len(xticklabels)-1])
                         axes[i, j].set_ylim(yticklabels[0], yticklabels[len(yticklabels)-1])
                         
-                        mplots.print_axis(i, j, '$\\frac{k}{max(k)}$', 'x')
-                        mplots.print_axis(i, j, '$\\frac{k_{nn}}{max(k_{nn})}$', 'y')
+                        mplots.print_axis(i, j, '$K$', 'x')
+                        mplots.print_axis(i, j, '$K_{nn}$', 'y')
                         mplots.print_legend(i, j)
                         
                 mplots.finalize(fn)
