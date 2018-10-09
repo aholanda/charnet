@@ -216,8 +216,8 @@ class Plot:
                         lbl = book.get_name() + ' (' + Books.get_genre_label(book) + ')'
                         G = books[k].get_graph()
 
-                        x = nx.density(G)
-                        y = nx.average_clustering(G)
+                        x = Graph.density(G)
+                        y = Graph.transitivity_undirected(G)
 
                         marker_style = dict(linestyle='', color='black', markersize=6)
                         plt.plot(x, y, marker=Plot.markers[nms % len(Plot.markers)],
@@ -251,8 +251,8 @@ class Plot:
                         degs = []
                         
                         # get the degrees
-                        for n in G.nodes():
-                                deg = G.degree(n)
+                        for v in G.vs:
+                                deg = v.degree()
                                 if deg > 0: degs.append(deg)
 
                         mplots.plot_CDF(i, j, degs, books[k])
@@ -284,9 +284,9 @@ class Plot:
                                 G = book.get_graph()
                                 centrs = Graphs.get_centrality_values(G, centr_name)
                                 Graphs.get_centrality_values(G, 'Lobby')
-                                for u in G.nodes():
-                                        xs.append(centrs[u])
-                                        ys.append(G.node[u]['Lobby'])
+                                for u in G.vs:
+                                        xs.append(centrs[u.index])
+                                        ys.append(G.vs[u.index]['Lobby'])
 
                                 # Calculate Pearson correlation and concatenate to graphic title
                                 (r_row, p_value) = pearsonr(xs, ys)

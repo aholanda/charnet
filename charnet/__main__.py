@@ -9,6 +9,7 @@ import logging
 from books import *
 from draw import *
 from formatting import *
+from plot import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,11 +30,9 @@ tasks = [ None, # sys.argv[0] name of the program, no flag associated
           Draw.do_graphs, # -g
           Formatting.write_global_measures, # -m
           Formatting.write_hapax_legomena_table, # -l
-          Formatting.write_stat_centralities, # -s
           Formatting.write_vertices_degree, # -d
           Formatting.write_vertices_frequency, # -f
           Formatting.write_edges_weight, # -e
-          Formatting.write_biconnected_comps, # -b
           run_all_tasks] # -a
         
 # headers
@@ -42,11 +41,9 @@ hdrs = ["__main__",
         "\n\t#### TASK 2 - Draw graph ####", 
         "\n\t#### TASK 3 - Write global measures ####", 
         "\n\t#### TASK 4 - Write the frequency of _hapax_ _legomena_ ####", 
-        "\n\t#### TASK 5 - Write statistics of centralities ####",
-        "\n\t#### TASK 6 - Write the vertices' degree ####",
-        "\n\t#### TASK 7 - Write the characters' frequency ####",
-        "\n\t#### TASK 8 - Write the edges' weight ####",
-        "\n\t#### TASK 9 - Write the graph bicomponents ####", 
+        "\n\t#### TASK 5 - Write the vertices' degree ####",
+        "\n\t#### TASK 6 - Write the characters' frequency ####",
+        "\n\t#### TASK 7 - Write the edges' weight ####",
         "\n\t#### RUNNING ALL TASKS ####"] 
 
 def usage():
@@ -60,16 +57,12 @@ def usage():
         \tWrite global measures in a table in a LaTeX file.
         -l, --legomena
         \tWrite the frequency of hapax legomena, characters that appear only once in a table in a LaTeX file.
-        -s, --stat-centralities
-        \tGenerate statistics from centralities.
         -d, --degree
         \tWrite the vertices' degree in a file named \"{dir}/<book_name>-vertex-degree.csv\".
         -f, --frequency
         \tWrite the frequency of characters' appearance in a file named \"{dir}/<book_name>-vertex-frequency.csv\".
         -e, --weight
         \tWrite the weight of edges in a file named \"{dir}/<book_name>-edge-weight.csv\".
-        -b, --bicomps
-        \tWrite the graph bicomponents in a file named \"{dir}/<book_name>-bicomponents.txt\".
         -a, --all
         \tExecute all options.
         -o <directory>, --output-dir <directory>
@@ -130,18 +123,14 @@ if __name__ == "__main__":
                                 opts[3] = True
                         elif opt == "-l" or opt == "--legomena":
                                 opts[4] = True
-                        elif opt == "-s" or opt == "--stat-centralities":
-                                opts[5] = True
                         elif opt == "-d" or opt == "--degree":
-                                opts[6] = True
+                                opts[5] = True
                         elif opt == "-f" or opt == "--frequency":
-                                opts[7] = True
+                                opts[6] = True
                         elif opt == "-e" or opt == "--weight":
-                                opts[8] = True
-                        elif opt == "-b" or opt == "--bicomps":
-                                opts[9] = True
+                                opts[7] = True
                         elif opt == "-a" or opt == "--all-tasks":
-                                opts[10] = True
+                                opts[8] = True
                                 for i in range(1, n-1): # to not repeat tasks
                                         opts[i] = False
                         elif opt == "-h" or opt == "--help": # help make exit

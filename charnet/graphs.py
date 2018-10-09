@@ -2,7 +2,7 @@ import math
 import numpy as np
 import logging
 
-import networkx as nx
+from igraph import *
 
 # LOCAL
 from lobby import *
@@ -15,30 +15,43 @@ class Graphs():
         
         @staticmethod
         def create_graph():
-                return nx.Graph()
+                return Graph()
 
         @staticmethod
         def get_centrality_names():
                 return Graphs.centrality_names
 
         @staticmethod
-        def calc_distances(G):
+        def degree_centrality(G):
+                '''Return an array of normalized degree centrality.'''
+                N = G.vcount()
+                arr = [None] * N
+                for v in G.vs: # normalize
+                        arr[v.index] = float(v.degree()) / N
+                return arr
+
+        @staticmethod
+        def degree_stat(G):
+                '''Calculate the average degree and the standard deviation degree.
                 '''
-                Calculate the edge distance as the inverse of the weight.
-                '''
-                for u,v in G.edges():
-                        G[u][v]['distance'] = 1/float(G[u][v]['weight'])
-                
+                deg_sum = [] # degree summation
+                for v in G.vs:
+                        deg_sum.append(v.degree())
+
+                return (np.mean(deg_sum), np.std(deg_sum))
+
         @staticmethod
         def get_centrality_values(G, which):
                 if which == 'Betweenness':
-                        return nx.betweenness_centrality(G, weight='weight')
+                        arr = Graph.betweenness(G, directed=False, weights='weight')
+                        N = G.vcount()
+                        for v in G.vs: # normalize
+                                arr[v.index] /= ((N-1)*(N-2))
+                        return arr
                 elif which == 'Closeness':
-                        Graphs.calc_distances(G)
-                        centr_func = nx.closeness_centrality(G,
-                                                             distance='distance')
+                        centr_func = Graph.closeness(G, weights='weight')
                 elif which == 'Degree':
-                        centr_func = nx.degree_centrality(G)
+                        centr_func = Graphs.degree_centrality(G)
                 elif which == 'Lobby':
                         centr_func = lobby(G)
                 else:
@@ -48,27 +61,17 @@ class Graphs():
                 return centr_func
 
         @staticmethod
-        def degree_stat(G):
-                """Calculate the average degree and the standard deviation degree.
-                """
-                deg_sum = [] # degree summation
-                for v in G.nodes():
-                        deg_sum.append(G.degree(v))
-
-                return (np.mean(deg_sum), np.std(deg_sum))
-
-        @staticmethod
         def get_degree_avg_neighbors(G):
                 k2knns = {} # map degree to average neighbor degree average
                 (xs, ys, xxs, yavgs) = ([], [], [], [])
                 (xsp, ysp, xxsp, yavgsp) = ([], [], [], [])
 
-                for u in G.nodes():
-                        k = G.degree(u)
+                for u in G.vs:
+                        k = u.degree()
                         knn = 0.0 # degree average of neighbors
 
-                        for v in list(G.neighbors(u)):
-                                knn += G.degree(v)
+                        for v in G.neighbors(u):
+                                knn += G.vs[v].degree()
 
                         if len(list(G.neighbors(u))) > 0:
                                 knn /= len(list(G.neighbors(u)))
@@ -102,3 +105,4 @@ class Graphs():
                         yavgsp.append(float(yavgs[i])/float(ymax))
 
                 return (xsp, ysp, xxsp, yavgsp)
+        

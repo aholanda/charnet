@@ -1,7 +1,6 @@
 import os.path
 import numpy as np
 import logging
-import networkx as nx
 
 # LOCAL
 from plot import *
@@ -29,7 +28,7 @@ class Formatting:
                         G = book.get_graph()
                         nr_hapaxes = book.get_number_hapax_legomenas()
                         nr_dis = book.get_number_dis_legomenas()                
-                        nr_chars = G.number_of_nodes()
+                        nr_chars = G.vcount()
                         
                         ln = book.get_label() + " & "
                         ln += '{0:02d}'.format(nr_hapaxes) + "/"
@@ -75,17 +74,17 @@ class Formatting:
                 books = Books.get_books()
                 for book in books:
                         G = book.get_graph()
-                        G.graph['clustering'] = nx.average_clustering(G)
-                        G.graph['density'] = nx.density(G)
+                        G['clustering'] = Graph.transitivity_undirected(G)
+                        G['density'] = Graph.density(G)
                         (deg_avg, deg_stdev) = Graphs.degree_stat(G)
                 
                         # OUTPUT
                         ln = book.get_label() + ' & '
-                        ln += str(G.number_of_nodes()) + ' & '
-                        ln += str(G.number_of_edges()) + ' & '
+                        ln += str(G.vcount()) + ' & '
+                        ln += str(G.ecount()) + ' & '
                         ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
-                        ln += '{0:.3f}'.format(book.G.graph['density']) + ' & '
-                        ln += '{0:.3f}'.format(book.G.graph['clustering']) + ' & '
+                        ln += '{0:.3f}'.format(book.G['density']) + ' & '
+                        ln += '{0:.3f}'.format(book.G['clustering']) + ' & '
                         ln += "\\\\ \n"
                 
                         f.write(ln)
@@ -96,45 +95,6 @@ class Formatting:
                 logger.info('* Wrote {}'.format(fn))
 
         @staticmethod
-        def write_stat_centralities():
-                """
-                Calculate the mean and deviation for centralities for each book.
-                """
-                fn = os.path.join(Project.get_outdir(), 'centr.tex')
-                f = open(fn, "w")
-
-                centrs = ['Degree', 'Betweenness', 'Closeness', 'Assortativity', 'Lobby']
-
-                f.write("{\small\\begin{tabular}{@{}cccccc@{}}\\toprule\n")
-                f.write("\\bf Book &\\bf Degree &\\bf Betweenness &\\bf Closeness &\\bf Assortativity &\\bf Lobby \\\ \\colrule \n");
-                books = Books.get_books()
-                for book in books:
-                        f.write(book.get_label() + ' & ')
-                        G = book.get_graph()
-                        for centr in centrs:
-                                vals = []
-
-                                if centr == 'Assortativity':
-                                        f.write('${0:.3f}'.format(nx.degree_assortativity_coefficient(G)) +'$ & ')
-                                        continue
-                                
-                                vals = list(Graphs.get_centrality_values(G, centr).values())
-
-                                m = np.mean(np.array(vals))
-                                std = np.std(np.array(vals))
-                                f.write('${0:.3f}'.format(m) + ' \pm ' '{0:.3f}'.format(std) + '$ ')
-                                if centr != 'Lobby':
-                                        f.write(' & ')
-                                else:
-                                        f.write(' \\\ ')
-                                        if book.get_name() == 'tolkien' and centr == 'Lobby':
-                                                f.write(' \\botrule')
-                        f.write('\n')
-                f.write('\\end{tabular}}\n')
-                logger.info('* Wrote {}'.format(fn))
-                f.close()
-
-        @staticmethod
         def write_vertices_degree():
                 suf = '-vertex-degree.csv'
                 sep = ','
@@ -142,15 +102,17 @@ class Formatting:
                 books = Books.get_books()
                 for book in books:
                         G = book.get_graph()
-
-                        for v in G.nodes():
-                                G.node[v]['degree'] = G.degree(v)
+                        for v in G.vs:
+                                G.vs[v.index]['degree'] = v.degree()
 
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn)
                         f = open(fn, 'w')
-                        for v, data in sorted(G.nodes(data=True), reverse=True, key=lambda x: x[1]['degree']):
-                                f.write(v + sep + '\"' + data['name'] + '\"'+ sep + str(data['degree']) + '\n')
+
+                        # Sort by degree in reverse order
+                        vs=sorted(G.vs, key=lambda z:z['degree'], reverse=True)
+                        for v in vs:
+                                f.write(v['name'] + sep + '\"' + v['char_name'] + '\"'+ sep + str(v['degree']) + '\n')
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
@@ -167,8 +129,9 @@ class Formatting:
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn) 
                         f = open(fn, 'w')
-                        for v, data in sorted(G.nodes(data=True), reverse=True, key=lambda x: x[1]['frequency']):
-                                f.write(v + sep + '\"' + data['name'] + '\"'+ sep + str(data['frequency']) + '\n')
+                        vs=sorted(G.vs, key=lambda z:z['frequency'], reverse=True)
+                        for v in vs:
+                                f.write(v['name'] + sep + '\"' + v['char_name'] + '\"'+ sep + str(v['frequency']) + '\n')
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
@@ -186,39 +149,12 @@ class Formatting:
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn) 
                         f = open(fn, 'w')
-                        for u, v, data in sorted(G.edges(data=True), reverse=True, key=lambda x: x[2]['weight']):
-                                (nu, nv) = (G.node[u]['name'], G.node[v]['name'])
-                                w = data['weight']
+                        es=sorted(G.es, key=lambda z:z['weight'], reverse=True)
+                        for e in es:
+                                (nu, nv) = (G.vs[e.source]['char_name'], G.vs[e.target]['char_name'])
+                                w = e['weight']
 
-                                f.write(u + lnk + v + sep + '\"' + nu + '\"' + lnk + '\"' + nv + '\"' + sep + str(w) + '\n')
-
+                                f.write(G.vs[e.source]['name'] + lnk + G.vs[e.target]['name'] + sep + '\"' + nu + '\"' + lnk + '\"' + nv + '\"' + sep + str(w) + '\n')
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
 
-        @staticmethod
-        def write_biconnected_comps():
-                suf = '-bicomponents.txt'
-                sep = '--'
-                books = Books.get_books()
-                
-                for book in books:
-                        G = book.get_graph()
-
-                        lns = []
-                        bicomps = nx.biconnected_components(G)
-                        for c in sorted(bicomps,  key=len, reverse=True):
-                                l = len(c)
-                                comps = list(c)
-                                lns.append(str(l)+':')
-                                lns.append(comps[0])
-                                for i in range(1, l):
-                                         lns.append(sep + comps[i])
-                                lns.append('\n')
-
-                        # Write to a file
-                        fn = book.get_name() + suf
-                        fn = os.path.join(Project.get_outdir(), fn)
-                        f = open(fn, 'w')
-                        f.writelines(lns)
-                        f.close()
-                        logger.info('* Wrote {}'.format(fn))

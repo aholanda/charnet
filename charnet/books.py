@@ -1,6 +1,8 @@
 import tempfile
 import numpy as np
 
+from igraph import *
+
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,7 +47,6 @@ class Charnet(Project):
 
         def __init__(self):
                 Project.__init__(self)
-
         @staticmethod
         def get_datadir():
                 return 'data/'
@@ -94,7 +95,7 @@ class Book():
         
         def get_number_characters(self):
                 assert self.G
-                return self.G.number_of_nodes()
+                return len(self.G.vs)
 
         def get_number_hapax_legomenas(self):
                 """
@@ -102,8 +103,8 @@ class Book():
                 """
                 assert self.G
                 nr_hapaxes = 0
-                freqs = nx.get_node_attributes(self.G, 'frequency')
-                for freq in freqs:
+                for v in self.G.vs:
+                        freq = v['frequency']
                         if (freq == 1):
                                 nr_hapaxes += 1
 
@@ -113,9 +114,10 @@ class Book():
                 """
                 _Dis_ _Legomena_ are words with occurrence frequency equals to two.
                 """
+                assert self.G
                 nr_dis = 0
-                freqs = nx.get_node_attributes(self.G, 'frequency')
-                for freq in freqs:
+                for v in self.G.vs:
+                        freq = v['frequency']
                         if (freq == 2):
                                 nr_dis += 1
 
@@ -135,7 +137,7 @@ class Book():
                 
                 Returns
                 -------
-                networkx graph
+                a graph
                 """
                 are_edges = False
                 book_name = self.get_name().title()
@@ -147,7 +149,7 @@ class Book():
                         return self.G
 
                 # name the Graph
-                self.get_graph().graph['name'] = self.get_name()
+                self.G['name'] = self.get_name()
                 
                 fn = self.get_file_name()
                 f = open(fn, "r")
@@ -165,7 +167,7 @@ class Book():
                         # remove new line
                         ln = ln.rstrip('\r\n')
                         
-                        # boolean are_edges indicates if it is inside nodes region
+                        # boolean are_edges indicates if it is inside vertices region
                         if (are_edges==False):
                                 (v, character_name) = ln.split(' ', 1)
 
@@ -175,10 +177,13 @@ class Book():
                                         exit()
                                 
                                 #DEBUG
-                                logger.debug("* G.add_node({}, name={})".format(v, character_name))
+                                logger.debug("* G.add_vertice({}, name={})".format(v, character_name))
                                 #GUBED
-                                if v not in self.G.node:
-                                        self.G.add_node(v, frequency=1, name=character_name)
+                                if len(self.G.vs) == 0 or v not in self.G.vs['name']:
+                                        self.G.add_vertices(v)
+                                        vid = self.G.vs.find(name=v)
+                                        self.G.vs[vid.index]['frequency'] = 1
+                                        self.G.vs[vid.index]['char_name'] = character_name
                                         u = v
                                 else:
                                         logger.error('* Label {} is repeated in book {}.'.format(v, book_name))
@@ -199,14 +204,15 @@ class Book():
                                 # eg., split "ST,PH,MA" => ["ST", "PH", "MA"]
                                 vs = e.split(',')  # vertices
 
-                                # add nodes to graph G if it does not exit
+                                # add vertices to graph G if it does not exit
                                 # otherwise, increment frequency
                                 for v in vs:
-                                        if (v not in self.G.node):
-                                                logger.error('* Label <{}> was not added as node in the graph for book {}.'.format(v, book_name))
+                                        if (v not in self.G.vs['name']):
+                                                logger.error('* Label \"{}\" was not added as node in the graph for book {}.'.format(v, book_name))
                                                 exit()
                                         else:
-                                                self.G.node[v]['frequency'] += 1
+                                                vid = self.G.vs.find(name=v)
+                                                self.G.vs[vid.index]['frequency'] += 1
 
                                 # add characters encounters (edges) to graph G
                                 for i in range(len(vs)):
@@ -214,14 +220,26 @@ class Book():
                                         for j in range(i+1, len(vs)):
                                                 v = vs[j]
 
-                                                if (u,v) not in self.G.edges():
-                                                        self.G.add_edge(u, v, weight=1)
-                                                else:
-                                                        self.G[u][v]['weight'] += 1
+                                                # link u--v
+                                                eid = -1 # edge id
+                                                if not self.G.are_connected(u, v):
+                                                        self.G.add_edges([(u, v)])
+                                                        eid = self.G.get_eid(u, v)
+                                                        self.G.es[eid]['weight'] = 1
+                                                else: # u--v already in G, increase weight
+                                                        eid = self.G.get_eid(u, v)
+                                                        self.G.es[eid]['weight'] += 1
 
+                                                if u == 'DO' or v == 'DO':
+                                                        if u == 'DO':
+                                                                print('\t', u, v, '\t deg(<{}>)={}, {}'.format(u, self.G.vs.find(name=u).degree(),
+                                                                                                               self.G.vs.find(name=v).degree()))
+                                                        else:
+                                                                print('\t', u, v, '\t {}, deg(<{}>)={}'.format(self.G.vs.find(name=u).degree(),
+                                                                                                               v, self.G.vs.find(name=v).degree()))         
                                                 #DEBUG
                                                 action = 'add'
-                                                w = self.G[u][v]['weight']
+                                                w = self.G.es[eid]['weight']
                                                 if w > 1: action = 'mod'
                                                 logger.debug('* G.{}_edge({}, {}, weight={})'.format(action, u, v, w))
                                                 #GUBED

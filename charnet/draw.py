@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 class Draw:
         @staticmethod
         def do_graphs():
-                """Graphs for the characters' encounters are drawn for visualization
-                only using matplotlib and NetworkX."""
-
+                '''Graphs for the characters' encounters are drawn for visualization
+                only using matplotlib and NetworkX.'''
+                edge_dict = {}
+                
                 logger.info('* Drawing graphs...')
                 books = Books.get_books()
                 for book in books:
@@ -24,38 +25,17 @@ class Draw:
                         G = book.get_graph()
                         color = book.get_vertex_color()
 
-                        fn = "g-" + book.get_name() + ".png"
+                        fn = 'g-' + book.get_name() + '.png'
                         fn = os.path.join(Project.get_outdir(), fn)
 
-                        # edge proportional to weight
-                        edgewidths=[]
-                        for (u,v,data) in G.edges(data=True):
-                                edgewidths.append(data['weight'])
-
-                        # vertices proportional to degree
-                        nodesizes = []
-                        labels = {}
-                        for v in G.nodes():
-                                deg = G.degree(v)
-                                nodesizes.append(deg*factor)
-                                if deg > 1:
-                                        labels[v] = G.node[v]['name'].rstrip("\r")
-                                else:
-                                        labels[v] = ''
-                                
-                        try:
-                                pos = nx.graphviz_layout(G)
-                        except:
-                                pos=nx.spring_layout(G,iterations=20)
-                                
-                        fig = plt.figure(figsize=(12,12))
-                        nx.draw_networkx_edges(G, pos, alpha=0.3, width=edgewidths, edge_color=color)
-                        ax = plt.subplot(111)
-                        ax.set_title('Graph - ' + book.get_name().title(), fontsize=16)
-                        nx.draw(G,pos, with_labels=False, node_size=factor, node_color='black')
-                        nx.draw_networkx_nodes(G, pos, node_size=nodesizes, node_color=color, alpha=0.4)
-                        nx.draw_networkx_edges(G, pos,alpha=0.4, node_size=0, width=1, edge_color='k')
-                        nx.draw_networkx_labels(G, pos, labels, font_size=11)
-                        plt.tight_layout()
-                        plt.savefig(fn, format="PNG")
-                        logger.info('* Wrote %s' % fn )
+                        visual_style = {}
+                        #visual_style['vertex_color']
+                        visual_style['vertex_label'] = G.vs['name']
+                        visual_style['vertex_color'] = book.get_vertex_color()
+                        visual_style['vertex_size'] = [25 + math.ceil(v.degree()/5) for v in G.vs]
+                        visual_style['edge_width'] = [math.ceil(int(e['weight'])/2.0) for e in G.es]
+                        visual_style['layout'] = G.layout('kk')
+                        visual_style['bbox'] = (600, 600)
+                        visual_style["margin"] = 30
+                        plot(G, fn, **visual_style)
+                        logger.info('* Wrote {}'.format(fn))

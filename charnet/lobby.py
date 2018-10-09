@@ -1,8 +1,9 @@
 import os.path
 import logging
-from networkx import *
 
-# change INFO to DEBUG to output in "lobby.log" file
+from igraph import *
+
+# change INFO to DEBUG to write to "lobby.log" file
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -36,13 +37,13 @@ def lobby(G):
     """
     lobbies = {}
 
-    logger.debug('* {}'.format(G.graph['name']))
+    logger.debug('* {}'.format(G['name']))
     
-    for u in G.nodes():
+    for u in G.vs:
 
-        logger.debug('{}\tdegree={}'.format(G.node[u]['name'], str(G.degree(u))))
+        logger.debug('{}\tdegree={}'.format(G.vs[u.index]['name'], str(u.degree())))
 
-        G.node[u]['Lobby'] = lobby = 1 # initialize lobby
+        G.vs[u.index]['Lobby'] = lobby = 1 # initialize lobby
         degs = [] # neighbors' degree
 
         for v in G.neighbors(u):
@@ -63,9 +64,9 @@ def lobby(G):
 
             logger.debug("** Lobby={}".format(str(lobby)))
 
-        G.node[u]['Lobby'] = float(lobby) / G.number_of_nodes() # normalize by N vertices
+        G.vs[u.index]['Lobby'] = float(lobby) / G.vcount() # normalize by N vertices
         
-        lobbies[u] = G.node[u]['Lobby']
+        lobbies[u.index] = G.vs[u.index]['Lobby']
 
         if handler:logger.debug('* Wrote {}'.format(handler.stream.name))
         
