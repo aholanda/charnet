@@ -2,7 +2,8 @@ import math
 import numpy as np
 import logging
 
-from igraph import *
+import graph_tool as gt
+import graph_tool.centrality as gt_central
 
 # LOCAL
 from lobby import *
@@ -15,8 +16,31 @@ class Graphs():
         
         @staticmethod
         def create_graph():
-                return Graph()
+                return gt.Graph(directed=False)
 
+        @staticmethod
+        def size(G):
+                '''Return the number of vertices in the graph G.'''
+                assert G
+                return len(list(G.vertices()))
+
+        @staticmethod
+        def length(G):
+                '''Return the number of edges in the graph G.'''
+                assert G
+                return len(list(G.edges()))
+
+        @staticmethod
+        def density(G):
+                '''The density of a network is the ratio of the number of links and
+                the possible number of links
+
+                '''
+                assert G
+                N = Graphs.size(G)
+                M = Graphs.length(G)
+                return 2*float(M) / (N*(N-1))
+        
         @staticmethod
         def get_centrality_names():
                 return Graphs.centrality_names
@@ -24,10 +48,10 @@ class Graphs():
         @staticmethod
         def degree_centrality(G):
                 '''Return an array of normalized degree centrality.'''
-                N = G.vcount()
+                N = Graphs.size(G)
                 arr = [None] * N
-                for v in G.vs: # normalize
-                        arr[v.index] = float(v.degree()) / N
+                for v in G.vertices(): # normalize
+                        arr[int(v)] = float(v.out_degree()) / N
                 return arr
 
         @staticmethod
@@ -35,21 +59,19 @@ class Graphs():
                 '''Calculate the average degree and the standard deviation degree.
                 '''
                 deg_sum = [] # degree summation
-                for v in G.vs:
-                        deg_sum.append(v.degree())
+                for v in G.vertices():
+                        deg_sum.append(v.out_degree())
 
                 return (np.mean(deg_sum), np.std(deg_sum))
 
         @staticmethod
         def get_centrality_values(G, which):
+                ewprops = G.edge_properties["weight"]
+                centr_func = None
                 if which == 'Betweenness':
-                        arr = Graph.betweenness(G, directed=False, weights='weight')
-                        N = G.vcount()
-                        for v in G.vs: # normalize
-                                arr[v.index] /= ((N-1)*(N-2))
-                        return arr
+                        centr_func = gt.PropertyMap.get_array(gt_central.betweenness(G, weight=ewprops, norm=True)[0])
                 elif which == 'Closeness':
-                        centr_func = Graph.closeness(G, weights='weight')
+                        centr_func = gt.PropertyMap.get_array(gt.centrality.closeness(G, weight=ewprops))
                 elif which == 'Degree':
                         centr_func = Graphs.degree_centrality(G)
                 elif which == 'Lobby':
@@ -66,15 +88,15 @@ class Graphs():
                 (xs, ys, xxs, yavgs) = ([], [], [], [])
                 (xsp, ysp, xxsp, yavgsp) = ([], [], [], [])
 
-                for u in G.vs:
-                        k = u.degree()
+                for u in G.vertices():
+                        k = u.out_degree()
                         knn = 0.0 # degree average of neighbors
 
-                        for v in G.neighbors(u):
-                                knn += G.vs[v].degree()
+                        for v in u.out_neighbors():
+                                knn += v.out_degree()
 
-                        if len(list(G.neighbors(u))) > 0:
-                                knn /= len(list(G.neighbors(u)))
+                        if u.out_degree() > 0:
+                                knn /= u.out_degree()
                         else:
                                 continue
                         

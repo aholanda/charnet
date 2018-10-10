@@ -2,6 +2,9 @@ import os.path
 import numpy as np
 import logging
 
+import graph_tool as gt
+import graph_tool.clustering as gt_cluster
+
 # LOCAL
 from plot import *
 from graphs import *
@@ -62,36 +65,39 @@ class Formatting:
                 
                 f = open(fn, "w")
 
-                f.write('{\small\\begin{tabular}{@{}ccccccc@{}}\\toprule\n')
-                f.write('\\bf\\hfil Book\\hfil '
-                        + ' & \\hfil \\hphantom{00} $\\mathbf N$ \\hphantom{00} \\hfil '
-                        + ' & \\hfil \\mathbf M\hfil '
-                        + ' & \\hfil \\hphantom{0} $\\mathbf\langle K\rangle$ \\hphantom{0} \\hfil '
-                        + ' & \\hfil \\hphantom{0} $\\mathbf D$ \\hphantom{0} \\hfil ' # Density
-                        + ' & \\hfil \\hphantom{0} $\\mathbf C_c$ \\hphantom{0} \\hfil ' # Cluster. Coef.
-                        + ' \\\\ \\colrule\n'
-                )
-                books = Books.get_books()
-                for book in books:
-                        G = book.get_graph()
-                        G['clustering'] = Graph.transitivity_undirected(G)
-                        G['density'] = Graph.density(G)
-                        (deg_avg, deg_stdev) = Graphs.degree_stat(G)
-                
-                        # OUTPUT
-                        ln = book.get_label() + ' & '
-                        ln += str(G.vcount()) + ' & '
-                        ln += str(G.ecount()) + ' & '
-                        ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
-                        ln += '{0:.3f}'.format(book.G['density']) + ' & '
-                        ln += '{0:.3f}'.format(book.G['clustering']) + ' & '
-                        ln += "\\\\ \n"
-                
-                        f.write(ln)
-                
-                f.write("\\botrule\\end{tabular}}\n")        
-                f.close()
+                f.write('{\\small\\begin{tabular}{@{}cccccccc@{}}\\toprule \n'
+                        + '\\hfil\\bf Genre\hfil& \\\bf\\\hfil Book\\\hfil \n'
+                        + '& \\hfil\\hphantom{00} $\\mathbf N$ \\hphantom{00}\\hfil \n'
+                        + '& \\hfil\\bf $\\mathbf M$\\hfil \n'
+                        + '& \\hfil\\hphantom{0} $\\mathbf\\langle K\\rangle$\\hphantom{0} \\hfil \n'
+                        + '& \\hfil\\hphantom{0} $\\mathbf D$ \\hphantom{0}\\hfil  \n'
+                        + '& \\hfil\\hphantom{0} $\\mathbf C_c$\\hphantom{0}\\hfil\\\\ \n')
 
+                for n in Books.get_genre_enums():
+                        ln = '\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
+
+                        books = Books.get_books()
+                        for book in books:
+                                enum = book.get_genre()
+                                if enum.value == n:
+                                        G = book.get_graph()
+                                        CC,_ = gt_cluster.global_clustering(G)
+                                        D = Graphs.density(G)
+                                        (deg_avg, deg_stdev) = Graphs.degree_stat(G)
+                
+                                        # OUTPUT
+                                        ln += '\t&\emph{' + book.get_label() + '} & '
+                                        ln += str(len(list(G.vertices()))) + ' & '
+                                        ln += str(len(list(G.edges()))) + ' & '
+                                        ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
+                                        ln += '{0:.3f}'.format(D) + ' & '
+                                        ln += '{0:.3f}'.format(CC) + ' & '
+                                        ln += "\\\\ \n"
+                        f.write(ln)
+                                        
+                f.write("\\botrule\\end{tabular}}\n")
+
+                f.close()
                 logger.info('* Wrote {}'.format(fn))
 
         @staticmethod
@@ -101,18 +107,24 @@ class Formatting:
 
                 books = Books.get_books()
                 for book in books:
+                        degs = {}
+                        char_names = {}
                         G = book.get_graph()
-                        for v in G.vs:
-                                G.vs[v.index]['degree'] = v.degree()
-
+                        for v in G.vertices():
+                                lab = G.vertex_properties["label"][v]
+                                degs[lab] = v.out_degree()
+                                char_names[lab] = G.vertex_properties["char_name"][v]
+                                
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn)
                         f = open(fn, 'w')
 
                         # Sort by degree in reverse order
-                        vs=sorted(G.vs, key=lambda z:z['degree'], reverse=True)
-                        for v in vs:
-                                f.write(v['name'] + sep + '\"' + v['char_name'] + '\"'+ sep + str(v['degree']) + '\n')
+                        labs=sorted(degs.items(), key=lambda x: x[1], reverse=True)
+                        for lab, deg in labs:
+                                f.write(lab + sep + '\"'
+                                        + char_names[lab] + '\"'
+                                        + sep + str(deg) + '\n')
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
@@ -124,14 +136,22 @@ class Formatting:
 
                 books = Books.get_books()
                 for book in books:
+                        freqs = {}
+                        char_names = {}
                         G = book.get_graph()
 
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn) 
                         f = open(fn, 'w')
-                        vs=sorted(G.vs, key=lambda z:z['frequency'], reverse=True)
-                        for v in vs:
-                                f.write(v['name'] + sep + '\"' + v['char_name'] + '\"'+ sep + str(v['frequency']) + '\n')
+
+                        for v in G.vertices():
+                                lab = G.vertex_properties["label"][v]
+                                freqs[lab] = G.vertex_properties["frequency"][v]
+                                char_names[lab] = G.vertex_properties["char_name"][v]
+
+                        labs=sorted(freqs.items(), key=lambda x: x[1], reverse=True)
+                        for lab, freq in labs:
+                                f.write(lab + sep + '\"' + char_names[lab] + '\"'+ sep + str(freq) + '\n')
 
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
@@ -144,17 +164,25 @@ class Formatting:
 
                 books = Books.get_books()
                 for book in books:
+                        ws = {}
+                        char_names = {}
                         G = book.get_graph()
 
                         fn = book.get_name() + suf
                         fn = os.path.join(Project.get_outdir(), fn) 
                         f = open(fn, 'w')
-                        es=sorted(G.es, key=lambda z:z['weight'], reverse=True)
-                        for e in es:
-                                (nu, nv) = (G.vs[e.source]['char_name'], G.vs[e.target]['char_name'])
-                                w = e['weight']
 
-                                f.write(G.vs[e.source]['name'] + lnk + G.vs[e.target]['name'] + sep + '\"' + nu + '\"' + lnk + '\"' + nv + '\"' + sep + str(w) + '\n')
+                        for e in G.edges():
+                                u = e.source()
+                                v = e.target()                               
+                                lab = G.vertex_properties["label"][u] + lnk + G.vertex_properties["label"][v]
+                                ws[lab] = G.edge_properties["weight"][e]
+                                char_names[lab] = '\"' + G.vertex_properties["char_name"][u] + '\"' + lnk \
+                                                  + '\"' + G.vertex_properties["char_name"][v] + '\"' 
+
+                        labs=sorted(ws.items(), key=lambda x: x[1], reverse=True)
+                        for lab,w in labs:
+                                f.write(lab + sep + char_names[lab] + sep + str(w) + '\n')
                         f.close()
                         logger.info('* Wrote {}'.format(fn))                
 

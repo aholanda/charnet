@@ -1,8 +1,6 @@
 import tempfile
 import numpy as np
 
-from igraph import *
-
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,20 +52,104 @@ class Charnet(Project):
 from enum import Enum
 class BookGenre(Enum):
         '''Books are classified in categories.'''
-        FICTION = 1
-        BIOGRAPHY = 2
-        LEGENDARY = 3 # e.g., Bible
+        BIOGRAPHY = 0
+        LEGENDARY = 1 # e.g., Bible
+        FICTION = 2
         
 class Book():
         def __init__(self):
                 self.G = Graphs.create_graph() # Graph to be created from the book
                 self.avg = {} # Dictionary to load average values associated with a centrality as key
                 self.was_read = False # if the data file was already parsed, dont do it again
+
+                # Dictionaries to store graph information
+                # map vertex index and its label
+                self.G.vertex_properties["label"] = self.G.new_vertex_property("string")
+                # map vertex 'index' object and its frequency
+                self.G.vertex_properties["frequency"] = self.G.new_vertex_property("int")
+                # map edge index and its weight
+                self.G.edge_properties["weight"] = self.G.new_edge_property("int") 
+                # map vertex index and its character name
+                self.G.vertex_properties["char_name"] = self.G.new_vertex_property("string")
+                # map vertex label and its vertex 'index' object
+                self.vprop_l2v = {}
                 
         def __str__(self):
                 '''Return the name of the book.'''
                 pass
+
+        def set_graph_name(self, name):
+                self.G.graph_properties["name"] = self.G.new_graph_property("string")
+                self.G.graph_properties["name"] = name
+
+        def get_char_label(self, idx):
+                return self.G.vertex_properties["label"][idx]
+        
+        def set_char_label(self, idx, label):
+                self.G.vertex_properties["label"][idx] = label
+                self.vprop_l2v[label] = idx
+
+        def set_char_name(self, idx, char_name):
+                self.G.vertex_properties["char_name"][idx] = char_name
+
+        def get_char_idx_from_label(self, label):
+                return self.vprop_l2v[label]
                 
+        def add_char(self, label, char_name):
+                '''Add character labelled with character name in the graph. Map label
+                and frequency with index; and character name with label.'''
+                v = self.G.add_vertex()
+                idx = int(v)
+                self.set_char_label(idx, label)
+                self.set_char_name(idx, char_name)
+                self.G.vertex_properties["frequency"][idx] = 0
+                
+        def inc_freq(self, label):
+                idx = self.get_char_idx_from_label(label)
+                self.G.vertex_properties["frequency"][idx] += 1
+                
+        def exists(self, label):
+                '''Verify the existence of the label in the dictionary associated with
+                the graph. The existence means the label was already inserted in the
+                graph G.'''
+                if label in self.vprop_l2v:
+                        return True
+                return False
+
+        def degree(self, label):
+                idx = self.get_char_idx_from_label(label)
+                return self.G.vertex(idx).out_degree()
+                
+        def met(self, char_lbl_a, char_lbl_b):
+                '''Return True if character label a (char_lbl_a) have met with character
+                label b (char_lbl_b), False otherwise.
+
+                '''
+                u = self.get_char_idx_from_label(char_lbl_a)
+                v = self.get_char_idx_from_label(char_lbl_b)
+                if self.G.edge(u, v) == None:
+                        return False
+                return True
+
+        def add_encounter(self, char_lbl_a, char_lbl_b):
+                u = self.get_char_idx_from_label(char_lbl_a)
+                v = self.get_char_idx_from_label(char_lbl_b)
+                e = self.G.add_edge(u, v)
+                self.G.edge_properties["weight"][e] = 1
+                
+        def inc_weight(self, char_lbl_a, char_lbl_b):
+                u = self.get_char_idx_from_label(char_lbl_a)
+                v = self.get_char_idx_from_label(char_lbl_b)
+                e = self.G.edge(u, v)
+                self.G.edge_properties["weight"][e] += 1
+
+        def get_weight(self, char_lbl_a, char_lbl_b):
+                u = self.get_char_idx_from_label(char_lbl_a)
+                v = self.get_char_idx_from_label(char_lbl_b)
+                e = self.G.edge(u, v)
+                
+                return self.G.edge_properties["weight"][e]
+
         def get_genre(self):
                 pass
         
@@ -148,8 +230,8 @@ class Book():
                 else:
                         return self.G
 
-                # name the Graph
-                self.G['name'] = self.get_name()
+                # set graph name
+                self.set_graph_name(self.get_name())
                 
                 fn = self.get_file_name()
                 f = open(fn, "r")
@@ -179,11 +261,8 @@ class Book():
                                 #DEBUG
                                 logger.debug("* G.add_vertice({}, name={})".format(v, character_name))
                                 #GUBED
-                                if len(self.G.vs) == 0 or v not in self.G.vs['name']:
-                                        self.G.add_vertices(v)
-                                        vid = self.G.vs.find(name=v)
-                                        self.G.vs[vid.index]['frequency'] = 1
-                                        self.G.vs[vid.index]['char_name'] = character_name
+                                if not self.exists(v):
+                                        self.add_char(v, character_name)
                                         u = v
                                 else:
                                         logger.error('* Label {} is repeated in book {}.'.format(v, book_name))
@@ -207,12 +286,11 @@ class Book():
                                 # add vertices to graph G if it does not exit
                                 # otherwise, increment frequency
                                 for v in vs:
-                                        if (v not in self.G.vs['name']):
+                                        if not self.exists(v):
                                                 logger.error('* Label \"{}\" was not added as node in the graph for book {}.'.format(v, book_name))
                                                 exit()
                                         else:
-                                                vid = self.G.vs.find(name=v)
-                                                self.G.vs[vid.index]['frequency'] += 1
+                                                self.inc_freq(v)
 
                                 # add characters encounters (edges) to graph G
                                 for i in range(len(vs)):
@@ -222,24 +300,22 @@ class Book():
 
                                                 # link u--v
                                                 eid = -1 # edge id
-                                                if not self.G.are_connected(u, v):
-                                                        self.G.add_edges([(u, v)])
-                                                        eid = self.G.get_eid(u, v)
-                                                        self.G.es[eid]['weight'] = 1
+                                                if not self.met(u, v):
+                                                        self.add_encounter(u, v)
                                                 else: # u--v already in G, increase weight
-                                                        eid = self.G.get_eid(u, v)
-                                                        self.G.es[eid]['weight'] += 1
-
-                                                if u == 'DO' or v == 'DO':
-                                                        if u == 'DO':
-                                                                print('\t', u, v, '\t deg(<{}>)={}, {}'.format(u, self.G.vs.find(name=u).degree(),
-                                                                                                               self.G.vs.find(name=v).degree()))
-                                                        else:
-                                                                print('\t', u, v, '\t {}, deg(<{}>)={}'.format(self.G.vs.find(name=u).degree(),
-                                                                                                               v, self.G.vs.find(name=v).degree()))         
+                                                        self.inc_weight(u, v)
+                                                        
+                                                        if self.get_name() == 'apollonius':
+                                                                if u == 'AP' or v == 'AP':
+                                                                        if u == 'DM' or v == 'DM':
+                                                                                print('k({})={}, k({})=, w={}'.format(
+                                                                                      u, self.degree(u),
+                                                                                      v, self.degree(v),
+                                                                                      self.get_weight(u, v)))
+                                                        
                                                 #DEBUG
                                                 action = 'add'
-                                                w = self.G.es[eid]['weight']
+                                                w = self.get_weight(u, v)
                                                 if w > 1: action = 'mod'
                                                 logger.debug('* G.{}_edge({}, {}, weight={})'.format(action, u, v, w))
                                                 #GUBED
@@ -432,18 +508,28 @@ class Books(Book):
                 Huck(),       #  3,  2
         ]
 
+        genre_names = ['Biography', 'Legendary', 'Fiction']
+        
         @staticmethod
         def get_genre_label(book):
                 gen = book.get_genre()
-                if (gen == BookGenre.FICTION):
-                        return 'F'
-                elif (gen == BookGenre.BIOGRAPHY):
+                if (gen == BookGenre.BIOGRAPHY):
                         return 'B'
                 elif (gen == BookGenre.LEGENDARY):
                         return 'L'
+                elif (gen == BookGenre.FICTION):
+                        return 'F'
                 else:
                         logger.error('* Unknown book: \"{}\"'.format(book.get_name()))
                         exit()
+
+        @staticmethod
+        def get_genre_name(idx):
+                return Books.genre_names[idx]
+
+        @staticmethod
+        def get_genre_enums():
+                return np.arange(0,len(Books.genre_names))
 
         @staticmethod
         def get_books():

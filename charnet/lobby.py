@@ -1,7 +1,6 @@
 import os.path
-import logging
 
-from igraph import *
+import logging
 
 # change INFO to DEBUG to write to "lobby.log" file
 logger = logging.getLogger(__name__)
@@ -35,19 +34,19 @@ def lobby(G):
     the Lobby index is 3 because degree $\leq$ neighbor_position. 
     
     """
-    lobbies = {}
-
-    logger.debug('* {}'.format(G['name']))
+    N = len(list(G.vertices()))
+    lobbies = [0] * N
     
-    for u in G.vs:
+    logger.debug('* {}'.format(G.graph_properties["name"]))
+    
+    for u in G.vertices():
 
-        logger.debug('{}\tdegree={}'.format(G.vs[u.index]['name'], str(u.degree())))
+        logger.debug('{}\tdegree={}'.format(G.vertex_properties['label'][u], str(u.out_degree())))
 
-        G.vs[u.index]['Lobby'] = lobby = 1 # initialize lobby
         degs = [] # neighbors' degree
 
-        for v in G.neighbors(u):
-            degs.append(G.degree(v))
+        for v in u.out_neighbors():
+            degs.append(v.out_degree())
                             
         degs.sort()
         degs.reverse()
@@ -64,10 +63,8 @@ def lobby(G):
 
             logger.debug("** Lobby={}".format(str(lobby)))
 
-        G.vs[u.index]['Lobby'] = float(lobby) / G.vcount() # normalize by N vertices
+        lobbies[int(u)] = float(lobby) / N # normalize by N vertices
         
-        lobbies[u.index] = G.vs[u.index]['Lobby']
-
         if handler:logger.debug('* Wrote {}'.format(handler.stream.name))
         
     return lobbies

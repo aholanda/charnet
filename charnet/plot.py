@@ -11,6 +11,9 @@ from numpy import argmax
 from scipy.stats import pearsonr
 import sys
 
+import graph_tool as gt
+import graph_tool.clustering as gt_cluster
+
 import powerlaw
 
 # LOCAL
@@ -69,7 +72,7 @@ class MultiPlots():
                 # Customize the major grid
                 self.axes[i, j].grid(which='major', linestyle='-', linewidth='0.4', color='gray')
 
-        def print_legend(self, i, j, fontsize=5.5, location='upper right'):
+        def print_legend(self, i, j, fontsize=5, location='upper right'):
                 self.axes[i, j].legend(fontsize=fontsize, loc=location)
 
         def print_axis(self, i, j, label, which, fontsize=7):
@@ -216,9 +219,9 @@ class Plot:
                         lbl = book.get_name() + ' (' + Books.get_genre_label(book) + ')'
                         G = books[k].get_graph()
 
-                        x = Graph.density(G)
-                        y = Graph.transitivity_undirected(G)
-
+                        x = Graphs.density(G)
+                        y = gt_cluster.global_clustering(G)[0]
+                        
                         marker_style = dict(linestyle='', color='black', markersize=6)
                         plt.plot(x, y, marker=Plot.markers[nms % len(Plot.markers)],
                                  label=lbl,
@@ -230,7 +233,7 @@ class Plot:
                 plt.xlabel('Density')
                 plt.ylabel('Clustering coefficient')
                 plt.title('')
-                plt.legend(fontsize=7, loc='center right')
+                plt.legend(fontsize=6, loc='upper left')
                 plt.savefig(fn)
 
                 logger.info('* Wrote plot %s', fn)
@@ -251,8 +254,8 @@ class Plot:
                         degs = []
                         
                         # get the degrees
-                        for v in G.vs:
-                                deg = v.degree()
+                        for v in G.vertices():
+                                deg = v.out_degree()
                                 if deg > 0: degs.append(deg)
 
                         mplots.plot_CDF(i, j, degs, books[k])
@@ -282,11 +285,8 @@ class Plot:
                                 centrs = []
                                 
                                 G = book.get_graph()
-                                centrs = Graphs.get_centrality_values(G, centr_name)
-                                Graphs.get_centrality_values(G, 'Lobby')
-                                for u in G.vs:
-                                        xs.append(centrs[u.index])
-                                        ys.append(G.vs[u.index]['Lobby'])
+                                xs = Graphs.get_centrality_values(G, centr_name)
+                                ys = Graphs.get_centrality_values(G, 'Lobby')
 
                                 # Calculate Pearson correlation and concatenate to graphic title
                                 (r_row, p_value) = pearsonr(xs, ys)
