@@ -73,6 +73,13 @@ class Book():
                 self.G.vertex_properties["char_name"] = self.G.new_vertex_property("string")
                 # map vertex label and its vertex 'index' object
                 self.vprop_l2v = {}
+
+                # Store a boolean value indicating if vertex PropertyMap containing degree
+                # values was already filled
+                self.G.graph_properties["was_vprop_degree_set"] = self.G.new_graph_property("boolean")
+                self.G.graph_properties["was_vprop_degree_set"] = False
+                # Store degree non-normalized degree of vertices
+                self.G.vertex_properties["degree"] = self.G.new_vertex_property("int")
                 
         def __str__(self):
                 '''Return the name of the book.'''
@@ -185,8 +192,8 @@ class Book():
                 """
                 assert self.G
                 nr_hapaxes = 0
-                for v in self.G.vs:
-                        freq = v['frequency']
+                for v in self.G.vertices():
+                        freq = self.G.vertex_properties['frequency'][v]
                         if (freq == 1):
                                 nr_hapaxes += 1
 
@@ -198,8 +205,8 @@ class Book():
                 """
                 assert self.G
                 nr_dis = 0
-                for v in self.G.vs:
-                        freq = v['frequency']
+                for v in self.G.vertices():
+                        freq = self.G.vertex_properties['frequency'][v]
                         if (freq == 2):
                                 nr_dis += 1
 
@@ -304,15 +311,6 @@ class Book():
                                                         self.add_encounter(u, v)
                                                 else: # u--v already in G, increase weight
                                                         self.inc_weight(u, v)
-                                                        
-                                                        if self.get_name() == 'apollonius':
-                                                                if u == 'AP' or v == 'AP':
-                                                                        if u == 'DM' or v == 'DM':
-                                                                                print('k({})={}, k({})=, w={}'.format(
-                                                                                      u, self.degree(u),
-                                                                                      v, self.degree(v),
-                                                                                      self.get_weight(u, v)))
-                                                        
                                                 #DEBUG
                                                 action = 'add'
                                                 w = self.get_weight(u, v)
