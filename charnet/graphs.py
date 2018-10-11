@@ -45,13 +45,21 @@ class Graphs():
         def get_centrality_names():
                 return Graphs.centrality_names
 
+        def get_vprop_degrees(G):
+                if G.graph_properties["was_vprop_degree_set"] == False:
+                        G.graph_properties["was_vprop_degree_set"] = True
+                        for v in G.vertices():
+                                G.vertex_properties["degree"][v] = v.out_degree()
+                return G.vertex_properties["degree"]
+
         @staticmethod
         def degree_centrality(G):
                 '''Return an array of normalized degree centrality.'''
+                vprop = Graphs.get_vprop_degrees(G)
                 N = Graphs.size(G)
                 arr = [None] * N
                 for v in G.vertices(): # normalize
-                        arr[int(v)] = float(v.out_degree()) / N
+                        arr[int(v)] = float(vprop[v]) / N
                 return arr
 
         @staticmethod
