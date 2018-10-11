@@ -1,5 +1,6 @@
 import os.path
 import numpy as np
+import operator
 import logging
 
 import graph_tool as gt
@@ -19,33 +20,46 @@ class Formatting:
                 _Hapax_ frequency to be included in the paper using LaTeX
                 syntax for tables.
                 """
-                fn = os.path.join(Project.get_outdir(), 'legomenas.tex')
-
-                f = open(fn, "w")
-                f.write("\\begin{tabular}{@{}ccc@{}}\\toprule \n")
-                f.write("\\bf Book &  $\\mathbf HL^N=H/N$ & $\\mathbf DL^N=DL/N$ \\\\ \\colrule \n")
-	
-	        # count the lapaxes for each book
+                n2h = {} # map book name to hapax
+                n2b = {} # map book name to book object
+                # Sort books by hapax
                 books = Books.get_books()
                 for book in books:
+                        n = book.get_name()
                         G = book.get_graph()
-                        nr_hapaxes = book.get_number_hapax_legomenas()
-                        nr_dis = book.get_number_dis_legomenas()                
-                        nr_chars = G.vcount()
+                        n2h[n] = float(book.get_number_hapax_legomenas()) / Graphs.size(G)
+                        n2b[n] = book
+
+                fn = os.path.join(Project.get_outdir(), 'legomenas.tex')
+                f = open(fn, "w")
+                f.write('''{\\small\\centering\\begin{tabular}{@{}llcc@{}}\\toprule
+                \hfil\\bf  Genre \hfil
+                & \\bf  Book \hfil
+                &  $\\mathbf HL^N=H/N$ & $\\mathbf DL^N=DL/N$ \\\\ \n''')
+
+                for n in Books.get_genre_enums():
+                        ln = '    \colrule\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
                         
-                        ln = book.get_label() + " & "
-                        ln += '{0:02d}'.format(nr_hapaxes) + "/"
-                        ln += '{0:02d}'.format(nr_chars) + " = "
-                        ln += '{0:.3f}'.format(float(nr_hapaxes)/nr_chars) 
-                        ln += ' & '
-                        ln += '{0:02d}'.format(nr_dis) + "/"
-                        ln += '{0:02d}'.format(nr_chars) + " = "
-                        ln += '{0:.3f}'.format(float(nr_dis)/nr_chars) 
-                        ln +=" \\\\\n"
+                        n2h_lst = sorted(n2h.items(), key=operator.itemgetter(1), reverse=True)
+                        for bname, hap in n2h_lst:
+                                book = n2b[bname]
+                                enum = book.get_genre()
+                                if enum.value == n:
+                                        nr_dis = book.get_number_dis_legomenas()
+                                        nr_chars = Graphs.size(book.get_graph())
+                                        ln += '\t&' + book.get_label() + " & "
+                                        ln += '{0:02d}'.format(book.get_number_hapax_legomenas()) + "/"
+                                        ln += '{0:02d}'.format(nr_chars) + " = "
+                                        ln += '{0:.3f}'.format(hap)
+                                        ln += ' & '
+                                        ln += '{0:02d}'.format(nr_dis) + "/"
+                                        ln += '{0:02d}'.format(nr_chars) + " = "
+                                        ln += '{0:.3f}'.format(float(nr_dis)/nr_chars)
+                                        ln +=" \\\\ \n"
                         
                         f.write(ln)
 
-                f.write("\\botrule \\end{tabular}\n")
+                f.write("\\botrule \\end{tabular}}\n")
                 f.close()
                 logger.info('* Wrote {}'.format(fn))
 
@@ -65,16 +79,18 @@ class Formatting:
                 
                 f = open(fn, "w")
 
-                f.write('{\\small\\begin{tabular}{@{}cccccccc@{}}\\toprule \n'
-                        + '\\hfil\\bf Genre\hfil& \\\bf\\\hfil Book\\\hfil \n'
-                        + '& \\hfil\\hphantom{00} $\\mathbf N$ \\hphantom{00}\\hfil \n'
-                        + '& \\hfil\\bf $\\mathbf M$\\hfil \n'
-                        + '& \\hfil\\hphantom{0} $\\mathbf\\langle K\\rangle$\\hphantom{0} \\hfil \n'
-                        + '& \\hfil\\hphantom{0} $\\mathbf D$ \\hphantom{0}\\hfil  \n'
-                        + '& \\hfil\\hphantom{0} $\\mathbf C_c$\\hphantom{0}\\hfil\\\\ \n')
+                f.write('''
+                {\small \\begin{tabular}{@{}cccccccc@{}}\\toprule
+                \hfil \\bf Genre \hfil
+                & \\bf \hfil Book \hfil
+                & \hfil\hphantom{00} $\mathbf N$ \hphantom{00}\hfil
+                & \hfil $\mathbf M$\hfil
+                & \hfil\hphantom{0} $\mathbf\\langle K\\rangle$\hphantom{0} \hfil
+                & \hfil\hphantom{0} $\mathbf D$ \hphantom{0}\hfil
+                & \hfil\hphantom{0} $\mathbf C_c$\hphantom{0}\hfil \\\\ \n''')
 
                 for n in Books.get_genre_enums():
-                        ln = '\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
+                        ln = '\t\t\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
 
                         books = Books.get_books()
                         for book in books:
@@ -86,7 +102,7 @@ class Formatting:
                                         (deg_avg, deg_stdev) = Graphs.degree_stat(G)
                 
                                         # OUTPUT
-                                        ln += '\t&\emph{' + book.get_label() + '} & '
+                                        ln += '\t\t\t&\emph{' + book.get_label() + '} & '
                                         ln += str(len(list(G.vertices()))) + ' & '
                                         ln += str(len(list(G.edges()))) + ' & '
                                         ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
@@ -95,7 +111,7 @@ class Formatting:
                                         ln += "\\\\ \n"
                         f.write(ln)
                                         
-                f.write("\\botrule\\end{tabular}}\n")
+                f.write("\t\t\\botrule\\end{tabular}}\n")
 
                 f.close()
                 logger.info('* Wrote {}'.format(fn))
