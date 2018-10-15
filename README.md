@@ -15,9 +15,8 @@ This project performed studies using complex networks in some books. We consider
 ## Prerequisites
 
 * Python and the packages:
-  * [matplotlib](https://matplotlib.org/);
-  * [NetworkX](https://networkx.github.io/);
-  * [PyGraphviz](https://pygraphviz.github.io/);
+  * [matplotlib](https://matplotlib.org/) - used to plot the graphics;
+  * [graph-tool](https://graph-tool.skewed.de/) - used to calculate the network measures and draw the graphs;
   * [powerlaw](https://github.com/jeffalstott/powerlaw) - it is a package used to fit data to power law distribution.
 
 ## Structure
@@ -71,7 +70,11 @@ are `Leaf`s.
 
 ## Running
 
-Download the project using `git` and enter in the `charnet` directory:
+Install `graph-tool` according to your setup by following the
+[installation instructions](https://git.skewed.de/count0/graph-tool/wikis/installation-instructions).
+
+
+Download the charnet using `git` and enter in the `charnet` directory:
 
 ````
 $ git clone https://github.com/ajholanda/charnet.git && cd charnet
