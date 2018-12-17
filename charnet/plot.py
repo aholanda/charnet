@@ -35,6 +35,15 @@ pylab.rcParams.update(params)
 def get_empty_xy_arrays():
         return ([], [])
 
+def write_only_degrees(book, data):
+        '''Function to write only degree data with the purpose to debug power law fitting.'''
+        fn = '/tmp/' + book.get_name() + '-only-degree.txt'
+        f = open(fn, 'w')
+        for d in (data):
+                f.write(str(d) + '\n')
+        f.close()
+        logger.info('* Wrote {}'.format(fn))
+        
 class MultiPlots():
         def __init__(self, nrows=1, ncols=1, hspace=.1, wspace=.1,
                      xticklabels=np.arange(0.001, 1.1, 0.1),
@@ -171,8 +180,9 @@ class MultiPlots():
                         lns.append(str(xs[k]) + ',')
                         lns.append('{0:.5f}'.format(ys[k]) + '\n')
                 f.writelines(lns)
-                f.close()
+                f.close()                
                 logger.info('* Wrote {}'.format(fn))
+                write_only_degrees(book, datax)
                 
         def finalize(self, fn=os.path.join(Project.get_outdir(), 'plot.pdf')):
                 self.fig.subplots_adjust(hspace=0)
