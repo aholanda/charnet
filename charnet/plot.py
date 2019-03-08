@@ -35,6 +35,11 @@ pylab.rcParams.update(params)
 def get_empty_xy_arrays():
         return ([], [])
 
+def slope_intercept(xs, ys):
+        from scipy.stats import linregress
+
+        return linregress(xs, ys)
+
 def write_only_degrees(book, data):
         '''Function to write only degree data with the purpose to debug power law fitting.'''
         fn = '/tmp/' + book.get_name() + '-only-degree.txt'
@@ -105,7 +110,7 @@ class MultiPlots():
                         exit()
 
         # almost named centr_fill() caused its used only for centrality
-        def fill(self, i, j, book, subtitle, xs, ys, xlabel, ylabel, color='black'):
+        def fill(self, i, j, book, subtitle, xs, ys, xlabel, ylabel, color='black', draw_line=False):
                 self.axes[i, j].set_title(subtitle, fontsize=8)
 
                 if self.is_loglog==True:
@@ -115,11 +120,19 @@ class MultiPlots():
                 self.print_axis(i, j, xlabel, 'x')
                 self.print_axis(i, j, 'Lobby', 'y')
 
-                self.axes[i, j].plot(xs, ys,
-                                     c = color,
-			             alpha=.6,
-                                     **Plot.get_marker_style(book))
+                self.axes[i, j].scatter(xs, ys,
+                                        c = color,
+                                        marker='.',
+                                        s=2,
+			                alpha=.2)
 
+                if draw_line == True:
+                        a, b, r, p, stderr = slope_intercept(xs, ys)
+                        xxs = sorted(xs)
+                        reg_line = [(a*x)+b for x in xxs]
+                                                
+                        self.axes[i, j].plot(xxs, reg_line, c='black')
+                        
                 self.axes[i, j].text(0.5, 1.1, '' ,
                                      style='italic',
                                      horizontalalignment='center',
@@ -300,10 +313,19 @@ class Plot:
 
                                 # Calculate Pearson correlation and concatenate to graphic title
                                 (r_row, p_value) = pearsonr(xs, ys)
-                                title = book.get_name() + ' ($r=$'+'${0:.2f}'.format(r_row) +'$)'
+                                title = book.get_name() + ' ($r=$'+'${0:.2f} '.format(r_row) +'$)'
 
-                                mplots.fill(i, j, book, title, xs, ys, centr_name, 'Lobby', 'black')
+                                mplots.fill(i, j, book, title, xs, ys, centr_name, 'Lobby', 'black', True)
 
+                                # TODO: remove if does not work
+                                fd = '/tmp/' + book.get_name() + '_' +centr_name + '_' + 'Lobby' + '.dat' 
+                                f = open(fd, 'w')
+                                f.write(centr_name + '\t' + 'Lobby' + '\n')
+                                for i in range(len(xs)):
+                                        f.write(str(xs[i]) + '\t' + str(ys[i]) + '\n')
+                                f.close()
+                                logger.info('* Wrote ' + fd)
+                                        
                         mplots.finalize(fn)
                                 
         @staticmethod
