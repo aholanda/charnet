@@ -45,6 +45,7 @@ class Graphs():
         def get_centrality_names():
                 return Graphs.centrality_names
 
+        @staticmethod
         def get_vprop_degrees(G):
                 if G.graph_properties["was_vprop_degree_set"] == False:
                         G.graph_properties["was_vprop_degree_set"] = True
