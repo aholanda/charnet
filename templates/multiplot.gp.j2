@@ -1,0 +1,7 @@
+set key autotitle columnhead
+set term postscript
+set output {{ outfile }}
+set multiplot layout 4,3 rowsfirst
+{% for datafile in datafiles %}
+plot {{ datafile }} using 1:2 pt 7 ps 10
+{% endfor %}
