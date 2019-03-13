@@ -1,0 +1,32 @@
+# common settings
+
+reset
+set macros  # enable macros
+
+# set fontpath '/usr/share/fonts/default/Type1-cm-super/'
+# set term postscript landscape enhanced dashed fontfile 'sfrm1000.pfb'
+# set term postscript 'SFRM1000' 16
+set term postscript
+set output "/tmp/{{ plotinfo.title }}{{ extension }}"
+unset title
+
+# font
+FONT = 'Helvetica,8'
+set key font "@FONT"
+set tics font "@FONT"
+set title font "@FONT"
+set label font "@FONT"
+
+# labels
+XLABEL = "set xlabel '{{ plotinfo.xlabel }}'"
+YLABEL = "set ylabel '{{ plotinfo.ylabel }}'"
+
+# line style
+unset style line
+set style line 1 lt 2 lw 1 # dashed line
+set style line 2 lc rgb '#808080' pt 7 ps 0.4 # points
+
+min = 0
+
+set xrange [min:{{ xmax }}]
+set yrange [min:{{ ymax }}]
