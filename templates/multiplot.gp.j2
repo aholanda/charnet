@@ -2,37 +2,34 @@
 # Multiplot books in the same figure.
 # The variables are the measures studied like 'Betweenness x Lobby'.
 
-reset
-set macros  # enable macros
+{% include 'settings.gp.j2' %}
 
-ncols = 3
-nrows = 4
+ncols = {{ ncols }}
+nrows = {{ nrows }}
 
-# set key autotitle columnhead
-set term postscript
-set output "/tmp/{{ plotinfo.xlabel }}_{{ plotinfo.ylabel }}{{ extension }}"
-unset title
-
-min = 1e-3
-max = 1.0
-
-set xrange [min:max]
-set yrange [min:max]
-
-set logscale xy
-set format '$%g$'
-set format x '$10^{\%T}$'
-set format y '$10^{\%T}$'
+# set logscale xy
+# set format '$%g$'
+# set format x '$10^{\%T}$'
+# set format y '$10^{\%T}$'
 
 # MACROS
 
 ## AXIS
-NOXTICS = "set xtics ('' 1e-3, '' 1e-2, '' 1e-1)"
+NOXTICS = "set xtics ('' 0.0, '' .5, '' 1.0)"
 NOYTICS = "set ytics ('' 0.0, '' .5)"
 NOX = "unset xlabel; @NOXTICS"
 NOY = "unset ylabel; @NOYTICS"
-XTICS = "set xlabel '{{ plotinfo.xlabel }}'; set xtics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
-YTICS = "set ylabel '{{ plotinfo.ylabel }}'; set ytics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
+#XTICS = "set xlabel '{{ plotinfo.xlabel }}'; set xtics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
+#YTICS = "set ylabel '{{ plotinfo.ylabel }}'; set ytics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
+XTICS = "@XLABEL; set xtics ('0.0' 0.0, '0.5' .5)"
+XTICS1 = "@XLABEL; set xtics ('0.0' 0.0,  '0.5' .5, '1.0' 1.0)"
+{% if plot_measure == 'centralities' %}
+YTICS = "@YLABEL; set ytics ('0.0' 0.0,  '0.25' .25)"
+YTICS1 = "@YLABEL; set ytics ('0.0' 0.0,  '0.25' .25, '0.5' 0.5)"
+{% else %}
+YTICS = "@YLABEL; set ytics ('0.0' 0.0,  '0.5' .5)"
+YTICS1 = "@YLABEL; set ytics ('0.0' 0.0,  '0.5' .5, '1.0' 1.0)"
+{% endif %}
 
 # END of MACROS
 
@@ -45,17 +42,27 @@ vspace = 1 - 4*spc
 left = 3*spc
 hspace = 1 - 6*spc
 
-set multiplot layout 4,3 rowsfirst
-{% for datainfo in plotinfo.datainfos %}
+set multiplot layout {{ nrows }},{{ ncols }} rowsfirst
 
-# set axis
+{% for datainfo in plotinfo.datainfos %}
+# set x
 {% if loop.index0 < 9 %}
 @NOX
 {% else %}
+{% if loop.index0 == 11 %}
+@XTICS1
+{% else %}
 @XTICS
 {% endif %}
+{% endif %}
+
+# set y
 {% if loop.index0 % 3 == 0 %}
+{% if loop.index0 == 0 %}
+@YTICS1
+{% else %}
 @YTICS
+{% endif %}
 {% else %}
 @NOY
 {% endif %}
@@ -70,16 +77,11 @@ rmargin_ = lmargin_ + (hspace/ncols)
 set lmargin at screen gprintf("%1.2f", lmargin_)
 set rmargin at screen gprintf("%1.2f", rmargin_)
 
-unset label 1
-unset label 2
-unset label 3
-set label 1 "{{ datainfo.title }}" at graph .825,.9  font ',6'
-set label 2 gprintf("r=%1.2f", {{ datainfo.rvalue }}) at graph .825,.85  font ',6'
-set label 3 gprintf("p=%.2e", {{ datainfo.ptest }}) at graph .825,.8  font ',6'
-
-FIT_LIMIT = 1e-3
-f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
-plot  "{{ datainfo.filename }}" using 1:2, f(x) notitle
+{% if plot_measure == 'centralities' or plot_measure == 'density' %}
+{% include 'fit.gp.j2' %}
+{% else %}
+{% include 'avg.gp.j2' %}
+{% endif %}
 
 {% endfor %}
 
