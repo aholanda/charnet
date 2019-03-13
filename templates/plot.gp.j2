@@ -1,0 +1,29 @@
+#!/usr/bin/env gnuplot
+
+# produce graph containing only 1 plot
+
+{% include 'settings.gp.j2' %}
+
+@XLABEL
+@YLABEL
+
+rvalue = "r={{ rvalue }}"
+ptest = "p={{ ptest }}"
+
+xlabelpos = .8
+ylabelpos = .9
+d = .01
+
+set obj 1 rect from graph (xlabelpos-d), graph (ylabelpos-6*d) to graph (xlabelpos+14*d), graph (ylabelpos+2*d) fs empty border -1
+
+{% if ptest < 0.01 %}
+set label 1 gprintf("p=%.2e", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)  font '@FONT'
+{% else %}
+set label 1 gprintf("p=%1.2f", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)  font '@FONT'
+{% endif %}
+
+set label 2 gprintf("r=%1.2f", {{ rvalue }}) at graph xlabelpos,ylabelpos  font "@FONT"
+
+f(x) = {{ slope }}*x + {{ intercept }}
+plot  "{{ filename }}" using 2:3:1 with labels tc lt 3 font "@FONT" notitle, f(x) notitle
+
