@@ -1,0 +1,15 @@
+# specific to fitting
+
+unset label 1
+unset label 2
+unset label 3
+set label 1 "{{ datainfo.title }}" at graph .825,.9  font ',6'
+set label 2 gprintf("r=%1.2f", {{ datainfo.rvalue }}) at graph .825,.85  font ',6'
+{% if datainfo.ptest < 0.01 %}
+set label 3 gprintf("p=%.2e", {{ datainfo.ptest }}) at graph .825,.8  font ',6'
+{% else %}
+set label 3 gprintf("p=%1.2f", {{ datainfo.ptest }}) at graph .825,.8  font ',6'
+{% endif %}
+
+f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
+plot  "{{ datainfo.filename }}" using 1:2 pt 7 ps .5 notitle, f(x) notitle
