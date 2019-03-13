@@ -1,0 +1,5 @@
+set label 1 '{{ datainfo.title }}' at graph .825,.9  font ',6'
+
+plot  "{{ datainfo.filename }}" using 3:4 with lines ls 1 notitle
+plot  "{{ datainfo.filename }}" using 1:2 with points ls 2 notitle
+
