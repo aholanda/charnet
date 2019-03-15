@@ -3,29 +3,27 @@
 reset
 set macros  # enable macros
 
-# set fontpath '/usr/share/fonts/default/Type1-cm-super/'
-# set term postscript landscape enhanced dashed fontfile 'sfrm1000.pfb'
-# set term postscript 'SFRM1000' 16
-set term postscript
-set output "/tmp/{{ plotinfo.title }}{{ extension }}"
-unset title
+set term cairolatex pdf header \
+    "\\newcommand{\\lblfmt}[0]{\\footnotesize}"
+
+path = "{{ plotinfo.title }}{{ extension }}"
+set output path
+print "-> ", path
 
 # font
-FONT = 'Helvetica,8'
-set key font "@FONT"
-set tics font "@FONT"
-set title font "@FONT"
-set label font "@FONT"
+LabelFmt(String) = gprintf("{\\lblfmt %s}", String)
+
+# points
+set style line 1 pt 7  ps .2 lc 'black'
+
+# lines
+set style line 2 lw 1.5 lt 2 dt 2 lc rgb '#808080'
 
 # labels
-XLABEL = "set xlabel '{{ plotinfo.xlabel }}'"
-YLABEL = "set ylabel '{{ plotinfo.ylabel }}'"
+XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}'"
+YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}'"
 
-# line style
-unset style line
-set style line 1 lt 2 lw 1 # dashed line
-set style line 2 lc rgb '#808080' pt 7 ps 0.4 # points
-
+# bounds
 min = 0
 
 set xrange [min:{{ xmax }}]
