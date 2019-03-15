@@ -3,7 +3,7 @@
 reset
 set macros  # enable macros
 
-set term cairolatex pdf header \
+set term epslatex header \
     "\\newcommand{\\lblfmt}[0]{\\footnotesize}"
 
 path = "{{ plotinfo.title }}{{ extension }}"
@@ -14,7 +14,7 @@ print "-> ", path
 LabelFmt(String) = gprintf("{\\lblfmt %s}", String)
 
 # points
-set style line 1 pt 7  ps .2 lc 'black'
+set style line 1 pt 7  ps .5 lc 'black'
 
 # lines
 set style line 2 lw 1.5 lt 2 dt 2 lc rgb '#808080'
