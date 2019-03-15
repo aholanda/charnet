@@ -7,23 +7,19 @@
 @XLABEL
 @YLABEL
 
-rvalue = "r={{ rvalue }}"
-ptest = "p={{ ptest }}"
-
-xlabelpos = .8
+xlabelpos = .1
 ylabelpos = .9
-d = .01
-
-set obj 1 rect from graph (xlabelpos-d), graph (ylabelpos-6*d) to graph (xlabelpos+14*d), graph (ylabelpos+2*d) fs empty border -1
+d = .015
 
 {% if ptest < 0.01 %}
-set label 1 gprintf("p=%.2e", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)  font '@FONT'
+set label 1 gprintf("\\lblfmt p=%.2e", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)
 {% else %}
-set label 1 gprintf("p=%1.2f", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)  font '@FONT'
+set label 1 gprintf("\\lblfmt p=%1.2f", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)
 {% endif %}
 
-set label 2 gprintf("r=%1.2f", {{ rvalue }}) at graph xlabelpos,ylabelpos  font "@FONT"
+set label 2 gprintf("\\lblfmt r=%1.2f", {{ rvalue }}) at graph xlabelpos,ylabelpos
 
+# ls 2 is set in settings.gp.j2
 f(x) = {{ slope }}*x + {{ intercept }}
-plot  "{{ filename }}" using 2:3:1 with labels tc lt 3 font "@FONT" notitle, f(x) notitle
+plot  "{{ filename }}" using 2:3:(LabelFmt($1)) with labels notitle, f(x) ls 2 notitle
 

@@ -1,15 +1,32 @@
 # specific to fitting
 
-unset label 1
-unset label 2
-unset label 3
-set label 1 "{{ datainfo.title }}" at graph .825,.9  font ',6'
-set label 2 gprintf("r=%1.2f", {{ datainfo.rvalue }}) at graph .825,.85  font ',6'
-{% if datainfo.ptest < 0.01 %}
-set label 3 gprintf("p=%.2e", {{ datainfo.ptest }}) at graph .825,.8  font ',6'
+# label font
+lf_ = ',6'
+xpos = .1
+ypos = .9
+dy = .1
+
+{% if datainfo.title == 'hobbit' %}
+ypos = .3
+dx=.5
+set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*dy)  font ',6'
 {% else %}
-set label 3 gprintf("p=%1.2f", {{ datainfo.ptest }}) at graph .825,.8  font ',6'
+dx=0
+set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*dy)  font ',6'
 {% endif %}
 
+{% if datainfo.rvalue < 0.01 %}
+set label 2 gprintf("\\tiny r=%.2e", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-dy)
+{% else %}
+set label 2 gprintf("\\tiny r=%1.2f", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-dy)
+{% endif %}
+
+{% if datainfo.ptest < 0.01 %}
+set label 3 gprintf("\\tiny p=%.2e", {{ datainfo.ptest }}) at graph (xpos+dx),(ypos-2*dy)
+{% else %}
+set label 3 gprintf("\\tiny p=%1.2f", {{ datainfo.ptest }}) at graph (xpos+dx),(ypos-2*dy)
+{% endif %}
+
+# ls 1 and ls 2 are set in settings.gp.j2
 f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
-plot  "{{ datainfo.filename }}" using 1:2 pt 7 ps .5 notitle, f(x) notitle
+plot  "{{ datainfo.filename }}" using 1:2 ls 1 notitle, f(x) ls 2 notitle

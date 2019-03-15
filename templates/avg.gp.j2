@@ -1,5 +1,6 @@
-set label 1 '{{ datainfo.title }}' at graph .825,.9  font ',6'
+set label 1 '\tiny {{ datainfo.title }}' at graph .625,.9
 
-plot  "{{ datainfo.filename }}" using 3:4 with lines ls 1 notitle
-plot  "{{ datainfo.filename }}" using 1:2 with points ls 2 notitle
+# ls 1 and ls 2 are set in settings.gp.j2
+plot  "{{ datainfo.filename }}" using 1:2 ls 1 notitle, \
+      "{{ datainfo.filename }}" using 3:4 with lines ls 2 notitle
 

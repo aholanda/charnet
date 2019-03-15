@@ -1,6 +1,6 @@
 from jinja2 import Environment, FileSystemLoader
 import os
-import numpy
+import numpy as np
 from scipy.stats import pearsonr
 from scipy.optimize import curve_fit
 
@@ -18,7 +18,7 @@ def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=N
         (_xs, _ys) = ([], [])
         label = ''
         mode = 'w'
-        mode_str = 'Write'
+        mode_str = 'Wrote'
         _book_name = SEP + book_name
         
         
@@ -38,19 +38,20 @@ def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=N
                         if i < len(xxs):
                                 ln = '\t' + str(xxs[i]) + '\t' + str(yys[i]) + '\n'
 
+                # sorry, but \lblfmt is defined in templates/settings.gp
                 if append == True:
-                        label = book_name + '\t'
+                        label = '"\\\\tiny ' + book_name + '"\t'
                                 
                 ln = label + str(xs[i]) + '\t' + str(ys[i]) + ln
                 f.write(ln)
                 _xs.append(xs[i])
                 _ys.append(ys[i])
         f.close()
-        print('* {} {}'.format(mode_str, fn))
+        print('* {} {}; '.format(mode_str, fn), end='', flush=True)
         return _xs, _ys, fn
 
 class datainfo:
-        def __init__(self, title, filename, rvalue=0.0, ptest=0.0, slope=0.0, intercept=0.0):
+        def __init__(self, title, filename, rvalue=0.0, ptest=0.0, slope=0.0, intercept=0.0, xrange_=None):
                 self.title = title
                 self.filename = filename
                 self.rvalue = rvalue
@@ -69,14 +70,16 @@ def linear_func(x, a, b):
         return x*a + b
 
 def test_ceil(xs, ys, xmax, ymax):
-        if numpy.max(xs) > xmax or numpy.max(ys) > ymax:
-                print(numpy.max(xs), numpy.max(ys))
-                print('ERROR max value {%1.2f}/{%1.2f},{%1.2f}/{%1.2f} ignored'.format(numpy.max(xy), xmax, numpy.max(ys), ymax))
+        if np.max(xs) > xmax or np.max(ys) > ymax:
+                print(np.max(xs), np.max(ys))
+                print('ERROR max value {%1.2f}/{%1.2f},{%1.2f}/{%1.2f} ignored'.format(np.max(xy), xmax, np.max(ys), ymax))
                 exit(-1)
 
 class Plot:
+        # plot command prefix
+        CMD = 'cd preprint && gnuplot '        
         # plot figure extension
-        EXT = '.eps'
+        EXT = '.tex'
         # gnuplot extension
         PLT_EXT = '.gp'
         # data file extension
@@ -121,7 +124,7 @@ class Plot:
                 ymax = 1.0
                 xlabel = 'Density'
                 
-                pi = plotinfo(xlabel + SEP + 'cluster-coeff', xlabel, 'Clustering coefficient')
+                pi = plotinfo(xlabel.lower() + SEP + 'cluster-coeff', xlabel, 'Clustering coefficient')
                 # file name is unique because there is only one point for each book
                 fn = os.path.join(Project.get_outdir(), xlabel + SEP + 'cluster-coeff' + Plot.DATA_EXT)
                 for i in range(len(Plot.BOOKS)):
@@ -153,8 +156,8 @@ class Plot:
                                 slope=popt[0],
                                 intercept = popt[1],
                         ))
-                cmd = 'gnuplot ' + filename
-                print('Running: {}'.format(cmd))
+                cmd = Plot.CMD + filename
+                print('\n$ {}'.format(cmd))
                 os.system(cmd)
                         
         @staticmethod
@@ -165,14 +168,14 @@ class Plot:
                 ymax = 0.5
                 
                 for plt in Graphs.get_centrality_names():
-                        pi = plotinfo(plt + SEP + 'Lobby' , plt, 'Lobby')
+                        pi = plotinfo(plt.lower() + SEP + 'lobby' , plt, 'Lobby')
                                         
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
                                 G = Plot.GS[i]
-                                xs = numpy.array(Graphs.get_centrality_values(G, plt))
-                                ys = numpy.array(Graphs.get_centrality_values(G, 'Lobby'))
-                                xs, ys, fn = dump_book_data(plt, 'Lobby', book.get_name(), Plot.DATA_EXT, xs, ys)
+                                xs = np.array(Graphs.get_centrality_values(G, plt))
+                                ys = np.array(Graphs.get_centrality_values(G, 'Lobby'))
+                                xs, ys, fn = dump_book_data(plt.lower(), 'lobby', book.get_name(), Plot.DATA_EXT, xs, ys)
                                 (r, p) = pearsonr(xs, ys)
                                 popt, pcov = curve_fit(linear_func, xs, ys)
                                 pi.datainfos.append(datainfo(book.get_name(), fn, r, p, popt[0], popt[1]))
@@ -190,8 +193,8 @@ class Plot:
                                         nrows = 4,
                                         ncols = 3,
                                 ))
-                        cmd = 'gnuplot ' + filename
-                        print('Running: {}'.format(cmd))
+                        cmd = Plot.CMD + filename
+                        print('\n$ {}'.format(cmd))
                         os.system(cmd)
 
         @staticmethod
@@ -201,7 +204,7 @@ class Plot:
                 xmax = 1.0
                 ymax = 1.0
                 
-                pi = plotinfo('Assortativity' , 'k', 'k_{nn}')
+                pi = plotinfo('assortativity' , 'k', 'k_{nn}')
                                         
                 for i in range(len(Plot.BOOKS)):
                         book = Plot.BOOKS[i]
@@ -224,8 +227,8 @@ class Plot:
                                 nrows = 4,
                                 ncols = 3,
                         ))
-                cmd = 'gnuplot ' + filename
-                print('Running: {}'.format(cmd))
+                cmd = Plot.CMD + filename
+                print('\n$ {}'.format(cmd))
                 os.system(cmd)
 
         def do():

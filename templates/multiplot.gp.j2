@@ -7,28 +7,27 @@
 ncols = {{ ncols }}
 nrows = {{ nrows }}
 
-# set logscale xy
-# set format '$%g$'
-# set format x '$10^{\%T}$'
-# set format y '$10^{\%T}$'
-
 # MACROS
+
+{% if plot_measure == 'assortativity' %}
+# redefine {X,Y}LABEL to support math symbol in LaTeX
+XLABEL = "set xlabel '\\lblfmt ${{ plotinfo.xlabel }}$'"
+YLABEL = "set ylabel '\\lblfmt ${{ plotinfo.ylabel }}$'"
+{% endif %}
 
 ## AXIS
 NOXTICS = "set xtics ('' 0.0, '' .5, '' 1.0)"
 NOYTICS = "set ytics ('' 0.0, '' .5)"
 NOX = "unset xlabel; @NOXTICS"
 NOY = "unset ylabel; @NOYTICS"
-#XTICS = "set xlabel '{{ plotinfo.xlabel }}'; set xtics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
-#YTICS = "set ylabel '{{ plotinfo.ylabel }}'; set ytics ('10^{-3}' 1e-3, '10^{-2}' 1e-2, '10^{-1}' 1e-1)"
-XTICS = "@XLABEL; set xtics ('0.0' 0.0, '0.5' .5)"
-XTICS1 = "@XLABEL; set xtics ('0.0' 0.0,  '0.5' .5, '1.0' 1.0)"
+XTICS = "@XLABEL; set xtics ('\\lblfmt 0.0' 0.0, '\\lblfmt 0.5' .5);"
+XTICS1 = "@XLABEL; set xtics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
 {% if plot_measure == 'centralities' %}
-YTICS = "@YLABEL; set ytics ('0.0' 0.0,  '0.25' .25)"
-YTICS1 = "@YLABEL; set ytics ('0.0' 0.0,  '0.25' .25, '0.5' 0.5)"
+YTICS = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25);"
+YTICS1 = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '\\lblfmt 0.5' 0.5);"
 {% else %}
-YTICS = "@YLABEL; set ytics ('0.0' 0.0,  '0.5' .5)"
-YTICS1 = "@YLABEL; set ytics ('0.0' 0.0,  '0.5' .5, '1.0' 1.0)"
+YTICS = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5);"
+YTICS1 = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
 {% endif %}
 
 # END of MACROS
