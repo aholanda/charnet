@@ -11,10 +11,10 @@ xlabelpos = .1
 ylabelpos = .9
 d = .015
 
-{% if ptest < 0.01 %}
-set label 1 gprintf("\\lblfmt p=%.2e", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)
+{% if pvalue < 0.01 %}
+set label 1 gprintf("\\lblfmt p=%.2e", {{ pvalue }}) at graph xlabelpos,(ylabelpos-3*d)
 {% else %}
-set label 1 gprintf("\\lblfmt p=%1.2f", {{ ptest }}) at graph xlabelpos,(ylabelpos-3*d)
+set label 1 gprintf("\\lblfmt p=%1.2f", {{ pvalue }}) at graph xlabelpos,(ylabelpos-3*d)
 {% endif %}
 
 set label 2 gprintf("\\lblfmt r=%1.2f", {{ rvalue }}) at graph xlabelpos,ylabelpos

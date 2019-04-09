@@ -8,26 +8,43 @@ ncols = {{ ncols }}
 nrows = {{ nrows }}
 
 # MACROS
-
 {% if plot_measure == 'assortativity' %}
 # redefine {X,Y}LABEL to support math symbol in LaTeX
 XLABEL = "set xlabel '\\lblfmt ${{ plotinfo.xlabel }}$'"
 YLABEL = "set ylabel '\\lblfmt ${{ plotinfo.ylabel }}$'"
 {% endif %}
 
+set mxtics 10
+set mytics 10
+
 ## AXIS
-NOXTICS = "set xtics ('' 0.0, '' .5, '' 1.0)"
-NOYTICS = "set ytics ('' 0.0, '' .5)"
+# X
+{% if plot_measure == 'cdf' %}
+set xtics 10
+NOXTICS = "set xtics add ('' 1, '' 10, '' 100)"
 NOX = "unset xlabel; @NOXTICS"
-NOY = "unset ylabel; @NOYTICS"
-XTICS = "@XLABEL; set xtics ('\\lblfmt 0.0' 0.0, '\\lblfmt 0.5' .5);"
-XTICS1 = "@XLABEL; set xtics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
-{% if plot_measure == 'centralities' %}
-YTICS = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25);"
-YTICS1 = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '\\lblfmt 0.5' 0.5);"
+XTICS = "@XLABEL; set xtics add ('\\lblfmt $10^0$' 1, '\\lblfmt $10^1$' 10, '' 100);"
+XTICS1 = "@XLABEL; set xtics add ('\\lblfmt $10^0$' 1,  '\\lblfmt $10^1$' 10, '\\lblfmt $10^2$' 100);"
 {% else %}
-YTICS = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5);"
-YTICS1 = "@YLABEL; set ytics ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
+set xtics 0.1
+NOXTICS = "set xtics ('' 0.0, '' .5, '' 1.0)"
+NOX = "unset xlabel; @NOXTICS"
+XTICS = "@XLABEL; set xtics add ('\\lblfmt 0.0' 0.0, '\\lblfmt 0.5' .5);"
+XTICS1 = "@XLABEL; set xtics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
+{% endif %}
+
+# Y
+set ytics 0.1
+{% if plot_measure == 'centralities' %}
+NOYTICS = "set ytics ('' 0.0, '' .25, '' .5);"
+NOY = "unset ylabel; @NOYTICS"
+YTICS = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '' .5);"
+YTICS1 = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '\\lblfmt 0.5' 0.5);"
+{% else %}
+NOYTICS = "set ytics add ('' .01, '' .1, '' 1)"
+NOY = "unset ylabel; @NOYTICS"
+YTICS = "@YLABEL; set ytics add ('\\lblfmt $10^{-2}$' .01,  '\\lblfmt $10^{-1}$' .1, '' 1);"
+YTICS1 = "@YLABEL; set ytics add ('\\lblfmt $10^{-2}$' .01,  '\\lblfmt $10^{-1}$' .1, '\\lblfmt $10^0$' 1.0);"
 {% endif %}
 
 # END of MACROS
@@ -45,6 +62,11 @@ set multiplot layout {{ nrows }},{{ ncols }} rowsfirst
 
 {% for datainfo in plotinfo.datainfos %}
 # set x
+
+{% if plot_measure == 'cdf' %}
+set logscale xy
+{% endif %}
+
 {% if loop.index0 < 9 %}
 @NOX
 {% else %}
@@ -76,7 +98,7 @@ rmargin_ = lmargin_ + (hspace/ncols)
 set lmargin at screen gprintf("%1.2f", lmargin_)
 set rmargin at screen gprintf("%1.2f", rmargin_)
 
-{% if plot_measure == 'centralities' or plot_measure == 'density' %}
+{% if plot_measure == 'centralities' or plot_measure == 'density' or plot_measure == 'cdf'  %}
 {% include 'fit.gp.j2' %}
 {% else %}
 {% include 'avg.gp.j2' %}

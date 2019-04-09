@@ -24,7 +24,14 @@ XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}'"
 YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}'"
 
 # bounds
-min = 0
+xmin = ymin = 0
+{% if plot_measure == 'cdf' %}
+xmin = 1
+ymin = 0.01
+{% endif %}
 
-set xrange [min:{{ xmax }}]
-set yrange [min:{{ ymax }}]
+xmax = {{ xmax }}
+ymax = {{ ymax }}
+
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
