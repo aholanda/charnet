@@ -122,6 +122,8 @@ class Fits:
 
         
 class Plot:
+        # significance level for statistical tests
+        P = 0.05        
         # plot command prefix
         CMD = 'cd preprint && gnuplot '        
         # plot figure extension
@@ -213,15 +215,15 @@ class Plot:
                 xmax = 1.0
                 ymax = 0.5
                 
-                for plt in Graphs.get_centrality_names():
-                        pi = plotinfo(plt.lower() + SEP + 'lobby' , plt, 'Lobby')
+                for centr in Graphs.get_centrality_names():
+                        pi = plotinfo(centr.lower() + SEP + 'lobby' , centr, 'Lobby')
                                         
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
                                 G = Plot.GS[i]
-                                xs = np.array(Graphs.get_centrality_values(G, plt))
+                                xs = np.array(Graphs.get_centrality_values(G, centr))
                                 ys = np.array(Graphs.get_centrality_values(G, 'Lobby'))
-                                xs, ys, fn = dump_book_data(plt.lower(), 'lobby', book.get_name(), Plot.DATA_EXT, xs, ys)
+                                xs, ys, fn = dump_book_data(centr.lower(), 'lobby', book.get_name(), Plot.DATA_EXT, xs, ys)
                                 (r, p) = pearsonr(xs, ys)
                                 popt, pcov = curve_fit(linear_func, xs, ys)
                                 pi.datainfos.append(datainfo(book.get_name(), fn, r, p, popt[0], popt[1]))
@@ -231,6 +233,8 @@ class Plot:
                         with open(filename, 'w') as fh:
                                 fh.write(template.render(
                                         plot_measure = 'centralities',
+                                        measure_type = centr.lower(),
+                                        significance_level = Plot.P,
                                         extension = Plot.EXT,
                                         plotinfo = pi,
                                         xmax = xmax,
@@ -284,7 +288,7 @@ class Plot:
                 xmax = 1.0
                 ymax = 1.0
                 
-                pi = plotinfo('cdf' , 'x', 'P(X geq x)')
+                pi = plotinfo('cdf' , '$x$', '$P(X\\\\geq x)$')
 
                 for i in range(len(Plot.BOOKS)):
                         datax = []
@@ -343,6 +347,7 @@ class Plot:
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
                                 plot_measure = 'cdf',
+                                significance_level = Plot.P,
                                 extension = Plot.EXT,
                                 plotinfo = pi,
                                 xmax = xmax,

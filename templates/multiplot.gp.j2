@@ -26,21 +26,22 @@ NOX = "unset xlabel; @NOXTICS"
 XTICS = "@XLABEL; set xtics add ('\\lblfmt $10^0$' 1, '\\lblfmt $10^1$' 10, '' 100);"
 XTICS1 = "@XLABEL; set xtics add ('\\lblfmt $10^0$' 1,  '\\lblfmt $10^1$' 10, '\\lblfmt $10^2$' 100);"
 {% else %}
-set xtics 0.1
-NOXTICS = "set xtics ('' 0.0, '' .5, '' 1.0)"
+set xtics 0.5
+NOXTICS = "set xtics add ('' 0.0, '' .5, '' 1.0)"
 NOX = "unset xlabel; @NOXTICS"
-XTICS = "@XLABEL; set xtics add ('\\lblfmt 0.0' 0.0, '\\lblfmt 0.5' .5);"
+XTICS = "@XLABEL; set xtics add ('\\lblfmt 0.0' 0.0, '\\lblfmt 0.5' .5, '' 1.0);"
 XTICS1 = "@XLABEL; set xtics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
 {% endif %}
 
 # Y
-set ytics 0.1
 {% if plot_measure == 'centralities' %}
-NOYTICS = "set ytics ('' 0.0, '' .25, '' .5);"
+set ytics 0.25
+NOYTICS = "set ytics add ('' 0.0, '' .25, '' .5);"
 NOY = "unset ylabel; @NOYTICS"
 YTICS = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '' .5);"
 YTICS1 = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '\\lblfmt 0.5' 0.5);"
 {% else %}
+set ytics 0.1
 NOYTICS = "set ytics add ('' .01, '' .1, '' 1)"
 NOY = "unset ylabel; @NOYTICS"
 YTICS = "@YLABEL; set ytics add ('\\lblfmt $10^{-2}$' .01,  '\\lblfmt $10^{-1}$' .1, '' 1);"

@@ -18,10 +18,11 @@ set style line 1 pt 7  ps .5 lc 'black'
 
 # lines
 set style line 2 lw 1.5 lt 2 dt 2 lc rgb '#808080'
+set style line 3 lw 3 lc rgb 'black' ps 2 pt 9 pi 5
 
 # labels
-XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}'"
-YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}'"
+XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}' offset 0,.25,0"
+YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}' offset 3,0,0"
 
 # bounds
 xmin = ymin = 0
