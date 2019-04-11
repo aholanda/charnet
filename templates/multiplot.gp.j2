@@ -8,10 +8,10 @@ ncols = {{ ncols }}
 nrows = {{ nrows }}
 
 # MACROS
-{% if plot_measure == 'assortativity' %}
+{% if plot_measure == 'assortativity' or plot_measure == 'cdf' %}
 # redefine {X,Y}LABEL to support math symbol in LaTeX
 XLABEL = "set xlabel '\\lblfmt ${{ plotinfo.xlabel }}$'"
-YLABEL = "set ylabel '\\lblfmt ${{ plotinfo.ylabel }}$'"
+YLABEL = "set ylabel '\\lblfmt ${{ plotinfo.ylabel }}$' offset ylabel_xoff,0"
 {% endif %}
 
 set mxtics 10
@@ -40,6 +40,12 @@ NOYTICS = "set ytics add ('' 0.0, '' .25, '' .5);"
 NOY = "unset ylabel; @NOYTICS"
 YTICS = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '' .5);"
 YTICS1 = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0.0,  '\\lblfmt 0.25' .25, '\\lblfmt 0.5' 0.5);"
+{% elif plot_measure == 'assortativity' %}
+set ytics .5
+NOYTICS = "set ytics add ('' 0, '' .5, '' 1.0);"
+NOY = "unset ylabel; @NOYTICS"
+YTICS = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0,  '\\lblfmt 0.5' .5, '' 1.0);"
+YTICS1 = "@YLABEL; set ytics add ('\\lblfmt 0.0' 0,  '\\lblfmt 0.5' .5, '\\lblfmt 1.0' 1.0);"
 {% else %}
 set ytics 0.1
 NOYTICS = "set ytics add ('' .01, '' .1, '' 1)"
@@ -47,6 +53,7 @@ NOY = "unset ylabel; @NOYTICS"
 YTICS = "@YLABEL; set ytics add ('\\lblfmt $10^{-2}$' .01,  '\\lblfmt $10^{-1}$' .1, '' 1);"
 YTICS1 = "@YLABEL; set ytics add ('\\lblfmt $10^{-2}$' .01,  '\\lblfmt $10^{-1}$' .1, '\\lblfmt $10^0$' 1.0);"
 {% endif %}
+
 
 # END of MACROS
 
