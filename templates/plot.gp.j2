@@ -7,19 +7,42 @@
 @XLABEL
 @YLABEL
 
-xlabelpos = .1
-ylabelpos = .9
+xlabelpos = .6
+ylabelpos = .4725
 d = .015
 
+A = "{{ slope }}"
+B = "{{ intercept }}"
+
+R = "{{ rvalue }}"
+P = "{{ pvalue }}"
+
+# LABELS redefinition
+XLABEL = "set xlabel '{\\lblfmt ${{ plotinfo.xlabel }}}$'"
+YLABEL = "set ylabel '{\\lblfmt ${{ plotinfo.ylabel }}}$'"
+
+# labels for the fit
+set label 1 sprintf("\\scriptsize $\\mathbf{f(x)= %dx %1.2f}$", @A, @B) at graph xlabelpos,(ylabelpos)
+
 {% if pvalue < 0.01 %}
-set label 1 gprintf("\\lblfmt p=%.2e", {{ pvalue }}) at graph xlabelpos,(ylabelpos-3*d)
+fmt = "%.2e$"
 {% else %}
-set label 1 gprintf("\\lblfmt p=%1.2f", {{ pvalue }}) at graph xlabelpos,(ylabelpos-3*d)
+fmt = "%1.2f$"
 {% endif %}
 
-set label 2 gprintf("\\lblfmt r=%1.2f", {{ rvalue }}) at graph xlabelpos,ylabelpos
+set label 2 sprintf("\\scriptsize $\\mathbf{r=%1.2f}, p=".fmt, @R, @P) at graph xlabelpos,(ylabelpos-3*d)
 
-# ls 2 is set in settings.gp.j2
+# TICS
+XTICS = "@XLABEL; set xtics add ('\\lblfmt $0$' 0.0, '\\lblfmt $0.05$' .05, '\\lblfmt $0.10$' .1, '\\lblfmt $0.15$' .15 '\\lblfmt $0.20$' .2);"
+YTICS = "@YLABEL; set ytics add ('\\lblfmt $0$' 0.0,  '\\lblfmt $0.2$' .2, '\\lblfmt $0.4$' .4, '\\lblfmt $0.6$', '\\lblfmt $0.8$' .8, '\\lblfmt $1.0$' 1.0);"
+
+# GRID
+set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
+set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
+
 f(x) = {{ slope }}*x + {{ intercept }}
-plot  "{{ filename }}" using 2:3:(LabelFmt($1)) with labels notitle, f(x) ls 2 notitle
+
+{% for datainfo in plotinfo.datainfos %}
+{% if loop.index == 1 %}plot {% else %}		{% endif %}"{{ datainfo.filename }}" using 2:3:(LabelFmt($1)) with labels point pt 7 ps .75 offset {{ datainfo.labelpt_xoffset }},{{ datainfo.labelpt_yoffset }}  notitle, {% if loop.index != loop.length %}\{% endif %}{% endfor %} f(x) w l lt 2 dt 2 lc rgb 'black' notitle
+
 
