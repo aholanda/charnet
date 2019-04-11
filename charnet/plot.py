@@ -11,7 +11,7 @@ from books import *
 
 SEP = '_'
 
-def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=None, append=False):
+def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=None, book_genre=None):
         ''''Dump data to output file. 
             When append is not False means unique plot with labels as markers.'''
         assert(len(xs) == len(ys))
@@ -19,28 +19,21 @@ def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=N
         label = ''
         mode = 'w'
         mode_str = 'Wrote'
-        _book_name = SEP + book_name
-        
-        
-        if append == True:
-                mode = 'a'
-                mode_str = 'Append'
-                _book_name = ''
 
-        fn = os.path.join(Project.get_outdir(), xlabel + SEP + ylabel + _book_name + extension)
+        fn = os.path.join(Project.get_outdir(), xlabel + SEP + ylabel + SEP + book_name + extension)
         f = open(fn, mode)
         for i in range(len(xs)):
                 if math.isnan(xs[i]) or math.isnan(ys[i]):
                         continue
-
+                
                 ln = '\n'
                 if xxs is not None and yys is not None:
                         if i < len(xxs):
                                 ln = '\t' + str(xxs[i]) + '\t' + str(yys[i]) + '\n'
-
+                                
                 # sorry, but \lblfmt is defined in templates/settings.gp
-                if append == True:
-                        label = '"\\\\tiny ' + book_name + '"\t'
+                if xlabel == 'Density':
+                        label = '"\\\\tiny ' + book_name + ' (' + book_genre + ')"\t'
                                 
                 ln = label + str(xs[i]) + '\t' + str(ys[i]) + ln
                 f.write(ln)
@@ -51,7 +44,7 @@ def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=N
         return _xs, _ys, fn
 
 class datainfo:
-        def __init__(self, title, filename, rvalue=0.0, pvalue=0.0, slope=0.0, intercept=0.0, xmin=0, xrange_=None, alpha=0.0):
+        def __init__(self, title, filename, rvalue=0.0, pvalue=0.0, slope=0.0, intercept=0.0, xmin=0, yoffset=.1, xoffset=0.0, alpha=0.0):
                 self.title = title
                 self.filename = filename
                 self.rvalue = rvalue
@@ -59,6 +52,8 @@ class datainfo:
                 self.slope = slope
                 self.intercept = intercept
                 self.xmin = xmin
+                self.labelpt_xoffset = xoffset                
+                self.labelpt_yoffset = yoffset
                 self.alpha = alpha
 
 class plotinfo:
@@ -171,21 +166,39 @@ class Plot:
                 xmax = 0.225
                 ymax = 1.0
                 xlabel = 'Density'
+                # y offset for point labels
+                doff = 0.4 # default offset
+                # offsets for point labels
+                offs = {
+                        # bio
+                        'dick': [0, doff],
+                        'tolkien': [0, doff],
+                        'newton': [0, doff],
+                        'hawking': [-doff/2, doff],
+                        # legendary
+                        'apollonius': [9*doff, 0],
+                        'acts': [0, doff],
+                        'pythagoras': [9*doff, 0],
+                        'luke': [2*doff, doff],
+                        # fiction
+                        'hobbit': [0, doff],
+                        'david': [0, doff],
+                        'arthur': [4*doff, -doff],
+                        'huck': [0, doff]
+                }
                 
                 pi = plotinfo(xlabel.lower() + SEP + 'cluster-coeff', xlabel, 'Clustering coefficient')
-                # file name is unique because there is only one point for each book
-                fn = os.path.join(Project.get_outdir(), xlabel + SEP + 'cluster-coeff' + Plot.DATA_EXT)
                 for i in range(len(Plot.BOOKS)):
                         book = Plot.BOOKS[i]
+                        book_name = book.get_name()
                         G = Plot.GS[i]
-
                         x = Graphs.density(G)
                         y = gt_cluster.global_clustering(G)[0]
                         xs.append(x)
                         ys.append(y)
 
-                        dump_book_data(xlabel, 'cluster-coeff', book.get_name(), Plot.DATA_EXT, [x], [y], append=True)
-                        pi.datainfos.append(datainfo(book.get_name(), fn))
+                        _xs, _ys, fn = dump_book_data(xlabel, 'cluster-coeff', book_name, Plot.DATA_EXT, [x], [y], book_genre=Books.get_genre_label(book))
+                        pi.datainfos.append(datainfo(book.get_name(), fn, xoffset=offs[book_name][0], yoffset=offs[book_name][1]))
                         
                 (r, p) = pearsonr(xs, ys)
                 popt, pcov = curve_fit(linear_func, xs, ys)
@@ -193,6 +206,7 @@ class Plot:
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
+                                plot_measure = 'DxCC',
                                 filename = fn,
                                 extension = Plot.EXT,
                                 plotinfo = pi,
@@ -288,7 +302,7 @@ class Plot:
                 xmax = 1.0
                 ymax = 1.0
                 
-                pi = plotinfo('cdf' , '$x$', '$P(X\\\\geq x)$')
+                pi = plotinfo('cdf' , 'x', 'Pr(X\\\\geq x)')
 
                 for i in range(len(Plot.BOOKS)):
                         datax = []
@@ -347,7 +361,7 @@ class Plot:
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
                                 plot_measure = 'cdf',
-                                significance_level = Plot.P,
+                                significance_level = Plot.P + 0.05, # P + Epsilon
                                 extension = Plot.EXT,
                                 plotinfo = pi,
                                 xmax = xmax,
@@ -364,6 +378,6 @@ class Plot:
         def do():
                 Plot.init()
                 Plot.do_centralities()
-                # Plot.do_assortativity()
-                # Plot.do_density_x_clustering_coeff()
+                Plot.do_assortativity()
+                Plot.do_density_x_clustering_coeff()
                 Plot.do_CDF_w_fit()
