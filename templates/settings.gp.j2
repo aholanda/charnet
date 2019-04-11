@@ -21,8 +21,16 @@ set style line 2 lw 1.5 lt 2 dt 2 lc rgb '#808080'
 set style line 3 lw 3 lc rgb 'black' ps 2 pt 9 pi 5
 
 # labels
+{% if plot_measure == 'DxCC' %}
+ylabel_xoff = 0
+{% elif plot_measure == 'assortativity' %}
+ylabel_xoff = 3
+{% else %}
+ylabel_xoff = 3
+{% endif %}
+
 XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}' offset 0,.25,0"
-YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}' offset 3,0,0"
+YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}' offset ylabel_xoff,0,0"
 
 # bounds
 xmin = ymin = 0
@@ -36,3 +44,7 @@ ymax = {{ ymax }}
 
 set xrange [xmin:xmax]
 set yrange [ymin:ymax]
+
+# TICS, default
+set mxtics 4
+set mytics 4
