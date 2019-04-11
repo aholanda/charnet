@@ -8,41 +8,46 @@ symbol = "\\dagger"
 lf_ = ',6'
 xpos = .1
 ypos = .9
-dy = .1
+d = .11
 
 {% if plot_measure == 'cdf' %}
-xpos = .625
+{% if datainfo.title == 'hobbit' or datainfo.title == 'david' or datainfo.title == 'huck' %}
+xpos = .09
+ypos = .525
+{% else %}
+xpos = .575
 ypos = .9
+{% endif %}
+# BOX
+set object 1 rect from graph xpos-.3*d,ypos+.2*d to graph xpos+3.45*d,ypos-4.15*d back
 {% endif %}
 
 {% if datainfo.title == 'hobbit' and plot_measure == 'centralities' and measure_type != 'closeness' %}
 ypos = .4
 dx=.35
-set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*dy)  font ',6'
+set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*d)  font ',6' front
 {% else %}
 dx=0
-set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*dy)  font ',6'
+set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*d)  font ',6' front
 {% endif %}
 
 {% if datainfo.rvalue != 0.0 %} # avoid insert label where it is not applied
-ypos = ypos - dy
 {% if datainfo.rvalue < 0.01 and datainfo.rvalue != 0.0 %}
-set label 2 gprintf("\\tiny $r=%.2e$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos)
+set label 2 gprintf("\\tiny $r=%.2e$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-d) front
 {% else %}
-set label 2 gprintf("\\tiny $r=%1.2f$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos)
+set label 2 gprintf("\\tiny $r=%1.2f$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-d) front
 {% endif %}
 {% endif %}
 
 {% if plot_measure == 'cdf' %}
-ypos = ypos - dy
-set label 2 gprintf("\\tiny $\\alpha=%1.2f$", {{ datainfo.alpha }}) at graph (xpos+dx),(ypos)
+set label 2 gprintf("\\tiny $\\hat{\\alpha}=%1.2f$", {{ datainfo.alpha }}) at graph (xpos+dx),(ypos-d) front
 xmin = {{ datainfo.xmin }}
+set label 4 sprintf("\\tiny $\\hat{x}_{min}=%d$", xmin) at graph (xpos+dx),(ypos-3*d) front
 {% else %} # centralities
 f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
 {% endif %}
 
 ## format and mark p values
-ypos = ypos - dy
 # mark significant p values
 marksig = "^".symbol."$"
 {% if datainfo.pvalue < 0.01 and datainfo.pvalue != 0.0 %}
@@ -51,9 +56,7 @@ pstr = gprintf("\\tiny$p=%.2e^".symbol."$", {{ datainfo.pvalue }})
 {% if (plot_measure == 'cdf' and datainfo.pvalue < significance_level) or (plot_measure == 'centralities' and datainfo.pvalue > significance_level) %}
 marksig = "$"
 {% endif %}
-
 pstr = gprintf("\\tiny $p=%1.2f".marksig, {{ datainfo.pvalue }})
-
 {% endif %}
 
 {% if plot_measure == 'centralities' and measure_type == 'closeness' and datainfo.title == 'hobbit' %}
@@ -61,13 +64,13 @@ pstr = gprintf("\\tiny $p=%1.2f".marksig, {{ datainfo.pvalue }})
 pstr = gprintf("\\tiny $p\\lll%1.2f".marksig, {{ significance_level }})
 {% endif %}
 
-set label 3 pstr at graph (xpos+dx),(ypos)
+set label 3 pstr at graph (xpos+dx),(ypos-2*d) front
 
 ## PLOT
 # ls 1 and ls 2 are set in settings.gp.j2
 {% if plot_measure == 'cdf' %}
 set for [i=1:5] linetype i dt i
-plot "{{ datainfo.filename }}" using 3:4 w l lt 2 lc rgb 'black' lw 1 notitle
+plot "{{ datainfo.filename }}" using 3:4 w l lt 2 lc rgb 'black' lw 3 notitle
 set style line 1 lw 1 lc rgb 'black' ps 1 pt 6 pi 5
 {% else %}
 plot f(x) ls 2 notitle
