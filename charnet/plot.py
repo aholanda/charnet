@@ -7,21 +7,23 @@ from scipy.optimize import curve_fit
 import graph_tool as gt
 import graph_tool.clustering as gt_cluster
 
+# LOCAL
 from books import *
+from graphs import Measure
 
 SEP = '_'
 
-def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=None, book_genre=None):
-        ''''Dump data to output file. 
-            When append is not False means unique plot with labels as markers.'''
+def dump_book_data(xmeasure_num, ymeasure_num, book_name, extension, xs, ys, xxs=None, yys=None, book_genre=None):
+        '''Dump data to output file.'''
         assert(len(xs) == len(ys))
+        xlabel = Measure.get_label(xmeasure_num)
+        ylabel = Measure.get_label(ymeasure_num)
         (_xs, _ys) = ([], [])
         label = ''
-        mode = 'w'
         mode_str = 'Wrote'
 
         fn = os.path.join(Project.get_outdir(), xlabel + SEP + ylabel + SEP + book_name + extension)
-        f = open(fn, mode)
+        f = open(fn, 'w')
         for i in range(len(xs)):
                 if math.isnan(xs[i]) or math.isnan(ys[i]):
                         continue
@@ -32,7 +34,7 @@ def dump_book_data(xlabel, ylabel, book_name, extension, xs, ys, xxs=None, yys=N
                                 ln = '\t' + str(xxs[i]) + '\t' + str(yys[i]) + '\n'
                                 
                 # sorry, but \lblfmt is defined in templates/settings.gp
-                if xlabel == 'Density':
+                if xmeasure_num == Measure.DENSITY and ymeasure_num == Measure.CLUSTERING_COEFFICIENT:
                         label = '"\\\\tiny ' + book_name + ' (' + book_genre + ')"\t'
                                 
                 ln = label + str(xs[i]) + '\t' + str(ys[i]) + ln
@@ -114,7 +116,6 @@ class Fits:
         def pvalue(name):
                 Fits.check_label(name)
                 return Fits.parms[name][2]
-
         
 class Plot:
         # significance level for statistical tests
@@ -165,7 +166,10 @@ class Plot:
                 (xs, ys) = ([], [])
                 xmax = 0.225
                 ymax = 1.0
-                xlabel = 'Density'
+                xmeasure_num = Measure.DENSITY
+                ymeasure_num = Measure.CLUSTERING_COEFFICIENT
+                xlabel = Measure.get_label(xmeasure_num)
+                ylabel = Measure.get_label(ymeasure_num)
                 # y offset for point labels
                 doff = 0.4 # default offset
                 # offsets for point labels
@@ -187,7 +191,7 @@ class Plot:
                         'huck': [0, doff]
                 }
                 
-                pi = plotinfo(xlabel.lower() + SEP + 'cluster-coeff', xlabel, 'Clustering coefficient')
+                pi = plotinfo(Measure.get_label(xmeasure_num) + SEP + 'cluster-coeff', xlabel, ylabel)
                 for i in range(len(Plot.BOOKS)):
                         book = Plot.BOOKS[i]
                         book_name = book.get_name()
@@ -197,7 +201,7 @@ class Plot:
                         xs.append(x)
                         ys.append(y)
 
-                        _xs, _ys, fn = dump_book_data(xlabel, 'cluster-coeff', book_name, Plot.DATA_EXT, [x], [y], book_genre=Books.get_genre_label(book))
+                        _xs, _ys, fn = dump_book_data(xmeasure_num, ymeasure_num, book_name, Plot.DATA_EXT, [x], [y], book_genre=Books.get_genre_label(book))
                         pi.datainfos.append(datainfo(book.get_name(), fn, xoffset=offs[book_name][0], yoffset=offs[book_name][1]))
                         
                 (r, p) = pearsonr(xs, ys)
@@ -229,15 +233,17 @@ class Plot:
                 xmax = 1.0
                 ymax = 0.5
                 
-                for centr in Graphs.get_centrality_names():
-                        pi = plotinfo(centr.lower() + SEP + 'lobby' , centr, 'Lobby')
+                for num in Graphs.get_centrality_nums():
+                        label = Measure.get_label(num)
+                        lobby_str = Measure.get_label(Measure.LOBBY)
+                        pi = plotinfo(label.lower() + SEP + lobby_str.lower() , label, lobby_str)
                                         
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
                                 G = Plot.GS[i]
-                                xs = np.array(Graphs.get_centrality_values(G, centr))
-                                ys = np.array(Graphs.get_centrality_values(G, 'Lobby'))
-                                xs, ys, fn = dump_book_data(centr.lower(), 'lobby', book.get_name(), Plot.DATA_EXT, xs, ys)
+                                xs = np.array(Graphs.get_centrality_values(G, num))
+                                ys = np.array(Graphs.get_centrality_values(G, Measure.LOBBY))
+                                xs, ys, fn = dump_book_data(num, Measure.LOBBY, book.get_name(), Plot.DATA_EXT, xs, ys)
                                 (r, p) = pearsonr(xs, ys)
                                 popt, pcov = curve_fit(linear_func, xs, ys)
                                 pi.datainfos.append(datainfo(book.get_name(), fn, r, p, popt[0], popt[1]))
@@ -247,7 +253,7 @@ class Plot:
                         with open(filename, 'w') as fh:
                                 fh.write(template.render(
                                         plot_measure = 'centralities',
-                                        measure_type = centr.lower(),
+                                        measure_type = label.lower(),
                                         significance_level = Plot.P,
                                         extension = Plot.EXT,
                                         plotinfo = pi,
@@ -274,7 +280,7 @@ class Plot:
                         book = Plot.BOOKS[i]
                         G = Plot.GS[i]
                         (xs, ys, xxs, yavgs) = Graphs.get_degree_avg_neighbors(G)
-                        xs, ys, fn = dump_book_data('k', 'knn', book.get_name(), Plot.DATA_EXT, xs, ys, xxs, yavgs)
+                        xs, ys, fn = dump_book_data(Measure.DEGREE, Measure.AVG_DEGREE_OF_NEIGHBORS, book.get_name(), Plot.DATA_EXT, xs, ys, xxs, yavgs)
                         pi.datainfos.append(datainfo(book.get_name(), fn))
 
                         test_ceil(xs, ys, xmax, ymax)
@@ -350,9 +356,8 @@ class Plot:
                         
                         # get the corresponding values for y in the x axis
                         cfx = np.arange(xmin, xs[len(xs)-1] + 2)
-                                                                            
 
-                        xs, ys, fn = dump_book_data('k', 'Pk', book.get_name(), Plot.DATA_EXT, xs, ys, xxs=cfx, yys=cfy)
+                        xs, ys, fn = dump_book_data(Measure.DEGREE, Measure.CDF, book.get_name(), Plot.DATA_EXT, xs, ys, xxs=cfx, yys=cfy)
                         pi.datainfos.append(datainfo(book.get_name(), fn, alpha=a, xmin=xmin, pvalue=pval))
                         
                         #test_ceil(xs, ys, xmax, ymax)
