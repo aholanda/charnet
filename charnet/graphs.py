@@ -2,6 +2,8 @@ import math
 import numpy as np
 import logging
 
+from enum import Enum
+
 import graph_tool as gt
 import graph_tool.centrality as gt_central
 
@@ -11,8 +13,40 @@ from lobby import *
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+class Measure(Enum):
+        AVG_DEGREE_OF_NEIGHBORS = 0
+        BETWEENNESS = 1
+        CDF = 2
+        CLOSENESS = 3
+        CLUSTERING_COEFFICIENT = 4
+        DEGREE = 5
+        DEGREE_CENTRALITY = 6
+        DENSITY = 7
+        LOBBY = 8
+        
+        @staticmethod
+        def get_label(measure_num):
+                label = {
+                        Measure.AVG_DEGREE_OF_NEIGHBORS: 'knn',
+                        Measure.BETWEENNESS: 'Betweenness',
+                        Measure.CDF: 'Pk',
+                        Measure.CLOSENESS: 'Closeness',
+                        Measure.CLUSTERING_COEFFICIENT: 'clustering coefficient',
+                        Measure.DEGREE: 'k',
+                        Measure.DEGREE_CENTRALITY: 'Degree',
+                        Measure.DENSITY: 'density',
+                        Measure.LOBBY: 'Lobby'
+                }
+                l = label[measure_num]
+                assert(l)
+                return l
+
 class Graphs():
-        centrality_names =  {'Betweenness', 'Closeness', 'Degree'}
+        centrality_nums = [
+                Measure.BETWEENNESS,
+                Measure.CLOSENESS,
+                Measure.DEGREE_CENTRALITY
+        ]
         
         @staticmethod
         def create_graph():
@@ -42,8 +76,8 @@ class Graphs():
                 return 2*float(M) / (N*(N-1))
         
         @staticmethod
-        def get_centrality_names():
-                return Graphs.centrality_names
+        def get_centrality_nums():
+                return Graphs.centrality_nums
 
         @staticmethod
         def get_vprop_degrees(G):
@@ -77,13 +111,13 @@ class Graphs():
         def get_centrality_values(G, which):
                 ewprops = G.edge_properties["weight"]
                 centr_func = None
-                if which == 'Betweenness':
+                if which == Measure.BETWEENNESS:
                         centr_func = gt.PropertyMap.get_array(gt_central.betweenness(G, weight=ewprops, norm=True)[0])
-                elif which == 'Closeness':
+                elif which == Measure.CLOSENESS:
                         centr_func = gt.PropertyMap.get_array(gt.centrality.closeness(G, weight=ewprops))
-                elif which == 'Degree':
+                elif which == Measure.DEGREE_CENTRALITY:
                         centr_func = Graphs.degree_centrality(G)
-                elif which == 'Lobby':
+                elif which == Measure.LOBBY:
                         centr_func = lobby(G)
                 else:
                         logger.error('* Wrong centrality id=%s', which)
