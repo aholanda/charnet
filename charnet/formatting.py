@@ -81,13 +81,13 @@ class Formatting:
 
                 f.write('''
                 {\small \\begin{tabular}{@{}cccccccc@{}}\\toprule
-                \hfil \\bf Genre \hfil
-                & \\bf \hfil Book \hfil
-                & \hfil\hphantom{00} $\mathbf N$ \hphantom{00}\hfil
-                & \hfil $\mathbf M$\hfil
-                & \hfil\hphantom{0} $\mathbf\\langle K\\rangle$\hphantom{0} \hfil
-                & \hfil\hphantom{0} $\mathbf D$ \hphantom{0}\hfil
-                & \hfil\hphantom{0} $\mathbf C_c$\hphantom{0}\hfil \\\\ \n''')
+                \hfil \\bf genre \hfil
+                & \\bf \hfil book \hfil
+                & \hfil\hphantom{00} $\mathbf n$ \hphantom{00}\hfil
+                & \hfil $\mathbf m$\hfil
+                & \hfil\hphantom{0} $\mathbf\\langle k\\rangle$\hphantom{0} \hfil
+                & \hfil\hphantom{0} $\mathbf \rho$ \hphantom{0}\hfil
+                & \hfil\hphantom{0} $\mathbf c$\hphantom{0}\hfil \\\\ \n''')
 
                 for n in Books.get_genre_enums():
                         ln = '\t\t\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
