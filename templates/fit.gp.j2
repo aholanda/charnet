@@ -2,7 +2,7 @@
 # range is specified in settings.gp.j2
 
 # symbol to mark significant p values
-symbol = "\\dagger"
+symbol = "\\ast"
 
 # label font
 lf_ = ',6'
@@ -11,15 +11,10 @@ ypos = .9
 d = .11
 
 {% if plot_measure == 'cdf' %}
-{% if datainfo.title == 'hobbit' or datainfo.title == 'david' or datainfo.title == 'huck' %}
-xpos = .09
-ypos = .525
-{% else %}
-xpos = .575
-ypos = .9
-{% endif %}
+xpos = .61
+ypos = .89
 # BOX
-set object 1 rect from graph xpos-.3*d,ypos+.2*d to graph xpos+3.45*d,ypos-4.15*d back
+set object 1 rect from graph xpos-.2*d,ypos+.2*d to graph xpos+3.25*d,ypos-3.*d back
 {% endif %}
 
 {% if datainfo.title == 'hobbit' and plot_measure == 'centralities' and measure_type != 'closeness' %}
@@ -41,8 +36,6 @@ set label 2 gprintf("\\tiny $r=%1.2f$", {{ datainfo.rvalue }}) at graph (xpos+dx
 
 {% if plot_measure == 'cdf' %}
 set label 2 gprintf("\\tiny $\\hat{\\alpha}=%1.2f$", {{ datainfo.alpha }}) at graph (xpos+dx),(ypos-d) front
-xmin = {{ datainfo.xmin }}
-set label 4 sprintf("\\tiny $\\hat{x}_{min}=%d$", xmin) at graph (xpos+dx),(ypos-3*d) front
 {% else %} # centralities
 f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
 {% endif %}
@@ -50,13 +43,15 @@ f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
 ## format and mark p values
 # mark significant p values
 marksig = "^".symbol."$"
+pstr = ""
 {% if datainfo.pvalue < 0.01 and datainfo.pvalue != 0.0 %}
 pstr = gprintf("\\tiny$p=%.2e^".symbol."$", {{ datainfo.pvalue }})
 {% else %}
 {% if (plot_measure == 'cdf' and datainfo.pvalue < significance_level) or (plot_measure == 'centralities' and datainfo.pvalue > significance_level) %}
 marksig = "$"
+pstr = "\\color{gray}"
 {% endif %}
-pstr = gprintf("\\tiny $p=%1.2f".marksig, {{ datainfo.pvalue }})
+pstr = gprintf(pstr."\\tiny $p=%1.2f".marksig, {{ datainfo.pvalue }})
 {% endif %}
 
 {% if plot_measure == 'centralities' and measure_type == 'closeness' and datainfo.title == 'hobbit' %}
@@ -70,9 +65,31 @@ set label 3 pstr at graph (xpos+dx),(ypos-2*d) front
 # ls 1 and ls 2 are set in settings.gp.j2
 {% if plot_measure == 'cdf' %}
 set for [i=1:5] linetype i dt i
+## XMIN
+# get y pair of xmin
+xmin = {{ datainfo.coords_xmin.get('x') }}
+y_xmin = {{ datainfo.coords_xmin.get('y') }}
+unset arrow
+unset object 2
+# XMIN LABEL
+if (xmin == 1) {
+assign = sprintf("=%d", xmin)
+} else {
+set arrow from xmin, graph 0 to xmin, y_xmin nohead lt 2 lw 2 lc rgb 'black'
+assign = ""
+}
+# XMIN LABEL DISPLACEMENT
+if (xmin>5) {
+deltax = -(xmin*.65)
+} else {
+deltax = .5
+}
+set label 4 sprintf("\\tiny $\\hat{x}_{min}%s$", assign) at (xmin+deltax),(.02) front
+# THEORETICAL LINE
 plot "{{ datainfo.filename }}" using 3:4 w l lt 2 lc rgb 'black' lw 3 notitle
 set style line 1 lw 1 lc rgb 'black' ps 1 pt 6 pi 5
 {% else %}
 plot f(x) ls 2 notitle
 {% endif %}
+# EMPIRICAL DATA
 plot "{{ datainfo.filename }}" using 1:2 ls 1 notitle
