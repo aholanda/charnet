@@ -27,16 +27,16 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name, extension, xs, ys, xxs
         for i in range(len(xs)):
                 if math.isnan(xs[i]) or math.isnan(ys[i]):
                         continue
-                
+
                 ln = '\n'
                 if xxs is not None and yys is not None:
                         if i < len(xxs):
                                 ln = '\t' + str(xxs[i]) + '\t' + str(yys[i]) + '\n'
-                                
+
                 # sorry, but \lblfmt is defined in templates/settings.gp
                 if xmeasure_num == Measure.DENSITY and ymeasure_num == Measure.CLUSTERING_COEFFICIENT:
                         label = '"\\\\tiny ' + book_name + ' (' + book_genre + ')"\t'
-                                
+
                 ln = label + str(xs[i]) + '\t' + str(ys[i]) + ln
                 f.write(ln)
                 _xs.append(xs[i])
@@ -45,16 +45,44 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name, extension, xs, ys, xxs
         print('* {} {}; '.format(mode_str, fn), end='', flush=True)
         return _xs, _ys, fn
 
+class coordinates:
+        '''Wrap coordinates x, y, z (optional).'''
+        def __init__(self, x, y, z=0.0):
+                self.x = x
+                self.y = y
+                self.z = z
+
+        def get(self, axis):
+                if axis == 'x':
+                        return self.x
+                elif axis == 'y':
+                        return self.y
+                elif axis == 'z':
+                        return self.z
+                else:
+                        print('Unknown axis {}'.format(axis))
+
+        def set(self, axis, v):
+                if axis == 'x':
+                        self.x = v
+                elif axis == 'y':
+                        self.y = v
+                elif axis == 'z':
+                        self.z = v
+                else:
+                        print('Unknown axis {}'.format(axis))
+                        exit()
+
 class datainfo:
-        def __init__(self, title, filename, rvalue=0.0, pvalue=0.0, slope=0.0, intercept=0.0, xmin=0, yoffset=.1, xoffset=0.0, alpha=0.0):
+        def __init__(self, title, filename, rvalue=0.0, pvalue=0.0, slope=0.0, intercept=0.0, coords_xmin=None, yoffset=.1, xoffset=0.0, alpha=0.0):
                 self.title = title
                 self.filename = filename
                 self.rvalue = rvalue
                 self.pvalue = pvalue
                 self.slope = slope
                 self.intercept = intercept
-                self.xmin = xmin
-                self.labelpt_xoffset = xoffset                
+                self.coords_xmin = coords_xmin
+                self.labelpt_xoffset = xoffset
                 self.labelpt_yoffset = yoffset
                 self.alpha = alpha
 
@@ -116,12 +144,12 @@ class Fits:
         def pvalue(name):
                 Fits.check_label(name)
                 return Fits.parms[name][2]
-        
+
 class Plot:
         # significance level for statistical tests
-        P = 0.05        
+        P = 0.05
         # plot command prefix
-        CMD = 'cd preprint && gnuplot '        
+        CMD = 'cd preprint && gnuplot '
         # plot figure extension
         EXT = '.tex'
         # gnuplot extension
@@ -134,7 +162,7 @@ class Plot:
         GS = []
         #
         BOOKS = []
-        
+
         @staticmethod
         def init():
                 tmpdir = Project.get_outdir()
@@ -190,7 +218,7 @@ class Plot:
                         'arthur': [4*doff, -doff],
                         'huck': [0, doff]
                 }
-                
+
                 pi = plotinfo(Measure.get_label(xmeasure_num) + SEP + 'cluster-coeff', xlabel, ylabel)
                 for i in range(len(Plot.BOOKS)):
                         book = Plot.BOOKS[i]
@@ -203,10 +231,10 @@ class Plot:
 
                         _xs, _ys, fn = dump_book_data(xmeasure_num, ymeasure_num, book_name, Plot.DATA_EXT, [x], [y], book_genre=Books.get_genre_label(book))
                         pi.datainfos.append(datainfo(book.get_name(), fn, xoffset=offs[book_name][0], yoffset=offs[book_name][1]))
-                        
+
                 (r, p) = pearsonr(xs, ys)
                 popt, pcov = curve_fit(linear_func, xs, ys)
-                test_ceil(xs, ys, xmax, ymax)                
+                test_ceil(xs, ys, xmax, ymax)
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
@@ -225,19 +253,19 @@ class Plot:
                 cmd = Plot.CMD + filename
                 print('\n$ {}'.format(cmd))
                 os.system(cmd)
-                        
+
         @staticmethod
         def do_centralities():
                 '''Generate plotting of centralities comparisons.'''
                 template = Plot.init_multiplot_template()
                 xmax = 1.0
                 ymax = 0.5
-                
+
                 for num in Graphs.get_centrality_nums():
                         label = Measure.get_label(num)
                         lobby_str = Measure.get_label(Measure.LOBBY)
                         pi = plotinfo(label.lower() + SEP + lobby_str.lower() , label, lobby_str)
-                                        
+
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
                                 G = Plot.GS[i]
@@ -273,9 +301,9 @@ class Plot:
                 template = Plot.init_multiplot_template()
                 xmax = 1.0
                 ymax = 1.0
-                
+
                 pi = plotinfo('assortativity' , 'k', 'k_{nn}')
-                                        
+
                 for i in range(len(Plot.BOOKS)):
                         book = Plot.BOOKS[i]
                         G = Plot.GS[i]
@@ -284,7 +312,7 @@ class Plot:
                         pi.datainfos.append(datainfo(book.get_name(), fn))
 
                         test_ceil(xs, ys, xmax, ymax)
-                        
+
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
@@ -307,7 +335,7 @@ class Plot:
                 template = Plot.init_multiplot_template()
                 xmax = 1.0
                 ymax = 1.0
-                
+
                 pi = plotinfo('cdf' , 'x', 'Pr(X\\\\geq x)')
 
                 for i in range(len(Plot.BOOKS)):
@@ -330,14 +358,14 @@ class Plot:
                                 k = v.out_degree()
                                 if k <= 0:
                                         continue
-                                
+
                                 f.write(str(k) + '\n')
                                 datax.append(k)
                                 if k > xmax:
                                         xmax = k
                         print('* Wrote {};\t'.format(fn), end='')
                         f.close()
-                                        
+
                         # Empirical data
                         n = len(datax)
                         xs = np.unique(datax)
@@ -353,15 +381,15 @@ class Plot:
                         cfy = 1 - np.insert(np.cumsum(cfy), 0, 0.0)
                         # normalize
                         cfy = cfy * ys[np.where(xs == xmin)[0][0]]
-                        
+
                         # get the corresponding values for y in the x axis
                         cfx = np.arange(xmin, xs[len(xs)-1] + 2)
 
                         xs, ys, fn = dump_book_data(Measure.DEGREE, Measure.CDF, book.get_name(), Plot.DATA_EXT, xs, ys, xxs=cfx, yys=cfy)
-                        pi.datainfos.append(datainfo(book.get_name(), fn, alpha=a, xmin=xmin, pvalue=pval))
-                        
+                        pi.datainfos.append(datainfo(book.get_name(), fn, alpha=a, coords_xmin=coordinates(cfx[0], cfy[0]), pvalue=pval))
+
                         #test_ceil(xs, ys, xmax, ymax)
-                        
+
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
@@ -379,7 +407,7 @@ class Plot:
                 print('\n$ {}'.format(cmd))
                 os.system(cmd)
 
-                
+
         def do():
                 Plot.init()
                 Plot.do_centralities()
