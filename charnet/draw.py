@@ -25,7 +25,7 @@ class Draw:
                         G = book.get_graph()
                         color = book.get_vertex_color()
                         vprop_degrees = Graphs.get_vprop_degrees(G)
-                        
+
                         fn = 'g-' + book.get_name() + '.png'
                         fn = os.path.join(Project.get_outdir(), fn)
 
@@ -37,5 +37,5 @@ class Draw:
                                            vertex_text=G.vertex_properties["label"],
                                            vertex_size=vprop_degrees,
                                            edge_pen_width=G.edge_properties["weight"])
-                        
+
                         logger.info('* Wrote {}'.format(fn))
