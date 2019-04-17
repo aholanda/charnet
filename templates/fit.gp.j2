@@ -6,7 +6,7 @@ symbol = "\\ast"
 
 # label font
 lf_ = ',6'
-xpos = .1
+xpos = .055
 ypos = .9
 d = .11
 
@@ -14,50 +14,51 @@ d = .11
 xpos = .61
 ypos = .89
 # BOX
-set object 1 rect from graph xpos-.2*d,ypos+.2*d to graph xpos+3.25*d,ypos-3.*d back
 {% endif %}
 
 {% if datainfo.title == 'hobbit' and plot_measure == 'centralities' and measure_type != 'closeness' %}
 ypos = .4
-dx=.35
+dx=.55
 set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*d)  font ',6' front
 {% else %}
 dx=0
 set label 1 "\\tiny {{ datainfo.title }}" at graph (xpos+dx),(ypos-0*d)  font ',6' front
 {% endif %}
 
-{% if datainfo.rvalue != 0.0 %} # avoid insert label where it is not applied
-{% if datainfo.rvalue < 0.01 and datainfo.rvalue != 0.0 %}
-set label 2 gprintf("\\tiny $r=%.2e$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-d) front
-{% else %}
-set label 2 gprintf("\\tiny $r=%1.2f$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-d) front
-{% endif %}
-{% endif %}
+# BOX
+set object 1 rect from graph (xpos-.2*d+dx),(ypos+.2*d) to graph (xpos+3.25*d+dx),(ypos-2.9*d) back
 
 {% if plot_measure == 'cdf' %}
+# relation symbol, significant and not significant
+sigcmp = ">"
+notsigcmp = "<"
 set label 2 gprintf("\\tiny $\\hat{\\alpha}=%1.2f$", {{ datainfo.alpha }}) at graph (xpos+dx),(ypos-d) front
 {% else %} # centralities
+sigcmp = "\\ll"
+notsigcmp = ">"
 f(x) = {{ datainfo.slope }}*x + {{ datainfo.intercept }}
 {% endif %}
 
-## format and mark p values
-# mark significant p values
-marksig = "^".symbol."$"
 pstr = ""
-{% if datainfo.pvalue < 0.01 and datainfo.pvalue != 0.0 %}
-pstr = gprintf("\\tiny$p=%.2e^".symbol."$", {{ datainfo.pvalue }})
-{% else %}
+rstr = ""
+
 {% if (plot_measure == 'cdf' and datainfo.pvalue < significance_level) or (plot_measure == 'centralities' and datainfo.pvalue > significance_level) %}
-marksig = "$"
-pstr = "\\color{gray}"
-{% endif %}
-pstr = gprintf(pstr."\\tiny $p=%1.2f".marksig, {{ datainfo.pvalue }})
+color = "\\color{gray}"
+rstr = color
+pstr = color."\\tiny $p".notsigcmp
+pstr = gprintf(pstr."%1.2f$", {{ significance_level }})
+{% else %}
+pstr = "\\tiny $p".sigcmp
+pstr = gprintf(pstr."%1.2f$", {{ significance_level }})
 {% endif %}
 
-{% if plot_measure == 'centralities' and measure_type == 'closeness' and datainfo.title == 'hobbit' %}
+# write r value
+set label 2 gprintf(rstr."\\tiny $r=%1.2f$", {{ datainfo.rvalue }}) at graph (xpos+dx),(ypos-d) front
+
+
+
 # change format to fit in the graph
-pstr = gprintf("\\tiny $p\\lll%1.2f".marksig, {{ significance_level }})
-{% endif %}
+#pstr = gprintf("\\tiny $p\\ll%1.2f".marksig, {{ significance_level }})
 
 set label 3 pstr at graph (xpos+dx),(ypos-2*d) front
 
