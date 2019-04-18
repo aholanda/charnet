@@ -23,17 +23,17 @@ class Measure(Enum):
         DEGREE_CENTRALITY = 6
         DENSITY = 7
         LOBBY = 8
-        
+
         @staticmethod
         def get_label(measure_num):
                 label = {
                         Measure.AVG_DEGREE_OF_NEIGHBORS: 'knn',
-                        Measure.BETWEENNESS: 'Betweenness',
+                        Measure.BETWEENNESS: 'betweenness',
                         Measure.CDF: 'Pk',
-                        Measure.CLOSENESS: 'Closeness',
+                        Measure.CLOSENESS: 'closeness',
                         Measure.CLUSTERING_COEFFICIENT: 'clustering coefficient',
                         Measure.DEGREE: 'k',
-                        Measure.DEGREE_CENTRALITY: 'Degree',
+                        Measure.DEGREE_CENTRALITY: 'D',
                         Measure.DENSITY: 'density',
                         Measure.LOBBY: 'Lobby'
                 }
@@ -47,7 +47,7 @@ class Graphs():
                 Measure.CLOSENESS,
                 Measure.DEGREE_CENTRALITY
         ]
-        
+
         @staticmethod
         def create_graph():
                 return gt.Graph(directed=False)
@@ -74,7 +74,7 @@ class Graphs():
                 N = Graphs.size(G)
                 M = Graphs.length(G)
                 return 2*float(M) / (N*(N-1))
-        
+
         @staticmethod
         def get_centrality_nums():
                 return Graphs.centrality_nums
@@ -142,7 +142,7 @@ class Graphs():
                                 knn /= u.out_degree()
                         else:
                                 continue
-                        
+
                         xs.append(k)
                         ys.append(knn)
 
@@ -170,4 +170,3 @@ class Graphs():
                         yavgsp.append(float(yavgs[i])/float(ymax))
 
                 return (xsp, ysp, xxsp, yavgsp)
-        
