@@ -14,28 +14,28 @@ class Project:
 
         def __init__(self):
                 pass
-        
+
         '''Template for specific project configurations.'''
         @staticmethod
         def get_datadir():
                 '''Return the directory containing data for the project.'''
                 pass
-        
+
         @staticmethod
         def get_outdir():
                 return Project.outdir
-        
+
         @staticmethod
         def set_outdir(directory):
                 Project.outdir = directory
-        
+
 class SGB(Project):
         '''Handle specific configuration for books gathered by Stanford
            GraphBase project.'''
 
         def __init__(self):
                 Project.__init__(self)
-                
+
         @staticmethod
         def get_datadir():
                 return 'sgb-data/'
@@ -48,14 +48,14 @@ class Charnet(Project):
         @staticmethod
         def get_datadir():
                 return 'data/'
-        
+
 from enum import Enum
 class BookGenre(Enum):
         '''Books are classified in categories.'''
         BIOGRAPHY = 0
         LEGENDARY = 1 # e.g., Bible
         FICTION = 2
-        
+
 class Book():
         def __init__(self):
                 self.G = Graphs.create_graph() # Graph to be created from the book
@@ -68,7 +68,7 @@ class Book():
                 # map vertex 'index' object and its frequency
                 self.G.vertex_properties["frequency"] = self.G.new_vertex_property("int")
                 # map edge index and its weight
-                self.G.edge_properties["weight"] = self.G.new_edge_property("int") 
+                self.G.edge_properties["weight"] = self.G.new_edge_property("int")
                 # map vertex index and its character name
                 self.G.vertex_properties["char_name"] = self.G.new_vertex_property("string")
                 # map vertex label and its vertex 'index' object
@@ -80,7 +80,7 @@ class Book():
                 self.G.graph_properties["was_vprop_degree_set"] = False
                 # Store degree non-normalized degree of vertices
                 self.G.vertex_properties["degree"] = self.G.new_vertex_property("int")
-                
+
         def __str__(self):
                 '''Return the name of the book.'''
                 pass
@@ -91,7 +91,7 @@ class Book():
 
         def get_char_label(self, idx):
                 return self.G.vertex_properties["label"][idx]
-        
+
         def set_char_label(self, idx, label):
                 self.G.vertex_properties["label"][idx] = label
                 self.vprop_l2v[label] = idx
@@ -101,7 +101,7 @@ class Book():
 
         def get_char_idx_from_label(self, label):
                 return self.vprop_l2v[label]
-                
+
         def add_char(self, label, char_name):
                 '''Add character labelled with character name in the graph. Map label
                 and frequency with index; and character name with label.'''
@@ -110,11 +110,11 @@ class Book():
                 self.set_char_label(idx, label)
                 self.set_char_name(idx, char_name)
                 self.G.vertex_properties["frequency"][idx] = 0
-                
+
         def inc_freq(self, label):
                 idx = self.get_char_idx_from_label(label)
                 self.G.vertex_properties["frequency"][idx] += 1
-                
+
         def exists(self, label):
                 '''Verify the existence of the label in the dictionary associated with
                 the graph. The existence means the label was already inserted in the
@@ -126,7 +126,7 @@ class Book():
         def degree(self, label):
                 idx = self.get_char_idx_from_label(label)
                 return self.G.vertex(idx).out_degree()
-                
+
         def met(self, char_lbl_a, char_lbl_b):
                 '''Return True if character label a (char_lbl_a) have met with character
                 label b (char_lbl_b), False otherwise.
@@ -143,7 +143,7 @@ class Book():
                 v = self.get_char_idx_from_label(char_lbl_b)
                 e = self.G.add_edge(u, v)
                 self.G.edge_properties["weight"][e] = 1
-                
+
         def inc_weight(self, char_lbl_a, char_lbl_b):
                 u = self.get_char_idx_from_label(char_lbl_a)
                 v = self.get_char_idx_from_label(char_lbl_b)
@@ -154,16 +154,16 @@ class Book():
                 u = self.get_char_idx_from_label(char_lbl_a)
                 v = self.get_char_idx_from_label(char_lbl_b)
                 e = self.G.edge(u, v)
-                
+
                 return self.G.edge_properties["weight"][e]
 
         def get_genre(self):
                 pass
-        
+
         def get_comment_token(self):
                 '''Asterisk is used as comment to reflect same convention of SGB (Stanford GraphBase).'''
                 return '*'
-        
+
         def get_file_ext(self):
                 '''Return the default file extension.'''
                 return '.dat'
@@ -181,7 +181,7 @@ class Book():
 
         def get_name(self):
                 return self.__str__()
-        
+
         def get_number_characters(self):
                 assert self.G
                 return len(self.G.vs)
@@ -218,12 +218,12 @@ class Book():
         def get_vertex_color(self):
                 '''Return the color set to vertices in the plot of graph. Default: white.'''
                 return 'white'
-        
+
         def read(self):
                 """
-                Read the file containing characters encounters of a book 
+                Read the file containing characters encounters of a book
                 and return a graph.
-                
+
                 Returns
                 -------
                 a graph
@@ -239,13 +239,13 @@ class Book():
 
                 # set graph name
                 self.set_graph_name(self.get_name())
-                
+
                 fn = self.get_file_name()
                 f = open(fn, "r")
                 u = 'AA' # store old vertex label and it is used to check it the order is right
                 for ln in f:
                         # ignore comments
-                        if (ln.startswith(self.get_comment_token())): 
+                        if (ln.startswith(self.get_comment_token())):
                                 continue
 
                         # edges start after an empty line
@@ -255,7 +255,7 @@ class Book():
 
                         # remove new line
                         ln = ln.rstrip('\r\n')
-                        
+
                         # boolean are_edges indicates if it is inside vertices region
                         if (are_edges==False):
                                 (v, character_name) = ln.split(' ', 1)
@@ -264,7 +264,7 @@ class Book():
                                 if u > v:
                                         logger.error('* Labels {} and {} is out of order in {}'.format(u, v, book_name))
                                         exit()
-                                
+
                                 #DEBUG
                                 logger.debug("* G.add_vertice({}, name={})".format(v, character_name))
                                 #GUBED
@@ -285,7 +285,7 @@ class Book():
 
                         if(edges[0] == ''): # eliminate chapters with no edges
                                 continue
-                        
+
                         for e in edges:
                                 # eg., split "ST,PH,MA" => ["ST", "PH", "MA"]
                                 vs = e.split(',')  # vertices
@@ -320,18 +320,18 @@ class Book():
                 f.close()
                 logger.info("* Read G from book \"{}\"".format(book_name))
                 return self.G
-        
+
 class Acts(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'acts'
 
         def get_genre(self):
                 return BookGenre.LEGENDARY
-        
+
         def get_vertex_color(self):
                 return 'khaki'
 
@@ -339,13 +339,13 @@ class Apollonius(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'apollonius'
 
         def get_genre(self):
                 return BookGenre.LEGENDARY
-        
+
         def get_vertex_color(self):
                 return 'red'
 
@@ -353,13 +353,13 @@ class Arthur(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'arthur'
 
         def get_genre(self):
                 return BookGenre.FICTION
-        
+
         def get_vertex_color(self):
                 return 'cyan'
 
@@ -367,13 +367,13 @@ class David(Book, SGB):
         def __init__(self):
                 Book.__init__(self)
                 SGB.__init__(self)
-                
+
         def __str__(self):
                 return 'david'
 
         def get_genre(self):
                 return BookGenre.FICTION
-        
+
         def get_vertex_color(self):
                 return 'orange'
 
@@ -381,13 +381,13 @@ class Dick(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'dick'
 
         def get_genre(self):
                 return BookGenre.BIOGRAPHY
-        
+
         def get_vertex_color(self):
                 return 'orchid'
 
@@ -395,13 +395,13 @@ class Hawking(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'hawking'
 
         def get_genre(self):
                 return BookGenre.BIOGRAPHY
-        
+
         def get_vertex_color(self):
                 return 'silver'
 
@@ -409,13 +409,13 @@ class Hobbit(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'hobbit'
 
         def get_genre(self):
                 return BookGenre.FICTION
-        
+
         def get_vertex_color(self):
                 return 'gold'
 
@@ -423,13 +423,13 @@ class Huck(Book, SGB):
         def __init__(self):
                 Book.__init__(self)
                 SGB.__init__(self)
-                
+
         def __str__(self):
                 return 'huck'
 
         def get_genre(self):
                 return BookGenre.FICTION
-        
+
         def get_vertex_color(self):
                 return 'salmon'
 
@@ -437,13 +437,13 @@ class Luke(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'luke'
 
         def get_genre(self):
                 return BookGenre.LEGENDARY
-        
+
         def get_vertex_color(self):
                 return 'wheat'
 
@@ -451,13 +451,13 @@ class Newton(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                
+
         def __str__(self):
                 return 'newton'
 
         def get_genre(self):
                 return BookGenre.BIOGRAPHY
-        
+
         def get_vertex_color(self):
                 return 'tan'
 
@@ -465,13 +465,13 @@ class Pythagoras(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                 
+
         def __str__(self):
                 return 'pythagoras'
 
         def get_genre(self):
                 return BookGenre.LEGENDARY
-        
+
         def get_vertex_color(self):
                 return 'tomato'
 
@@ -479,13 +479,13 @@ class Tolkien(Book, Charnet):
         def __init__(self):
                 Book.__init__(self)
                 Charnet.__init__(self)
-                                
+
         def __str__(self):
                 return 'tolkien'
-                
+
         def get_genre(self):
                 return BookGenre.BIOGRAPHY
-        
+
         def get_vertex_color(self):
                 return 'yellowgreen'
 
@@ -507,7 +507,7 @@ class Books(Book):
         ]
 
         genre_names = ['Biography', 'Legendary', 'Fiction']
-        
+
         @staticmethod
         def get_genre_label(book):
                 gen = book.get_genre()
