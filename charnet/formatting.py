@@ -6,10 +6,13 @@ import graph_tool as gt
 import graph_tool.clustering as gt_cluster
 
 # LOCAL
-from plot import *
 from graphs import *
+from books import Project
+from books import Books
 
 class Formatting:
+        suppl_f = None # file to write supplementary material
+
         @staticmethod
         def write_hapax_legomena_table(abs=False, dis=False):
                 """"Hapax Legomena The write_hapax_legomena_table() function write the
@@ -67,8 +70,6 @@ class Formatting:
                 routine.  We also calculate
                 [density](https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.classes.function.density.html).
                 """
-                logger.info('* Writing global measures...')
-
                 fn = os.path.join(Project.get_outdir(), 'global.tex')
 
                 f = open(fn, "w")
@@ -108,7 +109,7 @@ class Formatting:
                 f.write("\t\t\\botrule\\end{tabular}}\n")
 
                 f.close()
-                logger.info('* Wrote {}'.format(fn))
+                print('* Wrote {}'.format(fn))
 
         @staticmethod
         def write_vertices_degree():
@@ -137,7 +138,7 @@ class Formatting:
                                         + sep + str(deg) + '\n')
 
                         f.close()
-                        logger.info('* Wrote {}'.format(fn))
+                        print('* Wrote {}'.format(fn))
 
         @staticmethod
         def write_vertices_frequency():
@@ -164,7 +165,7 @@ class Formatting:
                                 f.write(lab + sep + '\"' + char_names[lab] + '\"'+ sep + str(freq) + '\n')
 
                         f.close()
-                        logger.info('* Wrote {}'.format(fn))
+                        print('* Wrote {}'.format(fn))
 
         @staticmethod
         def write_edges_weight():
@@ -194,4 +195,40 @@ class Formatting:
                         for lab,w in labs:
                                 f.write(lab + sep + char_names[lab] + sep + str(w) + '\n')
                         f.close()
-                        logger.info('* Wrote {}'.format(fn))
+                        print('* Wrote {}'.format(fn))
+
+        @staticmethod
+        def couroutine_write_supplementary_material(filename):
+                import re
+                fn = os.path.join('preprint/', filename + '.tex')
+                f = open(fn, 'w')
+                f.write('\pagebreak\\section*{Supplementary Material}\n')
+
+                while True:
+                        (key, content) = yield
+
+                        if key == 'begin_table':
+                                (xlbl, ylbl) = content.split('*', 1)
+                                lbl = re.sub('[\$\=\(\)]', '', xlbl)
+                                f.write('\\begin{table}[ht]\n')
+                                f.write('\t\\label{tab:' + lbl + '}\n')
+                                f.write('\t\\begin{center} \n')
+                                f.write('\t\\tbl{' + xlbl + ' $\\times$ ' + ylbl + ' $p$-values.}\n')
+                                f.write('{') # OPEN BRACKET
+                                f.write('\t\\begin{tabular}{@{}p{1.6cm}p{3cm}@{}} \\toprule \n')
+                                f.write('\t\t\\bf book & $\\mathbf p$ \\\\ \\colrule \n')
+                        elif key == 'book_name':
+                                f.write('\t\t' + content + ' & ')
+                        elif key == 'pvalue':
+                                f.write(content + ' \\\\ \n')
+                        elif key == 'end_table':
+                                f.write('\t\\botrule\\end{tabular}')
+                                f.write('\n}\n') # CLOSE BRACKET
+                                f.write('\t\\end{center}\n')
+                                f.write('\\end{table}\n')
+                        elif key == 'CLOSE_FILE':
+                                f.close()
+                                print('* Wrote {}'.format(fn))
+                        else:
+                                print('\n******** ERROR: wrong key: {} ********'.format(key))
+                                exit()

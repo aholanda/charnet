@@ -10,6 +10,7 @@ import graph_tool.clustering as gt_cluster
 # LOCAL
 from books import *
 from graphs import Measure
+from formatting import Formatting
 
 SEP = '_'
 
@@ -255,7 +256,7 @@ class Plot:
                 os.system(cmd)
 
         @staticmethod
-        def do_centralities():
+        def do_centralities(supp):
                 '''Generate plotting of centralities comparisons.'''
                 template = Plot.init_multiplot_template()
                 xmax = 1.0
@@ -266,16 +267,26 @@ class Plot:
                         lobby_str = Measure.get_label(Measure.LOBBY)
                         pi = plotinfo(label.lower() + SEP + lobby_str.lower() , label, lobby_str)
 
+                        supp.send(('begin_table', label + '*' + lobby_str))
+
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
+                                book_name = book.get_name()
                                 G = Plot.GS[i]
                                 xs = np.array(Graphs.get_centrality_values(G, num))
                                 ys = np.array(Graphs.get_centrality_values(G, Measure.LOBBY))
                                 xs, ys, fn = dump_book_data(num, Measure.LOBBY, book.get_name(), Plot.DATA_EXT, xs, ys)
                                 (r, p) = pearsonr(xs, ys)
+
+                                # send to write to suplementary material in formatting.py
+                                supp.send(('book_name', book_name))
+                                supp.send(('pvalue', str(p)))
+
                                 popt, pcov = curve_fit(linear_func, xs, ys)
-                                pi.datainfos.append(datainfo(book.get_name(), fn, r, p, popt[0], popt[1]))
+                                pi.datainfos.append(datainfo(book_name, fn, r, p, popt[0], popt[1]))
                                 test_ceil(xs, ys, xmax, ymax)
+
+                        supp.send(('end_table', ''))
 
                         filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                         with open(filename, 'w') as fh:
@@ -329,30 +340,34 @@ class Plot:
                 print('\n$ {}'.format(cmd))
                 os.system(cmd)
 
-        def do_CDF_w_fit():
+        def do_CDF_w_fit(supp):
                 '''Do cumulative distribution probability with fitting multiplot on books.'''
                 import scipy.special as sz
                 template = Plot.init_multiplot_template()
                 xmax = 1.0
                 ymax = 1.0
+                xlabel = 'x'
+                ylabel = 'Pr(X\\geq x)'
 
-                pi = plotinfo('cdf' , 'x', 'Pr(X\\\\geq x)')
+                supp.send(('begin_table', '$' + xlabel + '=deg(v)$' + '*' + '$' + ylabel + '$'))
+
+                pi = plotinfo('cdf' , xlabel, ylabel)
 
                 for i in range(len(Plot.BOOKS)):
                         datax = []
                         book = Plot.BOOKS[i]
-                        name = book.get_name()
+                        book_name = book.get_name()
                         # alpha
-                        a = Fits.alpha(name)
+                        a = Fits.alpha(book_name)
                         # kmin
-                        xmin = Fits.kmin(name)
+                        xmin = Fits.kmin(book_name)
                         # p-value
-                        pval = Fits.pvalue(name)
+                        pval = Fits.pvalue(book_name)
 
                         G = Plot.GS[i]
 
                         # store degrees to run fitting algorithm
-                        fn = os.path.join(Project.get_outdir(), book.get_name() + '-degrees' + Plot.DATA_EXT)
+                        fn = os.path.join(Project.get_outdir(), book_name + '-degrees' + Plot.DATA_EXT)
                         f = open(fn, 'w')
                         for v in G.vertices():
                                 k = v.out_degree()
@@ -385,10 +400,14 @@ class Plot:
                         # get the corresponding values for y in the x axis
                         cfx = np.arange(xmin, xs[len(xs)-1] + 2)
 
-                        xs, ys, fn = dump_book_data(Measure.DEGREE, Measure.CDF, book.get_name(), Plot.DATA_EXT, xs, ys, xxs=cfx, yys=cfy)
-                        pi.datainfos.append(datainfo(book.get_name(), fn, alpha=a, coords_xmin=coordinates(cfx[0], cfy[0]), pvalue=pval))
+                        xs, ys, fn = dump_book_data(Measure.DEGREE, Measure.CDF, book_name, Plot.DATA_EXT, xs, ys, xxs=cfx, yys=cfy)
+                        pi.datainfos.append(datainfo(book_name, fn, alpha=a, coords_xmin=coordinates(cfx[0], cfy[0]), pvalue=pval))
 
-                        #test_ceil(xs, ys, xmax, ymax)
+                        # send to write to suplementary material in formatting.py
+                        supp.send(('book_name', book_name))
+                        supp.send(('pvalue', str(pval)))
+
+                supp.send(('end_table', ''))
 
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                 with open(filename, 'w') as fh:
@@ -407,10 +426,14 @@ class Plot:
                 print('\n$ {}'.format(cmd))
                 os.system(cmd)
 
-
         def do():
+                # Prepare to write supplemental material sending info to couroutine
+                supp = Formatting.couroutine_write_supplementary_material('suppl')
+                next(supp)
                 Plot.init()
-                Plot.do_centralities()
+                Plot.do_centralities(supp)
                 Plot.do_assortativity()
                 Plot.do_density_x_clustering_coeff()
-                Plot.do_CDF_w_fit()
+                Plot.do_CDF_w_fit(supp)
+                # send key to close supplementary file
+                supp.send(('CLOSE_FILE', ''))
