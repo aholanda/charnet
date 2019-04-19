@@ -86,7 +86,7 @@ To install the dependencies, the easy way is to run
 $ python3 setup.py install --user
 ````
 
-To run all the project tasks:
+Install [graph-tools](https://git.skewed.de/count0/graph-tool/wikis/installation-instructions) and run all the project tasks:
 
 ````
 $ python3 charnet -a
