@@ -14,6 +14,7 @@ This project performed studies using complex networks in some books. We consider
 
 ## Prerequisites
 
+* Gnuplot;
 * Python and the packages:
   * [matplotlib](https://matplotlib.org/) - used to plot the graphics;
   * [graph-tool](https://graph-tool.skewed.de/) - used to calculate the network measures and draw the graphs;
