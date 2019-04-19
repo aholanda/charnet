@@ -199,30 +199,39 @@ class Formatting:
 
         @staticmethod
         def couroutine_write_supplementary_material(filename):
-                import re
+                xlbl = '' # x label
+                ylbl = '' # y label
                 fn = os.path.join('preprint/', filename + '.tex')
                 f = open(fn, 'w')
                 f.write('\pagebreak\\section*{Supplementary Material}\n')
 
                 while True:
-                        (key, content) = yield
+                        (key, content) = yield # receive the message as a tuple
 
                         if key == 'begin_table':
-                                (xlbl, ylbl) = content.split('*', 1)
-                                lbl = re.sub('[\$\=\(\)]', '', xlbl)
                                 f.write('\\begin{table}[ht]\n')
-                                f.write('\t\\label{tab:' + lbl + '}\n')
                                 f.write('\t\\begin{center} \n')
-                                f.write('\t\\tbl{' + xlbl + ' $\\times$ ' + ylbl + ' $p$-values.}\n')
+                                f.write('\t\\tbl{' + content + ' $p$-values.}\n')
                                 f.write('{') # OPEN BRACKET
-                                f.write('\t\\begin{tabular}{@{}p{1.6cm}p{3cm}@{}} \\toprule \n')
+                        elif key == 'begin_subtable':
+                                f.write('\\begin{minipage}{' + content + '\\textwidth}\n')
+                        elif key == 'xlabel':
+                                xlbl = content
+                        elif key == 'ylabel':
+                                ylbl = content
+                                f.write('\\hspace{.7cm}\\hbox{' + xlbl + '$\\times$' + ylbl + '} \\par \\smallskip\n')
+                        elif key == 'begin_data':
+                                f.write('\t\\begin{tabular}{@{}p{1.6cm}p{1.3cm}@{}} \\toprule \n')
                                 f.write('\t\t\\bf book & $\\mathbf p$ \\\\ \\colrule \n')
                         elif key == 'book_name':
                                 f.write('\t\t' + content + ' & ')
                         elif key == 'pvalue':
                                 f.write(content + ' \\\\ \n')
-                        elif key == 'end_table':
+                        elif key == 'end_subtable':
+                                f.write('\\end{minipage}\n')
+                        elif key == 'end_data':
                                 f.write('\t\\botrule\\end{tabular}')
+                        elif key == 'end_table':
                                 f.write('\n}\n') # CLOSE BRACKET
                                 f.write('\t\\end{center}\n')
                                 f.write('\\end{table}\n')
@@ -232,3 +241,4 @@ class Formatting:
                         else:
                                 print('\n******** ERROR: wrong key: {} ********'.format(key))
                                 exit()
+                                
