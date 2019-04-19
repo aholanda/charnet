@@ -267,7 +267,7 @@ class Plot:
                 for num in Graphs.get_centrality_nums():
                         label = Measure.get_label(num)
                         lobby_str = Measure.get_label(Measure.LOBBY)
-                        pi = plotinfo(label.lower() + SEP + lobby_str.lower() , label, lobby_str)
+                        pi = plotinfo(label + SEP + lobby_str , label, lobby_str)
 
                         supp.send(('begin_subtable', '0.3'))
 
@@ -359,16 +359,16 @@ class Plot:
                 xmax = 1.0
                 ymax = 1.0
                 xlabel = 'x'
-                ylabel = 'Pr(X\\geq x)'
+                ylabel = 'Pr(X\\\\geq x)'
 
-                                  
                 supp.send(('begin_table', 'Degree cumulative distribution'))
 
                 supp.send(('begin_subtable', '0.4'))
                 supp.send(('xlabel', '$' + xlabel + '$'))
-                supp.send(('ylabel', '$' + ylabel + '$'))
+                supp.send(('ylabel', '$' + ylabel.replace("\\\\", "\\") + '$'))
                 supp.send(('begin_data', ''))
-                          
+
+                
                 pi = plotinfo('cdf' , xlabel, ylabel)
 
                 for i in range(len(Plot.BOOKS)):
