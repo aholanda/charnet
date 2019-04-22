@@ -262,13 +262,19 @@ class Plot:
                 xmax = 1.0
                 ymax = 0.5
 
+                supp.send(('begin_table', 'Centralities $p$-values.'))
+                        
                 for num in Graphs.get_centrality_nums():
                         label = Measure.get_label(num)
                         lobby_str = Measure.get_label(Measure.LOBBY)
-                        pi = plotinfo(label.lower() + SEP + lobby_str.lower() , label, lobby_str)
+                        pi = plotinfo(label + SEP + lobby_str , label, lobby_str)
 
-                        supp.send(('begin_table', label + '*' + lobby_str))
+                        supp.send(('begin_subtable', '0.3'))
 
+                        supp.send(('xlabel', label))
+                        supp.send(('ylabel', lobby_str))
+                        
+                        supp.send(('begin_data', ''))
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
                                 book_name = book.get_name()
@@ -280,13 +286,17 @@ class Plot:
 
                                 # send to write to suplementary material in formatting.py
                                 supp.send(('book_name', book_name))
-                                supp.send(('pvalue', str(p)))
-
+                                if p < 0.0099:
+                                        supp.send(('pvalue', '{:.2e}'.format(float(p))))
+                                else:
+                                        supp.send(('pvalue', '{:.2f}'.format(float(p))))
+                                           
                                 popt, pcov = curve_fit(linear_func, xs, ys)
                                 pi.datainfos.append(datainfo(book_name, fn, r, p, popt[0], popt[1]))
                                 test_ceil(xs, ys, xmax, ymax)
 
-                        supp.send(('end_table', ''))
+                        supp.send(('end_data', ''))
+                        supp.send(('end_subtable', ''))
 
                         filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
                         with open(filename, 'w') as fh:
@@ -305,6 +315,8 @@ class Plot:
                         cmd = Plot.CMD + filename
                         print('\n$ {}'.format(cmd))
                         os.system(cmd)
+
+                supp.send(('end_table', ''))
 
         @staticmethod
         def do_assortativity():
@@ -347,10 +359,16 @@ class Plot:
                 xmax = 1.0
                 ymax = 1.0
                 xlabel = 'x'
-                ylabel = 'Pr(X\\geq x)'
+                ylabel = 'Pr(X\\\\geq x)'
 
-                supp.send(('begin_table', '$' + xlabel + '=deg(v)$' + '*' + '$' + ylabel + '$'))
+                supp.send(('begin_table', 'Degree cumulative distribution'))
 
+                supp.send(('begin_subtable', '0.4'))
+                supp.send(('xlabel', '$' + xlabel + '$'))
+                supp.send(('ylabel', '$' + ylabel.replace("\\\\", "\\") + '$'))
+                supp.send(('begin_data', ''))
+
+                
                 pi = plotinfo('cdf' , xlabel, ylabel)
 
                 for i in range(len(Plot.BOOKS)):
@@ -407,6 +425,8 @@ class Plot:
                         supp.send(('book_name', book_name))
                         supp.send(('pvalue', str(pval)))
 
+                supp.send(('end_data', ''))
+                supp.send(('end_subtable', ''))
                 supp.send(('end_table', ''))
 
                 filename = os.path.join(Project.get_outdir(), pi.title + Plot.PLT_EXT)
