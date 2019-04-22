@@ -433,7 +433,7 @@ class Plot:
                 with open(filename, 'w') as fh:
                         fh.write(template.render(
                                 plot_measure = 'cdf',
-                                significance_level = Plot.P + 0.05, # P + Epsilon
+                                significance_level = Plot.P,
                                 extension = Plot.EXT,
                                 plotinfo = pi,
                                 xmax = xmax,
