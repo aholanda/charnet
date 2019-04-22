@@ -263,7 +263,7 @@ class Plot:
                 ymax = 0.5
 
                 supp.send(('begin_table', 'Centralities $p$-values.'))
-                        
+
                 for num in Graphs.get_centrality_nums():
                         label = Measure.get_label(num)
                         lobby_str = Measure.get_label(Measure.LOBBY)
@@ -273,7 +273,7 @@ class Plot:
 
                         supp.send(('xlabel', label))
                         supp.send(('ylabel', lobby_str))
-                        
+
                         supp.send(('begin_data', ''))
                         for i in range(len(Plot.BOOKS)):
                                 book = Plot.BOOKS[i]
@@ -290,7 +290,7 @@ class Plot:
                                         supp.send(('pvalue', '{:.2e}'.format(float(p))))
                                 else:
                                         supp.send(('pvalue', '{:.2f}'.format(float(p))))
-                                           
+
                                 popt, pcov = curve_fit(linear_func, xs, ys)
                                 pi.datainfos.append(datainfo(book_name, fn, r, p, popt[0], popt[1]))
                                 test_ceil(xs, ys, xmax, ymax)
@@ -368,7 +368,7 @@ class Plot:
                 supp.send(('ylabel', '$' + ylabel.replace("\\\\", "\\") + '$'))
                 supp.send(('begin_data', ''))
 
-                
+
                 pi = plotinfo('cdf' , xlabel, ylabel)
 
                 for i in range(len(Plot.BOOKS)):
