@@ -49,7 +49,7 @@ pstr = color."\\tiny $p".notsigcmp
 pstr = gprintf(pstr."%1.2f$", {{ significance_level }})
 {% else %}
 pstr = "\\tiny $p".sigcmp
-pstr = gprintf(pstr."%1.2f$", {{ significance_level }})
+pstr = gprintf(pstr."%1.2f^*$", {{ significance_level }})
 {% endif %}
 
 {% if plot_measure == 'cdf' %}
