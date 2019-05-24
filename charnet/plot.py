@@ -103,6 +103,11 @@ def test_ceil(xs, ys, xmax, ymax):
 #                print('ERROR max value {%1.2f}/{%1.2f},{%1.2f}/{%1.2f} ignored'.format(np.max(xs), xmax, np.max(ys), ymax))
                 exit(-1)
 
+def run_command(cmd, filename):
+        cmd = cmd + filename
+        print('\n$ {}'.format(cmd))
+        os.system(cmd)
+
 # These values were obtained running Matlab scripts from
 # http://tuvalu.santafe.edu/~aaronc/powerlaws/{plfit,plpva}.m
 class Fits:
@@ -150,7 +155,8 @@ class Plot:
         # significance level for statistical tests
         P = 0.05
         # plot command prefix
-        CMD = 'cd preprint && gnuplot '
+        GP_CMD = 'gnuplot '
+        CMDs = ['cd preprint && ' + GP_CMD, 'cd presentation && ' + GP_CMD]
         # plot figure extension
         EXT = '.tex'
         # gnuplot extension
@@ -251,9 +257,8 @@ class Plot:
                                 slope=popt[0],
                                 intercept = popt[1],
                         ))
-                cmd = Plot.CMD + filename
-                print('\n$ {}'.format(cmd))
-                os.system(cmd)
+                for cmd in Plot.CMDs:
+                        run_command(cmd, filename)
 
         @staticmethod
         def do_centralities(supp):
@@ -312,9 +317,8 @@ class Plot:
                                         nrows = 4,
                                         ncols = 3,
                                 ))
-                        cmd = Plot.CMD + filename
-                        print('\n$ {}'.format(cmd))
-                        os.system(cmd)
+                        for cmd in Plot.CMDs:
+                                run_command(cmd, filename)
 
                 supp.send(('end_table', ''))
 
@@ -348,9 +352,8 @@ class Plot:
                                 nrows = 4,
                                 ncols = 3,
                         ))
-                cmd = Plot.CMD + filename
-                print('\n$ {}'.format(cmd))
-                os.system(cmd)
+                for cmd in Plot.CMDs:
+                        run_command(cmd, filename)
 
         def do_CDF_w_fit(supp):
                 '''Do cumulative distribution probability with fitting multiplot on books.'''
@@ -442,9 +445,8 @@ class Plot:
                                 nrows = 4,
                                 ncols = 3,
                         ))
-                cmd = Plot.CMD + filename
-                print('\n$ {}'.format(cmd))
-                os.system(cmd)
+                for cmd in Plot.CMDs:
+                        run_command(cmd, filename)
 
         def do():
                 # Prepare to write supplemental material sending info to couroutine
