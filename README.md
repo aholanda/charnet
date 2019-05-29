@@ -2,8 +2,9 @@
 
 This project performed studies using complex networks in some books. We considered
  characters as nodes and characters encounters as edges. The project
- has a [GitHub page](https://ajholanda.github.io/charnet/) and a
- [manuscript](https://arxiv.org/abs/1704.08197).
+ has a [GitHub page](https://ajholanda.github.io/charnet/), a
+ [manuscript](https://arxiv.org/abs/1704.08197) and a 
+ [presentation](https://pt.overleaf.com/read/vszbrbjcbtpq).
 
 ## Directories content
 
