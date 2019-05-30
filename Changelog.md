@@ -1,8 +1,17 @@
 # Changelog
 
+## [v2.0]
+- This version was improved compared with version sent to International Journal of Modern Physics C.
+  Assortativity mixing formula was fixed and in the Discussion the style of book names was standardized.
+- Improve style of plots taking better care of space between labels and axis and the font size of labels.
+- Write the plots to [`presentation`](presentation/) directory too.
+- Add [`presentation`](presentation/) that is a sub-module pointing to an Overleaf git repository where
+  the presentation in LaTeX were written.
+- Add [`preprint`](preprint/) that is a sub-module pointing to an Overleaf git repository where
+  the preprint in LaTeX was written.
 ## [v1.2] - 2018-07-05
 ### Added
-- [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius fo Tyana" was added.
+- [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius of Tyana" was added.
 
 ### Changed
 - [`books.py`](books.py) - add method `get_vertex_color()` to return the color to print the vertex in the graph drawing.
@@ -20,7 +29,7 @@
   point.
 
 ### Changed
-- The code `books.py` was changed to accomodate the new design.
+- The code `books.py` was changed to accommodate the new design.
 
 ## [v1.0] - 2018-05-05
 ### Changed
