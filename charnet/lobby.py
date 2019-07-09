@@ -1,71 +1,77 @@
+"""This module has the function to calculate Lobby centrality."""
+
 import os.path
 
 import logging
 
+from charnet.books import Project
+
 # change INFO to DEBUG to write to "lobby.log" file
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.INFO)
 
-handler = None
-if logger.getEffectiveLevel() == logging.DEBUG:
-    handler = logging.FileHandler(os.path.join(Project.get_outdir(),'lobby.log'))
-    formatter = logging.Formatter('%(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+HANDLER = None
+if LOGGER.getEffectiveLevel() == logging.DEBUG:
+    HANDLER = logging.FileHandler(os.path.join(Project.get_outdir(), 'lobby.log'))
+    FORMATTER = logging.Formatter('%(message)s')
+    HANDLER.setFormatter(FORMATTER)
+    LOGGER.addHandler(HANDLER)
 
+def lobby(graph):
+    """ Lobby or h index
+        ================
 
-def lobby(G):
-    """Lobby or h index
-    ================
-    
-    All graph vertices are traversed and Lobby index is calculated and stored in the lobby macro-field.
-    
-    If a node has the following list of neighbors sorted by degree:
+        All graph vertices are traversed and Lobby index is calculated
+        and stored in the lobby macro-field.
 
-    ==========  ========
-    neighbor     degree
-    ==========  ========
-    1          21 
-    2          18 
-    3           4 
-    4           3 
-    ==========  ========
-    
-    the Lobby index is 3 because degree $\leq$ neighbor_position. 
-    
+        If a node has the following list of neighbors sorted by degree:
+
+         ==========  ========
+         neighbor     degree
+         ==========  ========
+         1          21
+         2          18
+         3           4
+         4           3
+         ==========  ========
+
+         the Lobby index is 3 because degree $\\leq$ neighbor_position.
+
     """
-    N = len(list(G.vertices()))
-    lobbies = [0] * N
-    
-    logger.debug('* {}'.format(G.graph_properties["name"]))
-    
-    for u in G.vertices():
+    n_verts = len(list(graph.vertices()))
+    lobbies = [0] * n_verts
 
-        logger.debug('{}\tdegree={}'.format(G.vertex_properties['label'][u], str(u.out_degree())))
+    LOGGER.debug('* %s', graph.graph_properties["name"])
+
+    for vert in graph.vertices():
+
+        LOGGER.debug('%s\tdegree=%s',
+                     graph.vertex_properties['label'][vert],
+                     str(vert.out_degree()))
 
         degs = [] # neighbors' degree
 
-        for v in u.out_neighbors():
-            degs.append(v.out_degree())
-                            
+        for neighbor in vert.out_neighbors():
+            degs.append(neighbor.out_degree())
+
         degs.sort()
         degs.reverse()
         old_idx = idx = 0
         for deg in degs:
-            lobby = idx = idx + 1
+            lob = idx = idx + 1
 
-            logger.debug("\t{}\t{}".format(str(idx), str(deg)))
+            LOGGER.debug("\t%s\t%s", str(idx), str(deg))
 
             if (deg < idx):
-                lobby = old_idx
+                lob = old_idx
                 break
             old_idx = idx
 
-            logger.debug("** Lobby={}".format(str(lobby)))
+            LOGGER.debug("** Lobby=%s", str(lob))
 
-        lobbies[int(u)] = float(lobby) / N # normalize by N vertices
-        
-        if handler:logger.debug('* Wrote {}'.format(handler.stream.name))
-        
+        lobbies[int(vert)] = float(lob) / n_verts # normalize by N vertices
+
+        if HANDLER:
+            LOGGER.debug('* Wrote %s', HANDLER.stream.name)
+
     return lobbies
-            
