@@ -4,7 +4,7 @@ import os.path
 
 import logging
 
-from .books import *
+from .books import Project
 
 # change INFO to DEBUG to write to "lobby.log" file
 LOGGER = logging.getLogger(__name__)
@@ -62,7 +62,7 @@ def lobby(graph):
 
             LOGGER.debug("\t%s\t%s", str(idx), str(deg))
 
-            if (deg < idx):
+            if deg < idx:
                 lob = old_idx
                 break
             old_idx = idx

@@ -57,7 +57,7 @@ class Formatting(object):
 
         _file.write(tbl)
         _file.close()
-        print ('* Wrote ' + file_name)
+        print('* Wrote ' + file_name)
 
     @staticmethod
     def write_global_measures():
@@ -102,7 +102,7 @@ class Formatting(object):
         _file.write("\t\t\\botrule\\end{tabular}}\n")
 
         _file.close()
-        print ('* Wrote ' + file_name)
+        print('* Wrote ' + file_name)
 
     @staticmethod
     def write_vertices_degree():
@@ -129,7 +129,7 @@ class Formatting(object):
                             + char_names[lab] + '\"'
                             + sep + str(deg) + '\n')
             _file.close()
-            print ('* Wrote ' + file_name)
+            print('* Wrote ' + file_name)
 
     @staticmethod
     def write_vertices_frequency():
@@ -152,7 +152,7 @@ class Formatting(object):
             for lab, freq in labs:
                 _file.write(lab + sep + '\"' + char_names[lab] + '\"'+ sep + str(freq) + '\n')
             _file.close()
-            print ('* Wrote ' + file_name)
+            print('* Wrote ' + file_name)
 
     @staticmethod
     def write_edges_weight():
@@ -180,7 +180,7 @@ class Formatting(object):
             for lab, weight in labs:
                 _file.write(lab + sep + char_names[lab] + sep + str(weight) + '\n')
             _file.close()
-            print ('* Wrote ' + file_name)
+            print('* Wrote ' + file_name)
 
     @staticmethod
     def couro_write_suppl(filename):
@@ -223,7 +223,7 @@ class Formatting(object):
                 _file.write('\\end{table}\n')
             elif key == 'CLOSE_FILE':
                 _file.close()
-                print ('* Wrote ' + file_name)
+                print('* Wrote ' + file_name)
             else:
-                print ('\n******** ERROR: wrong key: '+ key +' ********')
+                print('\n******** ERROR: wrong key: '+ key +' ********')
                 exit()

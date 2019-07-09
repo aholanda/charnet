@@ -85,16 +85,16 @@ def write_huffman_code(book_name, which):
         idx2freq[idx] = int(freq)
     nodes = sorted(idx2freq.items(), key=lambda x: x[1], reverse=True)
     if DEBUG:
-        print (' Index | ' + which)
+        print(' Index | ' + which)
         for idx, freq in nodes:
-            print (" %4r | %d" % (idx, freq))
+            print(" %4r | %d" % (idx, freq))
     tree = create_tree(nodes)
     huffman_code = huffman_code_tree(tree[0][0])
     if DEBUG:
-        print (' Inde   x | ' + which +  '  | Huffman code ')
-        print ('-----------------------------')
+        print(' Inde   x | ' + which +  '  | Huffman code ')
+        print('-----------------------------')
         for idx, freq in nodes:
-            print ("%-4r | %5d | %12s" % (idx, freq, huffman_code[idx]))
+            print("%-4r | %5d | %12s" % (idx, freq, huffman_code[idx]))
     file_name = __gen_fn(book_name, 'h' + which)
     _file = open(file_name, 'w')
     seq = ''
@@ -102,9 +102,9 @@ def write_huffman_code(book_name, which):
         seq += huffman_code[idx]
     _file.write(seq)
     _file.close()
-    print ('* Wrote ' + file_name)
+    print('* Wrote ' + file_name)
     p_value = frequency_test(seq)
-    print ('* ' + which + ' Test for ' + book_name + ': p-value=' + p_value)
+    print('* ' + which + ' Test for ' + book_name + ': p-value=' + p_value)
 
 def write_data():
     """Write Huffman data to output."""
@@ -127,14 +127,14 @@ def write_data():
             idx2freq[idx_str] = n_verts
             idx2deg[idx_str] = deg
         _file.close()
-        print ('* Wrote ' + file_name)
+        print('* Wrote ' + file_name)
         # TEST FREQUENCY
         file_name = __gen_fn(bname, 'freq')
         _file = open(file_name, 'w')
         for idx, freq in sorted(idx2freq.items(), key=lambda x: x[1]):
             _file.write(str(idx) + ',' + str(freq) + '\n')
         _file.close()
-        print ('* Wrote ' + file_name)
+        print('* Wrote ' + file_name)
         write_huffman_code(bname, 'freq')
         # TEST DEGREE
         file_name = __gen_fn(bname, 'deg')
@@ -142,12 +142,12 @@ def write_data():
         for idx, deg in sorted(idx2deg.items(), key=lambda x: x[1]):
             _file.write(str(idx) + ',' + str(deg) + '\n')
         _file.close()
-        print ('* Wrote ' + file_name)
+        print('* Wrote ' + file_name)
         write_huffman_code(bname, 'deg')
 
 def usage(prg):
     """How to use the program."""
-    print ('''
+    print('''
     Usage: {} -0
     Where:
     -0   write data to output files in /tmp directory.

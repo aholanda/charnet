@@ -2,14 +2,14 @@
     The books used are classified and some methods
     are implemented to allow data handling."""
 
-# LOCAL
-from  .graphs import Graphs
-
 import logging
 from enum import Enum
 
 import tempfile
 import numpy as np
+
+# LOCAL
+from  .graphs import Graphs
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
