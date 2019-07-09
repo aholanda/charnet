@@ -1,244 +1,229 @@
+"""This module contains instructions to produce output in LaTeX."""
+
 import os.path
-import numpy as np
 import operator
 
-import graph_tool as gt
 import graph_tool.clustering as gt_cluster
 
 # LOCAL
-from graphs import *
-from books import Project
-from books import Books
+from charnet.graphs import Graphs
+from charnet.books import Project
+from charnet.books import Books
 
-class Formatting:
-        suppl_f = None # file to write supplementary material
+class Formatting(object):
+    """Main class to format output."""
+    suppl_f = None # file to write supplementary material
 
-        @staticmethod
-        def write_hapax_legomena_table(abs=False, dis=False):
-                """"Hapax Legomena The write_hapax_legomena_table() function write the
-                    _Hapax_ frequency to be included in the paper using LaTeX
-                    syntax for tables.
-                Arguments:
-                  abs (Boolean): if true, print out absolute values over the number of characters;
-                  dis (Boolean): if true, print out Hapax DisLegomena that are the number of
-                     characters that appear twice.
-                """
-                n2h = {} # map book name to hapax
-                n2b = {} # map book name to book object
-                tbl = "" # store table content string
-                # Sort books by hapax
-                books = Books.get_books()
-                for book in books:
-                        n = book.get_name()
-                        G = book.get_graph()
-                        n2h[n] = float(book.get_number_hapax_legomenas()) / Graphs.size(G)
-                        n2b[n] = book
+    def __init__(self):
+        pass
 
-                fn = os.path.join(Project.get_outdir(), 'legomenas.tex')
-                f = open(fn, "w")
+    @staticmethod
+    def write_hapax_legomena_table():
+        """"Hapax Legomena: write_hapax_legomena_table() function write the
+            _Hapax_ frequency to be included in the paper using LaTeX
+            syntax for tables.
+         """
+        n2h = {} # map book name to hapax
+        n2b = {} # map book name to book object
+        tbl = "" # store table content string
+        # Sort books by hapax
+        books = Books.get_books()
+        for book in books:
+            name = book.get_name()
+            graph = book.get_graph()
+            n2h[name] = float(book.get_number_hapax_legomenas()) / Graphs.size(graph)
+            n2b[name] = book
 
-                for n in Books.get_genre_enums():
-                        tbl += '\t\\begin{minipage}{.3\\textwidth}\\centering\n'
-                        tbl += '\t\t\\caption*{' + Books.get_genre_name(n) +'}\\\\ \\smallskip\n'
-                        tbl += '\t\t\\begin{tabular}{@{}p{1.65cm}p{1cm}@{}}\\toprule\n'
-                        tbl += '\t\t\\bf book  & $\\mathbf{HL}$\\\\ \\colrule\n'
+        file_name = os.path.join(Project.get_outdir(), 'legomenas.tex')
+        _file = open(file_name, "w")
 
-                        n2h_lst = sorted(n2h.items(), key=operator.itemgetter(1), reverse=True)
-                        for bname, hap in n2h_lst:
-                                book = n2b[bname]
-                                enum = book.get_genre()
-                                if enum.value == n:
-                                        nr_hap = book.get_number_hapax_legomenas()
-                                        nr_chars = Graphs.size(book.get_graph())
-                                        tbl += '\t\t\t' + book.get_label() + ' & '
-                                        tbl += '{0:.2f}'.format(float(nr_hap)/nr_chars)
-                                        tbl += ' \\\\ \n'
-                        tbl += '\t\t\\botrule \\end{tabular}\n'
-                        tbl += '\t\end{minipage}\n'
+        for name in Books.get_genre_enums():
+            tbl += '\t\\begin{minipage}{.3\\textwidth}\\centering\n'
+            tbl += '\t\t\\caption*{' + Books.get_genre_name(name) +'}\\\\ \\smallskip\n'
+            tbl += '\t\t\\begin{tabular}{@{}p{1.65cm}p{1cm}@{}}\\toprule\n'
+            tbl += '\t\t\\bf book  & $\\mathbf{HL}$\\\\ \\colrule\n'
+            n2h_lst = sorted(n2h.items(), key=operator.itemgetter(1), reverse=True)
+            for bname, _ in n2h_lst:
+                book = n2b[bname]
+                enum = book.get_genre()
+                if enum.value == name:
+                    nr_hap = book.get_number_hapax_legomenas()
+                    nr_chars = Graphs.size(book.get_graph())
+                    tbl += '\t\t\t' + book.get_label() + ' & '
+                    tbl += '{0:.2f}'.format(float(nr_hap)/nr_chars)
+                    tbl += ' \\\\ \n'
+            tbl += '\t\t\\botrule \\end{tabular}\n'
+            tbl += '\t\\end{minipage}\n'
 
-                f.write(tbl)
-                f.close()
-                print('* Wrote {}'.format(fn))
+        _file.write(tbl)
+        _file.close()
+        print ('* Wrote ' + file_name)
 
-        @staticmethod
-        def write_global_measures():
-                """Global measures for each character network are written as a table and
-                included in a LaTeX file named `global.tex` to be included in the
-                manuscript.
-                Clustering coefficient is calculated using _NetworkX_ library
-                [average clustering]https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.algorithms.cluster.average_clustering.html#networkx.algorithms.cluster.average_clustering
-                routine.  We also calculate
-                [density](https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.classes.function.density.html).
-                """
-                fn = os.path.join(Project.get_outdir(), 'global.tex')
+    @staticmethod
+    def write_global_measures():
+        """Global measures for each character network are written as a table and
+            included in a LaTeX file named `global.tex` to be included in the
+            manuscript.
+        """
+        file_name = os.path.join(Project.get_outdir(), 'global.tex')
 
-                f = open(fn, "w")
+        _file = open(file_name, "w")
 
-                f.write('''
-                {\small \\begin{tabular}{@{}cccccccc@{}}\\toprule
-                \hfil \\bf genre \hfil
-                & \\bf \hfil book \hfil
-                & \hfil\hphantom{00} $\mathbf n$ \hphantom{00}\hfil
-                & \hfil $\mathbf m$\hfil
-                & \hfil\hphantom{0} $\mathbf\\langle k\\rangle$\hphantom{0} \hfil
-                & \hfil\hphantom{0} $\mathbf \rho$ \hphantom{0}\hfil
-                & \hfil\hphantom{0} $\mathbf c$\hphantom{0}\hfil \\\\ \n''')
+        _file.write('''
+        {\\small \\begin{tabular}{@{}cccccccc@{}}\\toprule
+        \\hfil \\bf genre \\hfil
+        & \\bf \\hfil book \\hfil
+        & \\hfil\\hphantom{00} $\\mathbf n$ \\hphantom{00}\\hfil
+        & \\hfil $\\mathbf m$\\hfil
+        & \\hfil\\hphantom{0} $\\mathbf\\langle k\\rangle$\\hphantom{0} \\hfil
+        & \\hfil\\hphantom{0} $\\mathbf \\rho$ \\hphantom{0}\\hfil
+        & \\hfil\\hphantom{0} $\\mathbf c$\\hphantom{0}\\hfil \\\\ \n''')
 
-                for n in Books.get_genre_enums():
-                        ln = '\t\t\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(n)  + '}' + '\n'
+        for _id in Books.get_genre_enums():
+            line = '\t\t\\colrule\\multirow{4}{*}{'+ Books.get_genre_name(_id)  + '}' + '\n'
+            books = Books.get_books()
+            for book in books:
+                enum = book.get_genre()
+                if enum.value == _id:
+                    graph = book.get_graph()
+                    clustering_coeff, _ = gt_cluster.global_clustering(graph)
+                    density = Graphs.density(graph)
+                    (deg_avg, deg_stdev) = Graphs.degree_stat(graph)
+                    # OUTPUT
+                    line += '\t\t\t&\\emph{' + book.get_label() + '} & '
+                    line += str(len(list(graph.vertices()))) + ' & '
+                    line += str(len(list(graph.edges()))) + ' & '
+                    line += '{0:.2f}'.format(deg_avg) + '$\\pm$'
+                    line += '{0:.2f}'.format(deg_stdev) + ' & '
+                    line += '{0:.3f}'.format(density) + ' & '
+                    line += '{0:.3f}'.format(clustering_coeff) + ' & '
+                    line += "\\\\ \n"
+            _file.write(line)
+        _file.write("\t\t\\botrule\\end{tabular}}\n")
 
-                        books = Books.get_books()
-                        for book in books:
-                                enum = book.get_genre()
-                                if enum.value == n:
-                                        G = book.get_graph()
-                                        CC,_ = gt_cluster.global_clustering(G)
-                                        D = Graphs.density(G)
-                                        (deg_avg, deg_stdev) = Graphs.degree_stat(G)
+        _file.close()
+        print ('* Wrote ' + file_name)
 
-                                        # OUTPUT
-                                        ln += '\t\t\t&\emph{' + book.get_label() + '} & '
-                                        ln += str(len(list(G.vertices()))) + ' & '
-                                        ln += str(len(list(G.edges()))) + ' & '
-                                        ln += '{0:.2f}'.format(deg_avg) + '$\\pm$' + '{0:.2f}'.format(deg_stdev) + ' & '
-                                        ln += '{0:.3f}'.format(D) + ' & '
-                                        ln += '{0:.3f}'.format(CC) + ' & '
-                                        ln += "\\\\ \n"
-                        f.write(ln)
+    @staticmethod
+    def write_vertices_degree():
+        """Write the degree of the vertices of a graph to output."""
+        suf = '-vertex-degree.csv'
+        sep = ','
 
-                f.write("\t\t\\botrule\\end{tabular}}\n")
+        books = Books.get_books()
+        for book in books:
+            degs = {}
+            char_names = {}
+            graph = book.get_graph()
+            for vert in graph.vertices():
+                lab = graph.vertex_properties["label"][vert]
+                degs[lab] = vert.out_degree()
+                char_names[lab] = graph.vertex_properties["char_name"][vert]
+            file_name = book.get_name() + suf
+            file_name = os.path.join(Project.get_outdir(), file_name)
+            _file = open(file_name, 'w')
+            # Sort by degree in reverse order
+            labs = sorted(degs.items(), key=lambda x: x[1], reverse=True)
+            for lab, deg in labs:
+                _file.write(lab + sep + '\"'
+                            + char_names[lab] + '\"'
+                            + sep + str(deg) + '\n')
+            _file.close()
+            print ('* Wrote ' + file_name)
 
-                f.close()
-                print('* Wrote {}'.format(fn))
+    @staticmethod
+    def write_vertices_frequency():
+        """Write the frequency of vertices to output."""
+        suf = '-vertex-frequency.csv'
+        sep = ','
+        books = Books.get_books()
+        for book in books:
+            freqs = {}
+            char_names = {}
+            graph = book.get_graph()
+            file_name = book.get_name() + suf
+            file_name = os.path.join(Project.get_outdir(), file_name)
+            _file = open(file_name, 'w')
+            for vert in graph.vertices():
+                lab = graph.vertex_properties["label"][vert]
+                freqs[lab] = graph.vertex_properties["frequency"][vert]
+                char_names[lab] = graph.vertex_properties["char_name"][vert]
+            labs = sorted(freqs.items(), key=lambda x: x[1], reverse=True)
+            for lab, freq in labs:
+                _file.write(lab + sep + '\"' + char_names[lab] + '\"'+ sep + str(freq) + '\n')
+            _file.close()
+            print ('* Wrote ' + file_name)
 
-        @staticmethod
-        def write_vertices_degree():
-                suf = '-vertex-degree.csv'
-                sep = ','
+    @staticmethod
+    def write_edges_weight():
+        """Write the weight of edges to output."""
+        suf = '-edge-weight.csv'
+        sep = ','
+        lnk = '--'
+        books = Books.get_books()
+        for book in books:
+            weights = {}
+            char_names = {}
+            graph = book.get_graph()
+            file_name = book.get_name() + suf
+            file_name = os.path.join(Project.get_outdir(), file_name)
+            _file = open(file_name, 'w')
+            for edge in graph.edges():
+                src = edge.source()
+                dest = edge.target()
+                lab = graph.vertex_properties["label"][src]
+                lab += lnk + graph.vertex_properties["label"][dest]
+                weights[lab] = graph.edge_properties["weight"][edge]
+                char_names[lab] = '\"' + graph.vertex_properties["char_name"][src] + '\"' + lnk \
+                                  + '\"' + graph.vertex_properties["char_name"][dest] + '\"'
+            labs = sorted(weights.items(), key=lambda x: x[1], reverse=True)
+            for lab, weight in labs:
+                _file.write(lab + sep + char_names[lab] + sep + str(weight) + '\n')
+            _file.close()
+            print ('* Wrote ' + file_name)
 
-                books = Books.get_books()
-                for book in books:
-                        degs = {}
-                        char_names = {}
-                        G = book.get_graph()
-                        for v in G.vertices():
-                                lab = G.vertex_properties["label"][v]
-                                degs[lab] = v.out_degree()
-                                char_names[lab] = G.vertex_properties["char_name"][v]
-
-                        fn = book.get_name() + suf
-                        fn = os.path.join(Project.get_outdir(), fn)
-                        f = open(fn, 'w')
-
-                        # Sort by degree in reverse order
-                        labs=sorted(degs.items(), key=lambda x: x[1], reverse=True)
-                        for lab, deg in labs:
-                                f.write(lab + sep + '\"'
-                                        + char_names[lab] + '\"'
-                                        + sep + str(deg) + '\n')
-
-                        f.close()
-                        print('* Wrote {}'.format(fn))
-
-        @staticmethod
-        def write_vertices_frequency():
-                suf = '-vertex-frequency.csv'
-                sep = ','
-
-                books = Books.get_books()
-                for book in books:
-                        freqs = {}
-                        char_names = {}
-                        G = book.get_graph()
-
-                        fn = book.get_name() + suf
-                        fn = os.path.join(Project.get_outdir(), fn)
-                        f = open(fn, 'w')
-
-                        for v in G.vertices():
-                                lab = G.vertex_properties["label"][v]
-                                freqs[lab] = G.vertex_properties["frequency"][v]
-                                char_names[lab] = G.vertex_properties["char_name"][v]
-
-                        labs=sorted(freqs.items(), key=lambda x: x[1], reverse=True)
-                        for lab, freq in labs:
-                                f.write(lab + sep + '\"' + char_names[lab] + '\"'+ sep + str(freq) + '\n')
-
-                        f.close()
-                        print('* Wrote {}'.format(fn))
-
-        @staticmethod
-        def write_edges_weight():
-                suf = '-edge-weight.csv'
-                sep = ','
-                lnk = '--'
-
-                books = Books.get_books()
-                for book in books:
-                        ws = {}
-                        char_names = {}
-                        G = book.get_graph()
-
-                        fn = book.get_name() + suf
-                        fn = os.path.join(Project.get_outdir(), fn)
-                        f = open(fn, 'w')
-
-                        for e in G.edges():
-                                u = e.source()
-                                v = e.target()
-                                lab = G.vertex_properties["label"][u] + lnk + G.vertex_properties["label"][v]
-                                ws[lab] = G.edge_properties["weight"][e]
-                                char_names[lab] = '\"' + G.vertex_properties["char_name"][u] + '\"' + lnk \
-                                                  + '\"' + G.vertex_properties["char_name"][v] + '\"'
-
-                        labs=sorted(ws.items(), key=lambda x: x[1], reverse=True)
-                        for lab,w in labs:
-                                f.write(lab + sep + char_names[lab] + sep + str(w) + '\n')
-                        f.close()
-                        print('* Wrote {}'.format(fn))
-
-        @staticmethod
-        def couroutine_write_supplementary_material(filename):
-                xlbl = '' # x label
-                ylbl = '' # y label
-                fn = os.path.join('preprint/', filename + '.tex')
-                f = open(fn, 'w')
-                f.write('\pagebreak\\section*{Supplementary Material}\n')
-
-                while True:
-                        (key, content) = yield # receive the message as a tuple
-
-                        if key == 'begin_table':
-                                f.write('\\begin{table}[ht]\n')
-                                f.write('\t\\begin{center} \n')
-                                f.write('\t\\tbl{' + content + ' $p$-values.}\n')
-                                f.write('{') # OPEN BRACKET
-                        elif key == 'begin_subtable':
-                                f.write('\\begin{minipage}{' + content + '\\textwidth}\n')
-                        elif key == 'xlabel':
-                                xlbl = content
-                        elif key == 'ylabel':
-                                ylbl = content
-                                f.write('\\hspace{.7cm}\\hbox{' + xlbl + '$\\times$' + ylbl + '} \\par \\smallskip\n')
-                        elif key == 'begin_data':
-                                f.write('\t\\begin{tabular}{@{}p{1.6cm}p{1.3cm}@{}} \\toprule \n')
-                                f.write('\t\t\\bf book & $\\mathbf p$ \\\\ \\colrule \n')
-                        elif key == 'book_name':
-                                f.write('\t\t' + content + ' & ')
-                        elif key == 'pvalue':
-                                f.write(content + ' \\\\ \n')
-                        elif key == 'end_subtable':
-                                f.write('\\end{minipage}\n')
-                        elif key == 'end_data':
-                                f.write('\t\\botrule\\end{tabular}')
-                        elif key == 'end_table':
-                                f.write('\n}\n') # CLOSE BRACKET
-                                f.write('\t\\end{center}\n')
-                                f.write('\\end{table}\n')
-                        elif key == 'CLOSE_FILE':
-                                f.close()
-                                print('* Wrote {}'.format(fn))
-                        else:
-                                print('\n******** ERROR: wrong key: {} ********'.format(key))
-                                exit()
-                                
+    @staticmethod
+    def couro_write_suppl(filename):
+        """Write supplementary material like p-values to output.
+        Here we use couroutines to receive values from parser."""
+        xlbl = '' # x label
+        ylbl = '' # y label
+        file_name = os.path.join('preprint/', filename + '.tex')
+        _file = open(file_name, 'w')
+        _file.write('\\pagebreak\\section*{Supplementary Material}\n')
+        while True:
+            (key, content) = yield # receive the message as a tuple
+            if key == 'begin_table':
+                _file.write('\\begin{table}[ht]\n')
+                _file.write('\t\\begin{center} \n')
+                _file.write('\t\\tbl{' + content + ' $p$-values.}\n')
+                _file.write('{') # OPEN BRACKET
+            elif key == 'begin_subtable':
+                _file.write('\\begin{minipage}{' + content + '\\textwidth}\n')
+            elif key == 'xlabel':
+                xlbl = content
+            elif key == 'ylabel':
+                ylbl = content
+                _file.write('\\hspace{.7cm}\\hbox{' + xlbl + '$\\times$' + ylbl +
+                            '} \\par \\smallskip\n')
+            elif key == 'begin_data':
+                _file.write('\t\\begin{tabular}{@{}p{1.6cm}p{1.3cm}@{}} \\toprule \n')
+                _file.write('\t\t\\bf book & $\\mathbf p$ \\\\ \\colrule \n')
+            elif key == 'book_name':
+                _file.write('\t\t' + content + ' & ')
+            elif key == 'pvalue':
+                _file.write(content + ' \\\\ \n')
+            elif key == 'end_subtable':
+                _file.write('\\end{minipage}\n')
+            elif key == 'end_data':
+                _file.write('\t\\botrule\\end{tabular}')
+            elif key == 'end_table':
+                _file.write('\n}\n') # CLOSE BRACKET
+                _file.write('\t\\end{center}\n')
+                _file.write('\\end{table}\n')
+            elif key == 'CLOSE_FILE':
+                _file.close()
+                print ('* Wrote ' + file_name)
+            else:
+                print ('\n******** ERROR: wrong key: '+ key +' ********')
+                exit()
