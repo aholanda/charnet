@@ -3,7 +3,7 @@
     are implemented to allow data handling."""
 
 # LOCAL
-from charnet.graphs import Graphs
+from  .graphs import Graphs
 
 import logging
 from enum import Enum
@@ -426,7 +426,7 @@ class Newton(Book, Charnet):
     def __str__(self):
         return 'newton'
     def get_genre(self):
-        return BookGenre.BIOGRAPH
+        return BookGenre.BIOGRAPHY
     def get_vertex_color(self):
         """Return the color to fill the vertex."""
         return 'tan'
