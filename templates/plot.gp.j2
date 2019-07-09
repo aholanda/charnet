@@ -18,8 +18,8 @@ R = "{{ rvalue }}"
 P = "{{ pvalue }}"
 
 # LABELS redefinition
-XLABEL = "set xlabel '{\\lblfmt ${{ plotinfo.xlabel }}}$'"
-YLABEL = "set ylabel '{\\lblfmt ${{ plotinfo.ylabel }}}$'"
+XLABEL = "set xlabel '{\\lblfmt ${{ PlotInfo.xlabel }}}$'"
+YLABEL = "set ylabel '{\\lblfmt ${{ PlotInfo.ylabel }}}$'"
 
 # labels for the fit
 set label 1 sprintf("\\scriptsize $\\mathbf{f(x)= %dx %1.2f}$", @A, @B) at graph xlabelpos,(ylabelpos)
@@ -42,7 +42,7 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 
 f(x) = {{ slope }}*x + {{ intercept }}
 
-{% for datainfo in plotinfo.datainfos %}
+{% for datainfo in PlotInfo.datainfos %}
 {% if loop.index == 1 %}plot {% else %}		{% endif %}"{{ datainfo.filename }}" using 2:3:(LabelFmt($1)) with labels point pt 7 ps .75 offset {{ datainfo.labelpt_xoffset }},{{ datainfo.labelpt_yoffset }}  notitle, {% if loop.index != loop.length %}\{% endif %}{% endfor %} f(x) w l lt 2 dt 2 lc rgb 'black' notitle
 
 

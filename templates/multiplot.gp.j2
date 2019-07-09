@@ -10,8 +10,8 @@ nrows = {{ nrows }}
 # MACROS
 {% if plot_measure == 'assortativity' or plot_measure == 'cdf' %}
 # redefine {X,Y}LABEL to support math symbol in LaTeX
-XLABEL = "set xlabel '\\lblfmt ${{ plotinfo.xlabel }}$'"
-YLABEL = "set ylabel '\\lblfmt ${{ plotinfo.ylabel }}$' offset ylabel_xoff,0"
+XLABEL = "set xlabel '\\lblfmt ${{ PlotInfo.xlabel }}$'"
+YLABEL = "set ylabel '\\lblfmt ${{ PlotInfo.ylabel }}$' offset ylabel_xoff,0"
 {% endif %}
 
 set mxtics 10
@@ -68,7 +68,7 @@ hspace = 1 - 6*spc
 
 set multiplot layout {{ nrows }},{{ ncols }} rowsfirst
 
-{% for datainfo in plotinfo.datainfos %}
+{% for datainfo in PlotInfo.datainfos %}
 # set x
 
 {% if plot_measure == 'cdf' %}

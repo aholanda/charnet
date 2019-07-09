@@ -6,7 +6,7 @@ set macros  # enable macros
 set term epslatex header \
     "\\newcommand{\\lblfmt}[0]{\\footnotesize}"
 
-path = "{{ plotinfo.title }}{{ extension }}"
+path = "{{ PlotInfo.title }}{{ extension }}"
 set output path
 print "-> ", path
 
@@ -29,8 +29,8 @@ ylabel_xoff = 3
 ylabel_xoff = 3
 {% endif %}
 
-XLABEL = "set xlabel '\\lblfmt {{ plotinfo.xlabel }}' offset 0,.25,0"
-YLABEL = "set ylabel '\\lblfmt {{ plotinfo.ylabel }}' offset ylabel_xoff,0,0"
+XLABEL = "set xlabel '\\lblfmt {{ PlotInfo.xlabel }}' offset 0,.25,0"
+YLABEL = "set ylabel '\\lblfmt {{ PlotInfo.ylabel }}' offset ylabel_xoff,0,0"
 
 # bounds
 xmin = ymin = 0
