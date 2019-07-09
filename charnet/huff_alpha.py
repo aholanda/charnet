@@ -21,6 +21,7 @@ def __gen_fn(prefix, suffix):
     return DIR + prefix + SUFFIX[suffix]
 
 def frequency_test(str_bin_seq):
+    """Calculate the frequency of the string in the sequence."""
     '''Frequency (Monobit) test'''
     s_val = 0
     eps = str_bin_seq
@@ -31,118 +32,126 @@ def frequency_test(str_bin_seq):
     s_obs = math.fabs(s_val) / math.sqrt(len_str)
     return math.erfc(s_obs/math.sqrt(2))
 
-
 class NodeTree(object):
+    """Class to represent a tree node."""
     def __init__(self, left=None, right=None):
+        """Initialize a new node."""
         self.left = left
         self.right = right
 
     def children(self):
+        """Children of a node."""
         return (self.left, self.right)
 
     def nodes(self):
+        """Nodes of the tree."""
         return (self.left, self.right)
 
     def __str__(self):
+        """Convert class information to string."""
         return "%s_%s" % (self.left, self.right)
 
 ## Tansverse the NodeTress in every possible way to get codings
-def huffman_code_tree(node, left=True, binString=""):
-    if type(node) is str:
-        return {node: binString}
-    (l, r) = node.children()
-    d = dict()
-    d.update(huffman_code_tree(l, True, binString + "0"))
-    d.update(huffman_code_tree(r, False, binString + "1"))
-    return d
+def huffman_code_tree(node, left=True, bin_string=""):
+    """Produce Huffman code tree."""
+    if isinstance(node) is str:
+        return {node: bin_string}
+    (left, right) = node.children()
+    _dict = dict()
+    _dict.update(huffman_code_tree(left, True, bin_string + "0"))
+    _dict.update(huffman_code_tree(right, False, bin_string + "1"))
+    return _dict
 
 def create_tree(nodes):
+    """Produce the tree according to the entry."""
     while len(nodes) > 1:
-        key1, c1 = nodes[-1]
-        key2, c2 = nodes[-2]
+        key1, bit1 = nodes[-1]
+        key2, bit2 = nodes[-2]
         nodes = nodes[:-2]
         node = NodeTree(key1, key2)
-        nodes.append((node, c1 + c2))
+        nodes.append((node, bit1 + bit2))
         # Re-sort the list
         nodes = sorted(nodes, key=lambda x: x[1], reverse=True)
     return nodes
 
 def write_huffman_code(book_name, which):
+    """Produce Huffman code."""
     idx2freq = {}
-    fn = __gen_fn(book_name, which)
-    f = open(fn, 'r')
-    for ln in f:
-        ln = ln.rstrip('\r\n')
-        (idx, freq) = ln.split(',', 1)
+    file_name = __gen_fn(book_name, which)
+    _file = open(file_name, 'r')
+    for line in _file:
+        line = line.rstrip('\r\n')
+        (idx, freq) = line.split(',', 1)
         idx2freq[idx] = int(freq)
     nodes = sorted(idx2freq.items(), key=lambda x: x[1], reverse=True)
     if DEBUG:
-        print ' Index | {} '.format(which)
+        print (' Index | ' + which)
         for idx, freq in nodes:
-            print " %4r | %d" % (idx, freq)
+            print (" %4r | %d" % (idx, freq))
     tree = create_tree(nodes)
     huffman_code = huffman_code_tree(tree[0][0])
     if DEBUG:
-        print' Index | {}  | Huffman code '.format(which)
-        print"-----------------------------"
+        print (' Inde   x | ' + which +  '  | Huffman code ')
+        print ('-----------------------------')
         for idx, freq in nodes:
-            print "%-4r | %5d | %12s" % (idx, freq, huffman_code[idx])
-    fn = __gen_fn(book_name, 'h' + which)
-    f = open(fn, 'w')
+            print ("%-4r | %5d | %12s" % (idx, freq, huffman_code[idx]))
+    file_name = __gen_fn(book_name, 'h' + which)
+    _file = open(file_name, 'w')
     seq = ''
     for idx, freq in nodes:
         seq += huffman_code[idx]
-    f.write(seq)
-    f.close()
-    print '* Wrote {}'.format(fn)
+    _file.write(seq)
+    _file.close()
+    print ('* Wrote ' + file_name)
     p_value = frequency_test(seq)
-    print '* {} Test for {}: p-value={}'.format(which, book_name, p_value)
+    print ('* ' + which + ' Test for ' + book_name + ': p-value=' + p_value)
 
 def write_data():
+    """Write Huffman data to output."""
     books = Books.get_books()
-    for b in books:
+    for book in books:
         idx2freq = {} # Map character index to its frequency
         idx2deg = {} # Map character index to vertex degree
-        bname = b.get_name()
-        fn = __gen_fn(bname, 'idx')
-        f = open(fn, 'w')
-        G = b.get_graph()
+        bname = book.get_name()
+        file_name = __gen_fn(bname, 'idx')
+        _file = open(file_name, 'w')
+        graph = book.get_graph()
         idx = 0
-        for v in G.vertices():
+        for vert in graph.vertices():
             idx += 1
             idx_str = str(idx)
-            charname = G.vertex_properties["char_name"][v]
-            n = G.vertex_properties["frequency"][v]
-            deg = G.vertex(v).out_degree()
-            f.write(idx_str + ',' + charname + '\n')
-            idx2freq[idx_str] = n
+            charname = graph.vertex_properties["char_name"][vert]
+            n_verts = graph.vertex_properties["frequency"][vert]
+            deg = graph.vertex(vert).out_degree()
+            _file.write(idx_str + ',' + charname + '\n')
+            idx2freq[idx_str] = n_verts
             idx2deg[idx_str] = deg
-        f.close()
-        print '* Wrote {}'.format(fn)
+        _file.close()
+        print ('* Wrote ' + file_name)
         # TEST FREQUENCY
-        fn = __gen_fn(bname, 'freq')
-        f = open(fn, 'w')
+        file_name = __gen_fn(bname, 'freq')
+        _file = open(file_name, 'w')
         for idx, freq in sorted(idx2freq.items(), key=lambda x: x[1]):
-            f.write(str(idx) + ',' + str(freq) + '\n')
-        f.close()
-        print '* Wrote {}'.format(fn)
+            _file.write(str(idx) + ',' + str(freq) + '\n')
+        _file.close()
+        print ('* Wrote ' + file_name)
         write_huffman_code(bname, 'freq')
         # TEST DEGREE
-        fn = __gen_fn(bname, 'deg')
-        f = open(fn, 'w')
+        file_name = __gen_fn(bname, 'deg')
+        _file = open(file_name, 'w')
         for idx, deg in sorted(idx2deg.items(), key=lambda x: x[1]):
-            f.write(str(idx) + ',' + str(deg) + '\n')
-        f.close()
-        print '* Wrote {}'.format(fn)
+            _file.write(str(idx) + ',' + str(deg) + '\n')
+        _file.close()
+        print ('* Wrote ' + file_name)
         write_huffman_code(bname, 'deg')
 
-
 def usage(prg):
-    print '''
+    """How to use the program."""
+    print ('''
     Usage: {} -0
     Where:
     -0   write data to output files in /tmp directory.
-    '''.format(prg)
+    '''.format(prg))
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
