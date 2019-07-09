@@ -147,7 +147,7 @@ class Fits(object):
     def check_label(label):
         """Verify if the label exists."""
         if label not in Fits.parms:
-            print ('Wrong book name {}'.format(label))
+            print('Wrong book name {}'.format(label))
             exit()
     @staticmethod
     def kmin(name):
