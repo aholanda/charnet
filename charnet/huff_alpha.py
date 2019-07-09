@@ -1,6 +1,6 @@
+""""Experimental tests using Huffman code to separate genres
+according to Huffman tree properties."""
 #!/usr/bin/python3
-
-# Experimental script to test some ideas
 
 import sys
 import math
@@ -22,7 +22,7 @@ def __gen_fn(prefix, suffix):
 
 def frequency_test(str_bin_seq):
     """Calculate the frequency of the string in the sequence."""
-    '''Frequency (Monobit) test'''
+    # Frequency (Monobit) test
     s_val = 0
     eps = str_bin_seq
     len_str = len(eps)
