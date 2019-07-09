@@ -1,5 +1,7 @@
-"""Point entry of execution."""
 #!/usr/bin/env python3
+
+"""Point entry of execution."""
+
 import os.path
 import sys
 import logging
@@ -131,7 +133,7 @@ if __name__ == "__main__":
             elif OPT == "-h" or OPT == "--help": # help make exit
                 usage()
             else:
-                LOGGER.error('* Unknown OPTION:', OPT)
+                LOGGER.error('* Unknown OPTION: %s', OPT)
                 usage()
             ARG_NO += 1
 else:
