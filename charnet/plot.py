@@ -46,7 +46,7 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name,
         _xs.append(x_coords[i])
         _ys.append(y_coords[i])
     _file.close()
-    print('* mode_str + fn')
+    print('* Wrote ' + file_name)
     return _xs, _ys, file_name
 
 class Coordinates(object):
