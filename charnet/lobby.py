@@ -4,7 +4,7 @@ import os.path
 
 import logging
 
-from charnet.books import Project
+from .books import *
 
 # change INFO to DEBUG to write to "lobby.log" file
 LOGGER = logging.getLogger(__name__)
