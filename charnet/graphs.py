@@ -8,7 +8,7 @@ import graph_tool as gt
 import graph_tool.centrality as gt_central
 
 # LOCAL
-from lobby import *
+from .lobby import lobby
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
