@@ -32,7 +32,7 @@ def frequency_test(str_bin_seq):
     s_obs = math.fabs(s_val) / math.sqrt(len_str)
     return math.erfc(s_obs/math.sqrt(2))
 
-class NodeTree(object):
+class NodeTree():
     """Class to represent a tree node."""
     def __init__(self, left=None, right=None):
         """Initialize a new node."""
