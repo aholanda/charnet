@@ -5,17 +5,18 @@ import os
 
 import numpy as np
 
-from jinja2 import Environment, FileSystemLoader
-
 from scipy.stats import pearsonr
 from scipy.optimize import curve_fit
+
+from jinja2 import Environment, FileSystemLoader
 
 import graph_tool.clustering as gt_cluster
 
 # LOCAL
-from charnet.books import Books, Project
 from charnet.graphs import Graphs, Measure
-from charnet.formatting import Formatting
+from . import formatting as fmt
+from . import books
+from . import config as cfg
 
 SEP = '_'
 
@@ -28,7 +29,7 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name,
     ylabel = Measure.get_label(ymeasure_num)
     (_xs, _ys) = ([], [])
     label = ''
-    file_name = os.path.join(Project.get_outdir(), xlabel + SEP + ylabel \
+    file_name = os.path.join(cfg.Project.get_data_dir(), xlabel + SEP + ylabel \
                              + SEP + book_name + extension)
     _file = open(file_name, 'w')
     for i in range(len(x_coords)):
@@ -49,7 +50,7 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name,
     print('* Wrote ' + file_name)
     return _xs, _ys, file_name
 
-class Coordinates(object):
+class Coordinates():
     '''Wrap coordinates x, y, z (optional).'''
     def __init__(self, x, y, z=0.0):
         self.x_coord = x
@@ -79,7 +80,7 @@ class Coordinates(object):
             print('Unknown axis {}'.format(axis))
             exit()
 
-class DataInfo(object):
+class DataInfo():
     """Class to wrap main data."""
     def __init__(self, title, filename, rvalue=0.0,
                  pvalue=0.0, slope=0.0, intercept=0.0,
@@ -96,13 +97,13 @@ class DataInfo(object):
         self.labelpt_yoffset = yoffset
         self.alpha = alpha
 
-class PlotInfo(object):
+class PlotInfo():
     """Class to wrap information for plotting."""
     def __init__(self, title, xlabel, ylabel, datainfos=None):
         self.title = title
         self.xlabel = xlabel
         self.ylabel = ylabel
-        if datainfos == None:
+        if datainfos is None:
             self.datainfos = []
 
 def linear_func(x_coord, slope, offset):
@@ -123,7 +124,7 @@ def run_command(cmd, filename):
 
 # These values were obtained running Matlab scripts from
 # http://tuvalu.santafe.edu/~aaronc/powerlaws/{plfit,plpva}.m
-class Fits(object):
+class Fits():
     """Class with functions to perform a curve fitting."""
     # label: [kmin, alpha, p-value]
     parms = {
@@ -164,7 +165,7 @@ class Fits(object):
         """Returns p-value from fitting."""
         Fits.check_label(name)
         return Fits.parms[name][2]
-class Plot(object):
+class Plot():
     """Class with static functions to plot graphics used in the paper."""
     # significance level for statistical tests
     P = 0.05
@@ -178,7 +179,7 @@ class Plot(object):
     # data file extension
     DATA_EXT = '.dat'
     # gnuplot common settings
-    GP_SET_PATH = os.path.join(Project.get_outdir(), 'settings.gp')
+    GP_SET_PATH = os.path.join(cfg.Project.get_data_dir(), 'settings.gp')
     # Graphs
     GS = []
     #
@@ -190,9 +191,9 @@ class Plot(object):
     @staticmethod
     def init():
         """Initialize environment for plotting. Remove old files. """
-        tmpdir = Project.get_outdir()
+        tmpdir = cfg.Project.get_out_dir()
         # Initialize graphs.
-        Plot.BOOKS = Books.get_books()
+        Plot.BOOKS = books.Books.get_books()
         for book in Plot.BOOKS:
             graph = book.get_graph()
             Plot.GS.append(graph)
@@ -254,14 +255,14 @@ class Plot(object):
             _x_coords, _y_coords, file_name = \
                     dump_book_data(xmeasure_num, ymeasure_num,
                                    book_name, Plot.DATA_EXT, [x_coord], [y_coord],
-                                   book_genre=Books.get_genre_label(book))
+                                   book_genre=books.Books.get_genre_label(book))
             plot_info.datainfos.append(DataInfo(book.get_name(), file_name,
                                                 xoffset=offs[book_name][0],
                                                 yoffset=offs[book_name][1]))
         (r_val, p_val) = pearsonr(x_coords, y_coords)
         popt, _ = curve_fit(linear_func, x_coords, y_coords)
         test_ceil(x_coords, y_coords, xmax, ymax)
-        filename = os.path.join(Project.get_outdir(), plot_info.title + Plot.PLT_EXT)
+        filename = os.path.join(cfg.Project.get_data_dir(), plot_info.title + Plot.PLT_EXT)
         with open(filename, 'w') as file_handle:
             file_handle.write(template.render(
                 plot_measure='DxCC',
@@ -270,7 +271,7 @@ class Plot(object):
                 PlotInfo=plot_info,
                 xmax=xmax,
                 ymax=ymax,
-                outdir=Project.get_outdir(),
+                outdir=cfg.Project.get_data_dir(),
                 rvalue=r_val,
                 pvalue=p_val,
                 slope=popt[0],
@@ -316,7 +317,7 @@ class Plot(object):
                 test_ceil(x_coords, y_coords, xmax, ymax)
             supp.send(('end_data', ''))
             supp.send(('end_subtable', ''))
-            filename = os.path.join(Project.get_outdir(), plot_info.title + Plot.PLT_EXT)
+            filename = os.path.join(cfg.Project.get_data_dir(), plot_info.title + Plot.PLT_EXT)
             with open(filename, 'w') as file_handle:
                 file_handle.write(template.render(
                     plot_measure='centralities',
@@ -326,7 +327,7 @@ class Plot(object):
                     PlotInfo=plot_info,
                     xmax=xmax,
                     ymax=ymax,
-                    outdir=Project.get_outdir(),
+                    outdir=cfg.Project.get_data_dir(),
                     nrows=4,
                     ncols=3,
                 ))
@@ -352,7 +353,7 @@ class Plot(object):
                                                            xx_coords, y_avgs)
             plot_info.datainfos.append(DataInfo(book.get_name(), file_name))
             test_ceil(x_coords, y_coords, xmax, ymax)
-        filename = os.path.join(Project.get_outdir(), plot_info.title + Plot.PLT_EXT)
+        filename = os.path.join(cfg.Project.get_out_dir(), plot_info.title + Plot.PLT_EXT)
         with open(filename, 'w') as file_handle:
             file_handle.write(template.render(
                 plot_measure='assortativity',
@@ -360,7 +361,7 @@ class Plot(object):
                 PlotInfo=plot_info,
                 xmax=xmax,
                 ymax=ymax,
-                outdir=Project.get_outdir(),
+                outdir=cfg.Project.get_out_dir,
                 nrows=4,
                 ncols=3,
             ))
@@ -393,7 +394,8 @@ class Plot(object):
             pval = Fits.pvalue(book_name)
             graph = Plot.GS[i]
             # store degrees to run fitting algorithm
-            file_name = os.path.join(Project.get_outdir(), book_name + '-degrees' + Plot.DATA_EXT)
+            file_name = os.path.join(cfg.Project.get_data_dir(),
+                                     book_name + '-degrees' + Plot.DATA_EXT)
             _file = open(file_name, 'w')
             for vert in graph.vertices():
                 k = vert.out_degree()
@@ -435,7 +437,7 @@ class Plot(object):
         supp.send(('end_data', ''))
         supp.send(('end_subtable', ''))
         supp.send(('end_table', ''))
-        filename = os.path.join(Project.get_outdir(), plot_info.title + Plot.PLT_EXT)
+        filename = os.path.join(cfg.Project.get_data_dir(), plot_info.title + Plot.PLT_EXT)
         with open(filename, 'w') as file_handle:
             file_handle.write(template.render(
                 plot_measure='cdf',
@@ -444,7 +446,7 @@ class Plot(object):
                 PlotInfo=plot_info,
                 xmax=xmax,
                 ymax=ymax,
-                outdir=Project.get_outdir(),
+                outdir=cfg.Project.get_data_dir(),
                 nrows=4,
                 ncols=3,
             ))
@@ -456,7 +458,7 @@ class Plot(object):
             Use a couroutine from Formatting to send parsed
             values to output."""
         # Prepare to write supplemental material sending info to couroutine
-        supp = Formatting.couro_write_suppl('suppl')
+        supp = fmt.Formatting.couro_write_suppl('suppl')
         next(supp)
         Plot.init()
         Plot.do_centralities(supp)
