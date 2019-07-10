@@ -42,7 +42,7 @@ class Measure(Enum):
         assert lab
         return lab
 
-class Graphs(object):
+class Graphs():
     """Handle all graphs in one place."""
     centrality_nums = [
         Measure.BETWEENNESS,

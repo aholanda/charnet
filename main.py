@@ -74,7 +74,7 @@ def usage():
     \t Print this help message.
     One of the flags listed above must be selected, with exception of the \"-o\" or
     \"--output-dir\" that changes the program behavior and it is optional.
-    '''.format(dir=Project.get_outdir()))
+    '''.format(dir=config.OUTPUT_DIRECTORY))
     exit()
 def print_out_banner(directory):
     """Print a header and write the directory where output will be send."""
@@ -138,7 +138,7 @@ if __name__ == "__main__":
             ARG_NO += 1
 else:
     usage()
-print_out_banner(Project.get_outdir())
+print_out_banner(config.OUTPUT_DIRECTORY)
 for ARG_NO in range(1, len(OPTS)):
     if OPTS[ARG_NO] is True:
         LOGGER.info(HEADERS[ARG_NO])

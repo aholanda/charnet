@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0] - 2019-07-10
+- Fixes related with python code standard with the help of pylint3 tool.
+- Add description of most of classes, methods and functions.
+- Substitute plotting library from python matplotlib to gnuplot.
+- Add couroutines to generate supplementary material that contains 
+  significance levels for the tests applied in the dataset.
+- Fix syntax errors in LaTeX generated ouput.
+
 ## [v2.0]
 - This version was improved compared with version sent to International Journal of Modern Physics C.
   Assortativity mixing formula was fixed and in the Discussion the style of book names was standardized.
@@ -9,6 +17,7 @@
   the presentation in LaTeX were written.
 - Add [`preprint`](preprint/) that is a sub-module pointing to an Overleaf git repository where
   the preprint in LaTeX was written.
+
 ## [v1.2] - 2018-07-05
 ### Added
 - [`data/apollonius.dat`](data/apollonius.dat) - the data from book "Apollonius of Tyana" was added.

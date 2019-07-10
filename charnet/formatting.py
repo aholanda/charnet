@@ -7,10 +7,10 @@ import graph_tool.clustering as gt_cluster
 
 # LOCAL
 from charnet.graphs import Graphs
-from charnet.books import Project
 from charnet.books import Books
+from . import config as cfg
 
-class Formatting(object):
+class Formatting():
     """Main class to format output."""
     suppl_f = None # file to write supplementary material
 
@@ -27,14 +27,13 @@ class Formatting(object):
         n2b = {} # map book name to book object
         tbl = "" # store table content string
         # Sort books by hapax
-        books = Books.get_books()
-        for book in books:
+        for book in Books.get_books():
             name = book.get_name()
             graph = book.get_graph()
             n2h[name] = float(book.get_number_hapax_legomenas()) / Graphs.size(graph)
             n2b[name] = book
 
-        file_name = os.path.join(Project.get_outdir(), 'legomenas.tex')
+        file_name = os.path.join(cfg.Project.get_out_dir(), 'legomenas.tex')
         _file = open(file_name, "w")
 
         for name in Books.get_genre_enums():
@@ -65,7 +64,7 @@ class Formatting(object):
             included in a LaTeX file named `global.tex` to be included in the
             manuscript.
         """
-        file_name = os.path.join(Project.get_outdir(), 'global.tex')
+        file_name = os.path.join(cfg.Project.get_out_dir(), 'global.tex')
 
         _file = open(file_name, "w")
 
@@ -108,8 +107,6 @@ class Formatting(object):
     def write_vertices_degree():
         """Write the degree of the vertices of a graph to output."""
         suf = '-vertex-degree.csv'
-        sep = ','
-
         books = Books.get_books()
         for book in books:
             degs = {}
@@ -120,14 +117,14 @@ class Formatting(object):
                 degs[lab] = vert.out_degree()
                 char_names[lab] = graph.vertex_properties["char_name"][vert]
             file_name = book.get_name() + suf
-            file_name = os.path.join(Project.get_outdir(), file_name)
+            file_name = os.path.join(cfg.Project.get_out_dir(), file_name)
             _file = open(file_name, 'w')
             # Sort by degree in reverse order
             labs = sorted(degs.items(), key=lambda x: x[1], reverse=True)
             for lab, deg in labs:
-                _file.write(lab + sep + '\"'
+                _file.write(lab +  cfg.CSV_FIELDS_SEPARATOR + '\"'
                             + char_names[lab] + '\"'
-                            + sep + str(deg) + '\n')
+                            +  cfg.CSV_FIELDS_SEPARATOR + str(deg) + '\n')
             _file.close()
             print('* Wrote ' + file_name)
 
@@ -142,7 +139,7 @@ class Formatting(object):
             char_names = {}
             graph = book.get_graph()
             file_name = book.get_name() + suf
-            file_name = os.path.join(Project.get_outdir(), file_name)
+            file_name = os.path.join(cfg.Project.get_out_dir(), file_name)
             _file = open(file_name, 'w')
             for vert in graph.vertices():
                 lab = graph.vertex_properties["label"][vert]
@@ -158,27 +155,26 @@ class Formatting(object):
     def write_edges_weight():
         """Write the weight of edges to output."""
         suf = '-edge-weight.csv'
-        sep = ','
-        lnk = '--'
-        books = Books.get_books()
-        for book in books:
+        for book in Books.get_books():
             weights = {}
             char_names = {}
             graph = book.get_graph()
-            file_name = book.get_name() + suf
-            file_name = os.path.join(Project.get_outdir(), file_name)
+            file_name = os.path.join(cfg.Project.get_out_dir(),
+                                     book.get_name() + suf)
             _file = open(file_name, 'w')
             for edge in graph.edges():
                 src = edge.source()
                 dest = edge.target()
                 lab = graph.vertex_properties["label"][src]
-                lab += lnk + graph.vertex_properties["label"][dest]
+                lab += cfg.GRAPH_EDGE_SYMBOL + graph.vertex_properties["label"][dest]
                 weights[lab] = graph.edge_properties["weight"][edge]
-                char_names[lab] = '\"' + graph.vertex_properties["char_name"][src] + '\"' + lnk \
+                char_names[lab] = '\"' + graph.vertex_properties["char_name"][src] + '\"' \
+                                  +  cfg.GRAPH_EDGE_SYMBOL \
                                   + '\"' + graph.vertex_properties["char_name"][dest] + '\"'
             labs = sorted(weights.items(), key=lambda x: x[1], reverse=True)
             for lab, weight in labs:
-                _file.write(lab + sep + char_names[lab] + sep + str(weight) + '\n')
+                _file.write(lab +  cfg.CSV_FIELDS_SEPARATOR + char_names[lab] \
+                            +  cfg.CSV_FIELDS_SEPARATOR + str(weight) + '\n')
             _file.close()
             print('* Wrote ' + file_name)
 
