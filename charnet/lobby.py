@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+
 """This module has the function to calculate Lobby centrality."""
 
 import os.path
 
 import logging
 
-from .books import Project
+from . import config as cfg
 
 # change INFO to DEBUG to write to "lobby.log" file
 LOGGER = logging.getLogger(__name__)
@@ -12,7 +14,7 @@ LOGGER.setLevel(logging.INFO)
 
 HANDLER = None
 if LOGGER.getEffectiveLevel() == logging.DEBUG:
-    HANDLER = logging.FileHandler(os.path.join(Project.get_outdir(), 'lobby.log'))
+    HANDLER = logging.FileHandler(os.path.join(cfg.Project.get_out_dir(), 'lobby.log'))
     FORMATTER = logging.Formatter('%(message)s')
     HANDLER.setFormatter(FORMATTER)
     LOGGER.addHandler(HANDLER)
