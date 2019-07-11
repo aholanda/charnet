@@ -32,7 +32,7 @@ def dump_book_data(xmeasure_num, ymeasure_num, book_name,
     file_name = os.path.join(cfg.Project.get_data_dir(), xlabel + SEP + ylabel \
                              + SEP + book_name + extension)
     _file = open(file_name, 'w')
-    for i in range(len(x_coords)):
+    for i in enumerate(x_coords):
         if math.isnan(x_coords[i]) or math.isnan(y_coords[i]):
             continue
         line = '\n'
@@ -455,10 +455,10 @@ class Plot():
     @staticmethod
     def do_plot():
         """All plot functions are called at this function.
-            Use a couroutine from Formatting to send parsed
+            Use a coroutine from Formatting to send parsed
             values to output."""
-        # Prepare to write supplemental material sending info to couroutine
-        supp = fmt.Formatting.couro_write_suppl('suppl')
+        # Prepare to write supplemental material sending info to coroutine
+        supp = fmt.Formatting.coro_write_suppl('suppl')
         next(supp)
         Plot.init()
         Plot.do_centralities(supp)
