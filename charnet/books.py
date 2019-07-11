@@ -264,7 +264,7 @@ class Book():
                     else:
                         self.inc_freq(v_vert)
                 # add characters encounters (edges) to graph G
-                for i in range(len(verts)):
+                for i in enumerate(verts):
                     u_vert = verts[i]
                     for j in range(i+1, len(verts)):
                         v_vert = verts[j]
