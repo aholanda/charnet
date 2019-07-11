@@ -22,8 +22,7 @@ class Draw():
 
     @staticmethod
     def do_graphs():
-        '''Graphs for the characters' encounters are drawn for visualization
-        only using matplotlib and NetworkX.'''
+        '''Graphs for the characters' encounters are drawn for visualization.'''
         LOGGER.info('* Drawing graphs...')
         for book in books.Books.get_books():
             graph = book.get_graph()
