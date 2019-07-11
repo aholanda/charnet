@@ -31,44 +31,44 @@ are `Leaf`s.
  
 ![UML class diagram](dia.png)
 
-- [`Book`](books.py): methods declared here are inherited by `Leaf`
+- [`Book`](charnet/books.py): methods declared here are inherited by `Leaf`
   books, and the main method is `read()` that returns a `Graph`
   containing characters' encounters as edges.
 
-- [`Acts`](books.py): is an example of concrete `Leaf` classes, like
+- [`Acts`](charnet/books.py): is an example of concrete `Leaf` classes, like
   `Acts` that represents the book "acts of apostles", were coded
   inside inside the file [`books.py`](books.py).
 
-- [`Books`](books.py): is the `Composite` class, `read()` method has a
+- [`Books`](charnet/books.py): is the `Composite` class, `read()` method has a
   different behavior iterating over all `Leaf`s to execute their
   `read()` method.
 
-- [`Formatting`](formatting.py): is responsible to write
+- [`Formatting`](charnet/formatting.py): is responsible to write
   LaTeX-formatted output to append in the paper.
 
-- [`Graphs`](graphs.py): process graphs to obtain measures used in the
+- [`Graphs`](charnet/graphs.py): process graphs to obtain measures used in the
   analisys like average degree, betweenness, closeness and lobby.
 
 - `Graph`: is an instance from
   [`Graph`](https://networkx.github.io/documentation/stable/reference/classes/graph.html)
   from NetworkX library.
 
-- [`Plot`](plot.py): plot the curves from data generated from
+- [`Plot`](charnet/plot.py): plot the curves from data generated from
   graphs.
 
-- [`Draw`](draw.py): draw graphs using graphviz python library.
+- [`Draw`](charnet/draw.py): draw graphs using graphviz python library.
 
-- [`lobby()`](lobby.py): function to calculate the lobby index.
+- [`lobby()`](charnet/lobby.py): function to calculate the lobby index.
 
-- [`Charnet`](books.py): helper to handle configuration specific to
+- [`Charnet`](charnet/books.py): helper to handle configuration specific to
   books gathered in this project.
 
-- [`SGB`](books.py): helper to handle configuration specific to books
+- [`SGB`](charnet/books.py): helper to handle configuration specific to books
   gathered in Stanford GraphBase project.
 
-- [`Project`](books.py): template (interface) for project properties.
+- [`Project`](charnet/config.py): template (interface) for project properties.
 
-- [`__main__`](__main__.py): client to execute the operations.
+- [`main`](main.py): client to execute the operations.
 
 ## Running
 
