@@ -1,10 +1,10 @@
 # Changelog
 
-## [3.0] - 2019-07-10
+## [3.0] - 2019-07-11
 - Fixes related with python code standard with the help of pylint3 tool.
 - Add description of most of classes, methods and functions.
 - Substitute plotting library from python matplotlib to gnuplot.
-- Add couroutines to generate supplementary material that contains 
+- Add coroutines to generate supplementary material that contains 
   significance levels for the tests applied in the dataset.
 - Fix syntax errors in LaTeX generated ouput.
 
