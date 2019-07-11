@@ -92,13 +92,13 @@ $ python3 setup.py install --user
 Install [graph-tools](https://git.skewed.de/count0/graph-tool/wikis/installation-instructions) and run all the project tasks:
 
 ````
-$ python3 charnet -a
+$ python3 main.py -a
 ````
 
 To print the possible tasks to be performed apart:
 
 ````
-$ python3 charnet -h
+$ python3 main.py -h
 ````
 
 To clean the generated files:
