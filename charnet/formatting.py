@@ -179,9 +179,9 @@ class Formatting():
             print('* Wrote ' + file_name)
 
     @staticmethod
-    def couro_write_suppl(filename):
+    def coro_write_suppl(filename):
         """Write supplementary material like p-values to output.
-        Here we use couroutines to receive values from parser."""
+        Here we use coroutines to receive values from parser."""
         xlbl = '' # x label
         ylbl = '' # y label
         file_name = os.path.join('preprint/', filename + '.tex')
