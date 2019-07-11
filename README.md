@@ -15,9 +15,10 @@ This project performed studies using complex networks in some books. We consider
 
 ## Prerequisites
 
-* Gnuplot;
+* [Gnuplot](http://www.gnuplot.info/): mixed with jinja2 template engine, python scripts 
+    produces graphics with excellent quality;
 * Python and the packages:
-  * [matplotlib](https://matplotlib.org/) - used to plot the graphics;
+  * [jinja2](http://jinja.pocoo.org/docs/2.10/) - template engine used to handle intervene code;
   * [graph-tool](https://graph-tool.skewed.de/) - used to calculate the network measures and draw the graphs;
   * [powerlaw](https://github.com/jeffalstott/powerlaw) - it is a package used to fit data to power law distribution.
 
