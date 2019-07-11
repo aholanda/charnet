@@ -35,7 +35,7 @@ def plot_data():
 
 def write_data(g2f_arr, g2f2n):
     """Write frequency data to output."""
-    for i in range(len(GENRES)):
+    for i in enumerate(GENRES):
         file_name = '/tmp/'+ GENRES[i] + '-freq-appear-dist.txt'
         _file = open(file_name, 'w')
         for freq in g2f_arr[GENRES[i]]:
