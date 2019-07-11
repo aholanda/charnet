@@ -137,8 +137,10 @@ class Graphs():
     def get_degree_avg_neighbors(graph):
         """Return the average degrees of vertices of the graph."""
         k2knns = {} # map degree to average neighbor degree average
-        (x_vals, y_vals, xxs, yavgs) = ([], [], [], [])
-        (xsp, ysp, xxsp, yavgsp) = ([], [], [], [])
+        # 2D arrray containing normalized float values
+        # [:,0] is x and [:,1] is y
+        vals = np.array([[], []], np.float)
+        knn_means = np.array([[], []], np.float)
         for vert in graph.vertices():
             k = vert.out_degree()
             knn = 0.0 # degree average of neighbors
@@ -148,8 +150,8 @@ class Graphs():
                 knn /= vert.out_degree()
             else:
                 continue
-            x_vals.append(k)
-            y_vals.append(knn)
+            vals[:, 0].append(k)
+            vals[:, 1].append(knn)
             if k not in k2knns:
                 k2knns[k] = []
                 k2knns[k].append(knn)
@@ -157,16 +159,16 @@ class Graphs():
         i = 0
         for k, knns in sorted(k2knns.items()):
             mean = np.mean(np.array(knns))
-            xxs.append(k)
-            yavgs.append(mean)
+            knn_means[:, 0].append(k)
+            knn_means[:, 1].append(mean)
             i += 1
         # NORMALIZE DATA
-        xmax = np.amax(np.array(x_vals))
-        ymax = np.amax(np.array(y_vals))
-        for i in range(len(x_vals)):
-            xsp.append(float(x_vals[i])/float(xmax))
-            ysp.append(float(y_vals[i])/float(ymax))
-        for i in range(len(xxs)):
-            xxsp.append(float(xxs[i])/float(xmax))
-            yavgsp.append(float(yavgs[i])/float(ymax))
-        return (xsp, ysp, xxsp, yavgsp)
+        xmax = np.amax(np.array(vals[:, 0]))
+        ymax = np.amax(np.array(vals[:, 1]))
+        for i in enumerate(vals[:, 0]):
+            vals[:, 0][i] = vals[:, 0][i]/xmax
+            vals[:, 1][i] = vals[:, 1][i]/ymax
+        for i in enumerate(knn_means[:, 0]):
+            knn_means[:, 0][i] = knn_means[:, 0][i]/xmax
+            knn_means[:, 1][i] = knn_means[:, 1][i]/ymax
+        return (vals[:, 0], vals[:, 1], knn_means[:, 0], knn_means[:, 1][i])
