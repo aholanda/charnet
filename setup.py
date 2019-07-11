@@ -10,5 +10,5 @@ setup(
         packages=['charnet',],
         license='GPL2',
         long_description=open('LICENSE').read(),
-        install_requires=['numpy','scipy','powerlaw',],
+        install_requires=['numpy','scipy','jinja2',],
 )
