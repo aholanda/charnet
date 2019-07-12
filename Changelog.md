@@ -1,6 +1,8 @@
 # Changelog
 
-## [3.0] - 2019-07-11
+## [v3.0] - 2019-07-12
+- Use pylint3 to reduce warnings and conform to python way of coding.
+- Put all scripts in one file charnet/__main__.py.
 - Fixes related with python code standard with the help of pylint3 tool.
 - Add description of most of classes, methods and functions.
 - Substitute plotting library from python matplotlib to gnuplot.
