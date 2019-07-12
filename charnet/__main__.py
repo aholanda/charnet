@@ -215,7 +215,6 @@ class Graphs():
             # Append to 2D array in the form
             # | ... ... |
             # | k   knn |
-            print(str(k), str(knn))
             vals[i, 0] = float(k)
             vals[i, 1] = knn
             if k not in k2knns:
@@ -936,7 +935,7 @@ class Plot():
         env = Environment(loader=FileSystemLoader(templates_dir))
         template = env.get_template('plot.gp.j2')
         # index 0 is x, index 1 is y
-        xcoords = [] 
+        xcoords = []
         ycoords = [] # xcoords, ycoords
         maxs = [0.225, 1.0] # xmax, ymax
         measure_ids = [Measure.DENSITY, Measure.CLUSTERING_COEFFICIENT]
@@ -1304,7 +1303,7 @@ class Formatting():
                 degs[lab] = vert.out_degree()
                 char_names[lab] = graph.vertex_properties["char_name"][vert]
             file_name = book.get_name() + suf
-            file_name = os.path.join(Project.get_out_dir(), file_name)
+            file_name = os.path.join(Project().get_out_dir(), file_name)
             _file = open(file_name, 'w')
             # Sort by degree in reverse order
             labs = sorted(degs.items(), key=lambda x: x[1], reverse=True)
@@ -1326,7 +1325,7 @@ class Formatting():
             char_names = {}
             graph = book.get_graph()
             file_name = book.get_name() + suf
-            file_name = os.path.join(Project.get_out_dir(), file_name)
+            file_name = os.path.join(Project().get_out_dir(), file_name)
             _file = open(file_name, 'w')
             for vert in graph.vertices():
                 lab = graph.vertex_properties["label"][vert]
@@ -1346,7 +1345,7 @@ class Formatting():
             weights = {}
             char_names = {}
             graph = book.get_graph()
-            file_name = os.path.join(Project.get_out_dir(),
+            file_name = os.path.join(Project().get_out_dir(),
                                      book.get_name() + suf)
             _file = open(file_name, 'w')
             for edge in graph.edges():
@@ -1453,7 +1452,7 @@ class Draw():
 
 HANDLER = None
 if LOGGER.getEffectiveLevel() == logging.DEBUG:
-    HANDLER = logging.FileHandler(os.path.join(Project.get_out_dir(), 'lobby.log'))
+    HANDLER = logging.FileHandler(os.path.join(Project().get_out_dir(), 'lobby.log'))
     FORMATTER = logging.Formatter('%(message)s')
     HANDLER.setFormatter(FORMATTER)
     LOGGER.addHandler(HANDLER)
@@ -1597,44 +1596,44 @@ def print_out_banner(directory):
 # marker in the plot.
 def main():
     # Boolean array to store state of the flags
-    OPTS = [False] * len(TASKS)
+    opts = [False] * len(TASKS)
     # numer og arguments
-    LEN_ARGS = len(sys.argv)
+    len_args = len(sys.argv)
     # retrieve the flags set by the user
-    if LEN_ARGS > 1:
+    if len_args > 1:
         arg_no = 1
-        while arg_no < LEN_ARGS:
+        while arg_no < len_args:
             opt = sys.argv[arg_no]
             # OPTIONAL
             if opt == "-o" or opt == "--output-dir":
                 arg_no += 1
-                if arg_no == LEN_ARGS:
+                if arg_no == len_args:
                     usage()
                 _dir = sys.argv[arg_no]
                 _dir = _dir.rstrip('\n')
                 if os.path.exists(_dir):
-                    Project.set_outdir(_dir)
+                    Project().set_outdir(_dir)
                 else:
                     LOGGER.error(' Directory \"%s\" does not exists!', _dir)
                     exit()
             elif opt == "-p" or opt == "--plot":
-                OPTS[1] = True
+                opts[1] = True
             elif opt == "-g" or opt == "--draw-graph":
-                OPTS[2] = True
+                opts[2] = True
             elif opt == "-m" or opt == "--global-measures":
-                OPTS[3] = True
+                opts[3] = True
             elif opt == "-l" or opt == "--legomena":
-                OPTS[4] = True
+                opts[4] = True
             elif opt == "-d" or opt == "--degree":
-                OPTS[5] = True
+                opts[5] = True
             elif opt == "-f" or opt == "--frequency":
-                OPTS[6] = True
+                opts[6] = True
             elif opt == "-e" or opt == "--weight":
-                OPTS[7] = True
+                opts[7] = True
             elif opt == "-a" or opt == "--all-tasks":
-                OPTS[8] = True
-                for arg_no in range(1, LEN_ARGS-1): # to not repeat tasks
-                    OPTS[arg_no] = False
+                opts[8] = True
+                for arg_no in range(1, len_args-1): # to not repeat tasks
+                    opts[arg_no] = False
             elif opt == "-h" or opt == "--help": # help make exit
                 usage()
             else:
@@ -1644,8 +1643,8 @@ def main():
     else:
         usage()
 
-    for arg_no in range(1, len(OPTS)):
-        if OPTS[arg_no] is True:
+    for arg_no in range(1, len(opts)):
+        if opts[arg_no] is True:
             LOGGER.info(HEADERS[arg_no])
             TASKS[arg_no]()
 
